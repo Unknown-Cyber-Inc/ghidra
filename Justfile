@@ -26,6 +26,18 @@ format:="'%4s"+gold+"%-20s"+reset+"%s\\n' ''"
 
 # }}}
 
+# Extra Commands {{{
+
+# Cleans out the old docker images that are no longer in use
+clean:
+    @docker system prune
+
+# Cleans out the old docker images that are no longer in use, and the volumes
+clean-all:
+    @docker system prune --volumes
+
+# }}}
+
 # Ghidra commands {{{
 
 # Recompiles the plugin and restarts the container
