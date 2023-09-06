@@ -4,6 +4,8 @@ ENV LANG=en_US.UTF-8 LANGUAGE=en_US:en LC_ALL=en_US.UTF-8
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PATH /opt/java/bin/:/opt/gradle/gradle-8.3/bin:$PATH
 ENV GHIDRA_HOME /opt/ghidra/
+ENV GHIDRA_INSTALL_DIR /opt/ghidra/
+ENV PGHIDRA_INSTALL_DIR /opt/ghidra/
 ENV JAVA_HOME /opt/java/
 ENV JAVA_VERSION=jdk-17.0.7+7
 ENV MAXMEM=768M
