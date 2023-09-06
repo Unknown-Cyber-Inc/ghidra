@@ -1,4 +1,5 @@
 FROM ubuntu:22.04 AS base
+ARG version=10.3.2
 EXPOSE 13100/tcp 13101/tcp 13102/tcp
 ENV LANG=en_US.UTF-8 LANGUAGE=en_US:en LC_ALL=en_US.UTF-8
 ENV DEBIAN_FRONTEND=noninteractive
@@ -45,10 +46,10 @@ RUN apt-get update \
         libxi6 \
     && echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen \
     && locale-gen en_US.UTF-8 \
-    && wget --no-check-certificate https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_10.3.2_build/ghidra_10.3.2_PUBLIC_20230711.zip \
-    && unzip ghidra_10.3.2_PUBLIC_20230711.zip -d /opt/ \
-    && mv /opt/ghidra_10.3.2_PUBLIC /opt/ghidra \
-    && rm -rf ghidra_10.3.2_PUBLIC_20230711.zip \
+    && wget --no-check-certificate https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_${version}_build/ghidra_${version}_PUBLIC_20230711.zip \
+    && unzip ghidra_${version}_PUBLIC_20230711.zip -d /opt/ \
+    && mv /opt/ghidra_${version}_PUBLIC /opt/ghidra \
+    && rm -rf ghidra_${version}_PUBLIC_20230711.zip \
     && wget https://services.gradle.org/distributions/gradle-8.3-bin.zip \
     && unzip gradle-8.3-bin.zip -d /opt/gradle \
     && rm -rf gradle-8.3-bin.zip \
