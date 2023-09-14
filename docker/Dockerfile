@@ -54,6 +54,8 @@ RUN apt-get update \
     && wget https://services.gradle.org/distributions/gradle-8.3-bin.zip \
     && unzip gradle-8.3-bin.zip -d /opt/gradle \
     && rm -rf gradle-8.3-bin.zip \
+    && cd /opt/gradle \
+    && ./gradle wrapper \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives /tmp/* /var/tmp/* \
     && apt -y remove wget unzip \
