@@ -32,6 +32,9 @@ import ghidra.util.HelpLocation;
 import ghidra.util.Msg;
 import resources.ResourceManager;
 
+import com.unknowncyber.magic.api.FilesApi;
+import io.swagger.client.ApiClient;
+
 public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 	private final static String PREV_IMAGE = "/images/check_icon.jpg";
 	private final static HelpLocation HELP = new HelpLocation("SampleHelpTopic", "SampleHelpTopic_Anchor_Name");
@@ -45,6 +48,9 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 	private JTable matchTable;
 	private JButton submitButton, submitDisassembledButton;
 	private JScrollPane matchScroller;
+	protected ApiClient apiClient;
+	protected FilesApi filesApi;
+
 	
 	public UnknownCyberFileProvider(PluginTool tool, String name) {
 		super(tool, name, name);
@@ -57,6 +63,8 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 		setTitle("Unknown Cyber File Interface");
 		setVisible(true);
 //		createActions();
+        apiClient = new ApiClient();
+        filesApi = new FilesApi(apiClient);
 	}
 	
 	private void checkFileAccess(String hash) {
