@@ -53,7 +53,7 @@ import io.swagger.client.auth.OAuth;
 
 public class ApiClient {
   protected Map<String, String> defaultHeaderMap = new HashMap<String, String>();
-  protected String basePath = System.getenv("API_HOST");
+  protected String basePath = System.getenv("API_URI");
   protected boolean debugging = false;
   protected int connectionTimeout = 0;
   private int readTimeout = 0;
@@ -80,9 +80,6 @@ public class ApiClient {
 
     // Setup authentications (key: authentication name, value: authentication).
     authentications = new HashMap<String, Authentication>();
-    if (basePath == null) {
-        basePath = "https://api:80/";
-    }
     String key = System.getenv("API_KEY");
     ApiKeyAuth headerAuth = new ApiKeyAuth("header", "X-API-KEY");
     headerAuth.setApiKey(key);

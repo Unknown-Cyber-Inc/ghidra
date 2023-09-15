@@ -31,9 +31,6 @@ import java.io.Serializable;
 
 public class ProcedureResponse implements Serializable{
   private static final long serialVersionUID = 1L;
-  @JsonProperty("procedure_name")
-  private String procedureName = "std some procedure";
-
   @JsonProperty("tags")
   private List<String> tags = null;
 
@@ -93,24 +90,6 @@ public class ProcedureResponse implements Serializable{
 
   @JsonProperty("cfg")
   private Map<String, List<String>> cfg = new HashMap<String, List<String>>();
-
-  public ProcedureResponse procedureName(String procedureName) {
-    this.procedureName = procedureName;
-    return this;
-  }
-
-   /**
-   * Get procedureName
-   * @return procedureName
-  **/
-  @Schema(description = "")
-  public String getProcedureName() {
-    return procedureName;
-  }
-
-  public void setProcedureName(String procedureName) {
-    this.procedureName = procedureName;
-  }
 
   public ProcedureResponse tags(List<String> tags) {
     this.tags = tags;
@@ -510,8 +489,7 @@ public class ProcedureResponse implements Serializable{
       return false;
     }
     ProcedureResponse procedureResponse = (ProcedureResponse) o;
-    return Objects.equals(this.procedureName, procedureResponse.procedureName) &&
-        Objects.equals(this.tags, procedureResponse.tags) &&
+    return Objects.equals(this.tags, procedureResponse.tags) &&
         Objects.equals(this.notes, procedureResponse.notes) &&
         Objects.equals(this.hardHash, procedureResponse.hardHash) &&
         Objects.equals(this.variantHash, procedureResponse.variantHash) &&
@@ -535,7 +513,7 @@ public class ProcedureResponse implements Serializable{
 
   @Override
   public int hashCode() {
-    return Objects.hash(procedureName, tags, notes, hardHash, variantHash, binaryId, startEA, endEA, procedureSegment, isLibary, isThunk, strings, apiCalls, version, procedureId, procHash, blocks, blockCount, codeCount, semanticsCount, cfg);
+    return Objects.hash(tags, notes, hardHash, variantHash, binaryId, startEA, endEA, procedureSegment, isLibary, isThunk, strings, apiCalls, version, procedureId, procHash, blocks, blockCount, codeCount, semanticsCount, cfg);
   }
 
 
@@ -544,7 +522,6 @@ public class ProcedureResponse implements Serializable{
     StringBuilder sb = new StringBuilder();
     sb.append("class ProcedureResponse {\n");
     
-    sb.append("    procedureName: ").append(toIndentedString(procedureName)).append("\n");
     sb.append("    tags: ").append(toIndentedString(tags)).append("\n");
     sb.append("    notes: ").append(toIndentedString(notes)).append("\n");
     sb.append("    hardHash: ").append(toIndentedString(hardHash)).append("\n");
