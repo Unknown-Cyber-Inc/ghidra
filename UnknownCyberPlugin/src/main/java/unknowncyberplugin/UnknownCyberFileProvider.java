@@ -32,6 +32,7 @@ import ghidra.util.HelpLocation;
 import ghidra.util.Msg;
 import resources.ResourceManager;
 
+import com.unknowncyber.magic.model.EnvelopedFileList200;
 import com.unknowncyber.magic.api.FilesApi;
 import io.swagger.client.ApiClient;
 
@@ -94,6 +95,15 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 		// Run API call
 		// Re-enable buttons on completion
 		// Ping user of success/failure
+        try {
+            Msg.debug(this, "Getting files");
+            EnvelopedFileList200 files = filesApi.listFiles(
+                "json", false, false, "", true, false, 1, 25, 0, "", "", "", "", "lskjdfk=aslkdjf"
+            );
+            Msg.info(this, files.getMessage());
+        } catch (Exception e) {
+            Msg.info(this, e);
+        }
 		announce("Success or Failure");
 		
 		// Edit file access on success?
