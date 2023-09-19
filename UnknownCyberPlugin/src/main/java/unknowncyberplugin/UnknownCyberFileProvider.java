@@ -31,8 +31,16 @@ import ghidra.framework.plugintool.PluginTool;
 import ghidra.util.HelpLocation;
 import ghidra.util.Msg;
 import resources.ResourceManager;
+import java.util.Arrays;
+import java.util.List;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import ghidra.program.model.listing.Program;
 
 import com.unknowncyber.magic.model.EnvelopedFileList200;
+import com.unknowncyber.magic.model.EnvelopedFileUploadResponseList200;
 import com.unknowncyber.magic.api.FilesApi;
 import io.swagger.client.ApiClient;
 
@@ -51,6 +59,12 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 	private JScrollPane matchScroller;
 	protected ApiClient apiClient;
 	protected FilesApi filesApi;
+
+    protected Program program;
+
+    public void setProgram(Program programIn) {
+        program = programIn;
+    }
 
 	
 	public UnknownCyberFileProvider(PluginTool tool, String name) {
@@ -81,6 +95,14 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 		// Run API call
 		// Re-enable buttons on completion
 		// Ping user of success/failure via popup
+
+        File myFile = new File(program.getExecutablePath());
+        List<File> files = Arrays.asList(myFile);
+		try {
+			EnvelopedFileUploadResponseList200 response = filesApi.uploadFile(files, "", Arrays.asList(), Arrays.asList(), "json", false, false, "", true, false, false, false, false, false, false);
+		} catch (Exception e) {
+			Msg.info(null, e);
+		}
 		announce("Success or Failure");
 		
 		// Edit file access on success
