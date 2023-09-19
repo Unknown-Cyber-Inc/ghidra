@@ -19,6 +19,9 @@ import ghidra.app.ExamplesPluginPackage;
 import ghidra.app.plugin.PluginCategoryNames;
 import ghidra.framework.plugintool.*;
 import ghidra.framework.plugintool.util.PluginStatus;
+import ghidra.app.plugin.ProgramPlugin;
+
+import ghidra.program.model.listing.Program;
 
 //@formatter:off
 @PluginInfo(
@@ -29,9 +32,16 @@ import ghidra.framework.plugintool.util.PluginStatus;
 	description = "Unknown Cyber's API integration plugin"
 )
 //@formatter:on
-public class UnknownCyberPlugin extends Plugin {
+public class UnknownCyberPlugin extends ProgramPlugin {
 
 	private UnknownCyberFileProvider fileProvider;
+
+    @Override
+    public void programOpened(Program program) {
+        if (fileProvider != null) {
+                        fileProvider.setProgram(program);
+        }
+    }
 
 	/**
 	 * Plugin constructor.
