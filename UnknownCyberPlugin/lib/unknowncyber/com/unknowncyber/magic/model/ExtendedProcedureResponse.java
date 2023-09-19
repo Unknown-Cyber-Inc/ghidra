@@ -31,6 +31,9 @@ import java.io.Serializable;
 
 public class ExtendedProcedureResponse implements Serializable{
   private static final long serialVersionUID = 1L;
+  @JsonProperty("procedure_name")
+  private String procedureName = "std some procedure";
+
   @JsonProperty("tags")
   private List<String> tags = null;
 
@@ -96,6 +99,24 @@ public class ExtendedProcedureResponse implements Serializable{
 
   @JsonProperty("occurrence_count")
   private Integer occurrenceCount = 3;
+
+  public ExtendedProcedureResponse procedureName(String procedureName) {
+    this.procedureName = procedureName;
+    return this;
+  }
+
+   /**
+   * Get procedureName
+   * @return procedureName
+  **/
+  @Schema(description = "")
+  public String getProcedureName() {
+    return procedureName;
+  }
+
+  public void setProcedureName(String procedureName) {
+    this.procedureName = procedureName;
+  }
 
   public ExtendedProcedureResponse tags(List<String> tags) {
     this.tags = tags;
@@ -531,7 +552,8 @@ public class ExtendedProcedureResponse implements Serializable{
       return false;
     }
     ExtendedProcedureResponse extendedProcedureResponse = (ExtendedProcedureResponse) o;
-    return Objects.equals(this.tags, extendedProcedureResponse.tags) &&
+    return Objects.equals(this.procedureName, extendedProcedureResponse.procedureName) &&
+        Objects.equals(this.tags, extendedProcedureResponse.tags) &&
         Objects.equals(this.notes, extendedProcedureResponse.notes) &&
         Objects.equals(this.hardHash, extendedProcedureResponse.hardHash) &&
         Objects.equals(this.variantHash, extendedProcedureResponse.variantHash) &&
@@ -557,7 +579,7 @@ public class ExtendedProcedureResponse implements Serializable{
 
   @Override
   public int hashCode() {
-    return Objects.hash(tags, notes, hardHash, variantHash, binaryId, startEA, endEA, procedureSegment, isLibary, isThunk, strings, apiCalls, version, procedureId, procHash, blocks, blockCount, codeCount, semanticsCount, cfg, status, occurrenceCount);
+    return Objects.hash(procedureName, tags, notes, hardHash, variantHash, binaryId, startEA, endEA, procedureSegment, isLibary, isThunk, strings, apiCalls, version, procedureId, procHash, blocks, blockCount, codeCount, semanticsCount, cfg, status, occurrenceCount);
   }
 
 
@@ -566,6 +588,7 @@ public class ExtendedProcedureResponse implements Serializable{
     StringBuilder sb = new StringBuilder();
     sb.append("class ExtendedProcedureResponse {\n");
     
+    sb.append("    procedureName: ").append(toIndentedString(procedureName)).append("\n");
     sb.append("    tags: ").append(toIndentedString(tags)).append("\n");
     sb.append("    notes: ").append(toIndentedString(notes)).append("\n");
     sb.append("    hardHash: ").append(toIndentedString(hardHash)).append("\n");

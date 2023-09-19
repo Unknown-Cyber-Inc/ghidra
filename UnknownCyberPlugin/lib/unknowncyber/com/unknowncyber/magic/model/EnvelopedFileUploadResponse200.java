@@ -17,7 +17,8 @@ import java.util.Arrays;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import com.unknowncyber.magic.model.BlockSchema;
+import com.unknowncyber.magic.model.ErrorObject;
+import com.unknowncyber.magic.model.FileUploadResponse;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,479 +26,149 @@ import java.util.List;
 import java.util.Map;
 import java.io.Serializable;
 /**
- * ProcedureResponse
+ * EnvelopedFileUploadResponse200
  */
 
 
-public class ProcedureResponse implements Serializable{
+public class EnvelopedFileUploadResponse200 implements Serializable{
   private static final long serialVersionUID = 1L;
-  @JsonProperty("procedure_name")
-  private String procedureName = "std some procedure";
+  @JsonProperty("success")
+  private Boolean success = true;
 
-  @JsonProperty("tags")
-  private List<String> tags = null;
+  @JsonProperty("status")
+  private Integer status = 200;
 
-  @JsonProperty("notes")
-  private List<String> notes = null;
+  @JsonProperty("message")
+  private String message = "OK";
 
-  @JsonProperty("hard_hash")
-  private String hardHash = "ecb50f092ebeeac4cf7804f8273d90e1";
+  @JsonProperty("errors")
+  private List<ErrorObject> errors = new ArrayList<ErrorObject>();
 
-  @JsonProperty("variant_hash")
-  private String variantHash = "bd0b14a2273f3856c566d5a0c5c81488";
+  @JsonProperty("links")
+  private Map<String, String> links = null;
 
-  @JsonProperty("binary_id")
-  private String binaryId = "ce46741bf67591f5f60b7a74dec3ef8d648ca9c6";
+  @JsonProperty("resource")
+  private FileUploadResponse resource = null;
 
-  @JsonProperty("startEA")
-  private String startEA = "0x1000";
-
-  @JsonProperty("endEA")
-  private String endEA = "0x101d";
-
-  @JsonProperty("procedure_segment")
-  private String procedureSegment = ".text";
-
-  @JsonProperty("is_libary")
-  private Boolean isLibary = false;
-
-  @JsonProperty("is_thunk")
-  private Boolean isThunk = false;
-
-  @JsonProperty("strings")
-  private List<String> strings = null;
-
-  @JsonProperty("api_calls")
-  private List<String> apiCalls = null;
-
-  @JsonProperty("version")
-  private String version = "4.0.0";
-
-  @JsonProperty("procedure_id")
-  private String procedureId = "ce46741bf67591f5f60b7a74dec3ef8d648ca9c6/0x1000";
-
-  @JsonProperty("proc_hash")
-  private String procHash = "ecb50f092ebeeac4cf7804f8273d90e1";
-
-  @JsonProperty("blocks")
-  private List<BlockSchema> blocks = null;
-
-  @JsonProperty("block_count")
-  private Integer blockCount = 3;
-
-  @JsonProperty("code_count")
-  private Integer codeCount = 3;
-
-  @JsonProperty("semantics_count")
-  private Integer semanticsCount = 3;
-
-  @JsonProperty("cfg")
-  private Map<String, List<String>> cfg = new HashMap<String, List<String>>();
-
-  public ProcedureResponse procedureName(String procedureName) {
-    this.procedureName = procedureName;
+  public EnvelopedFileUploadResponse200 success(Boolean success) {
+    this.success = success;
     return this;
   }
 
    /**
-   * Get procedureName
-   * @return procedureName
+   * Get success
+   * @return success
   **/
   @Schema(description = "")
-  public String getProcedureName() {
-    return procedureName;
+  public Boolean isSuccess() {
+    return success;
   }
 
-  public void setProcedureName(String procedureName) {
-    this.procedureName = procedureName;
+  public void setSuccess(Boolean success) {
+    this.success = success;
   }
 
-  public ProcedureResponse tags(List<String> tags) {
-    this.tags = tags;
-    return this;
-  }
-
-  public ProcedureResponse addTagsItem(String tagsItem) {
-    if (this.tags == null) {
-      this.tags = new ArrayList<String>();
-    }
-    this.tags.add(tagsItem);
+  public EnvelopedFileUploadResponse200 status(Integer status) {
+    this.status = status;
     return this;
   }
 
    /**
-   * Get tags
-   * @return tags
+   * Get status
+   * @return status
   **/
   @Schema(description = "")
-  public List<String> getTags() {
-    return tags;
+  public Integer getStatus() {
+    return status;
   }
 
-  public void setTags(List<String> tags) {
-    this.tags = tags;
+  public void setStatus(Integer status) {
+    this.status = status;
   }
 
-  public ProcedureResponse notes(List<String> notes) {
-    this.notes = notes;
-    return this;
-  }
-
-  public ProcedureResponse addNotesItem(String notesItem) {
-    if (this.notes == null) {
-      this.notes = new ArrayList<String>();
-    }
-    this.notes.add(notesItem);
+  public EnvelopedFileUploadResponse200 message(String message) {
+    this.message = message;
     return this;
   }
 
    /**
-   * Get notes
-   * @return notes
+   * Get message
+   * @return message
   **/
   @Schema(description = "")
-  public List<String> getNotes() {
-    return notes;
+  public String getMessage() {
+    return message;
   }
 
-  public void setNotes(List<String> notes) {
-    this.notes = notes;
+  public void setMessage(String message) {
+    this.message = message;
   }
 
-  public ProcedureResponse hardHash(String hardHash) {
-    this.hardHash = hardHash;
+  public EnvelopedFileUploadResponse200 errors(List<ErrorObject> errors) {
+    this.errors = errors;
+    return this;
+  }
+
+  public EnvelopedFileUploadResponse200 addErrorsItem(ErrorObject errorsItem) {
+    this.errors.add(errorsItem);
     return this;
   }
 
    /**
-   * Get hardHash
-   * @return hardHash
-  **/
-  @Schema(description = "")
-  public String getHardHash() {
-    return hardHash;
-  }
-
-  public void setHardHash(String hardHash) {
-    this.hardHash = hardHash;
-  }
-
-  public ProcedureResponse variantHash(String variantHash) {
-    this.variantHash = variantHash;
-    return this;
-  }
-
-   /**
-   * Get variantHash
-   * @return variantHash
-  **/
-  @Schema(description = "")
-  public String getVariantHash() {
-    return variantHash;
-  }
-
-  public void setVariantHash(String variantHash) {
-    this.variantHash = variantHash;
-  }
-
-  public ProcedureResponse binaryId(String binaryId) {
-    this.binaryId = binaryId;
-    return this;
-  }
-
-   /**
-   * Get binaryId
-   * @return binaryId
-  **/
-  @Schema(description = "")
-  public String getBinaryId() {
-    return binaryId;
-  }
-
-  public void setBinaryId(String binaryId) {
-    this.binaryId = binaryId;
-  }
-
-  public ProcedureResponse startEA(String startEA) {
-    this.startEA = startEA;
-    return this;
-  }
-
-   /**
-   * Get startEA
-   * @return startEA
-  **/
-  @Schema(description = "")
-  public String getStartEA() {
-    return startEA;
-  }
-
-  public void setStartEA(String startEA) {
-    this.startEA = startEA;
-  }
-
-  public ProcedureResponse endEA(String endEA) {
-    this.endEA = endEA;
-    return this;
-  }
-
-   /**
-   * Get endEA
-   * @return endEA
-  **/
-  @Schema(description = "")
-  public String getEndEA() {
-    return endEA;
-  }
-
-  public void setEndEA(String endEA) {
-    this.endEA = endEA;
-  }
-
-  public ProcedureResponse procedureSegment(String procedureSegment) {
-    this.procedureSegment = procedureSegment;
-    return this;
-  }
-
-   /**
-   * Get procedureSegment
-   * @return procedureSegment
-  **/
-  @Schema(description = "")
-  public String getProcedureSegment() {
-    return procedureSegment;
-  }
-
-  public void setProcedureSegment(String procedureSegment) {
-    this.procedureSegment = procedureSegment;
-  }
-
-  public ProcedureResponse isLibary(Boolean isLibary) {
-    this.isLibary = isLibary;
-    return this;
-  }
-
-   /**
-   * Get isLibary
-   * @return isLibary
-  **/
-  @Schema(description = "")
-  public Boolean isIsLibary() {
-    return isLibary;
-  }
-
-  public void setIsLibary(Boolean isLibary) {
-    this.isLibary = isLibary;
-  }
-
-  public ProcedureResponse isThunk(Boolean isThunk) {
-    this.isThunk = isThunk;
-    return this;
-  }
-
-   /**
-   * Get isThunk
-   * @return isThunk
-  **/
-  @Schema(description = "")
-  public Boolean isIsThunk() {
-    return isThunk;
-  }
-
-  public void setIsThunk(Boolean isThunk) {
-    this.isThunk = isThunk;
-  }
-
-  public ProcedureResponse strings(List<String> strings) {
-    this.strings = strings;
-    return this;
-  }
-
-  public ProcedureResponse addStringsItem(String stringsItem) {
-    if (this.strings == null) {
-      this.strings = new ArrayList<String>();
-    }
-    this.strings.add(stringsItem);
-    return this;
-  }
-
-   /**
-   * Get strings
-   * @return strings
-  **/
-  @Schema(description = "")
-  public List<String> getStrings() {
-    return strings;
-  }
-
-  public void setStrings(List<String> strings) {
-    this.strings = strings;
-  }
-
-  public ProcedureResponse apiCalls(List<String> apiCalls) {
-    this.apiCalls = apiCalls;
-    return this;
-  }
-
-  public ProcedureResponse addApiCallsItem(String apiCallsItem) {
-    if (this.apiCalls == null) {
-      this.apiCalls = new ArrayList<String>();
-    }
-    this.apiCalls.add(apiCallsItem);
-    return this;
-  }
-
-   /**
-   * Get apiCalls
-   * @return apiCalls
-  **/
-  @Schema(description = "")
-  public List<String> getApiCalls() {
-    return apiCalls;
-  }
-
-  public void setApiCalls(List<String> apiCalls) {
-    this.apiCalls = apiCalls;
-  }
-
-  public ProcedureResponse version(String version) {
-    this.version = version;
-    return this;
-  }
-
-   /**
-   * Get version
-   * @return version
-  **/
-  @Schema(description = "")
-  public String getVersion() {
-    return version;
-  }
-
-  public void setVersion(String version) {
-    this.version = version;
-  }
-
-  public ProcedureResponse procedureId(String procedureId) {
-    this.procedureId = procedureId;
-    return this;
-  }
-
-   /**
-   * Get procedureId
-   * @return procedureId
-  **/
-  @Schema(description = "")
-  public String getProcedureId() {
-    return procedureId;
-  }
-
-  public void setProcedureId(String procedureId) {
-    this.procedureId = procedureId;
-  }
-
-  public ProcedureResponse procHash(String procHash) {
-    this.procHash = procHash;
-    return this;
-  }
-
-   /**
-   * Get procHash
-   * @return procHash
-  **/
-  @Schema(description = "")
-  public String getProcHash() {
-    return procHash;
-  }
-
-  public void setProcHash(String procHash) {
-    this.procHash = procHash;
-  }
-
-   /**
-   * Get blocks
-   * @return blocks
-  **/
-  @Schema(description = "")
-  public List<BlockSchema> getBlocks() {
-    return blocks;
-  }
-
-  public ProcedureResponse blockCount(Integer blockCount) {
-    this.blockCount = blockCount;
-    return this;
-  }
-
-   /**
-   * Get blockCount
-   * @return blockCount
-  **/
-  @Schema(description = "")
-  public Integer getBlockCount() {
-    return blockCount;
-  }
-
-  public void setBlockCount(Integer blockCount) {
-    this.blockCount = blockCount;
-  }
-
-  public ProcedureResponse codeCount(Integer codeCount) {
-    this.codeCount = codeCount;
-    return this;
-  }
-
-   /**
-   * Get codeCount
-   * @return codeCount
-  **/
-  @Schema(description = "")
-  public Integer getCodeCount() {
-    return codeCount;
-  }
-
-  public void setCodeCount(Integer codeCount) {
-    this.codeCount = codeCount;
-  }
-
-  public ProcedureResponse semanticsCount(Integer semanticsCount) {
-    this.semanticsCount = semanticsCount;
-    return this;
-  }
-
-   /**
-   * Get semanticsCount
-   * @return semanticsCount
-  **/
-  @Schema(description = "")
-  public Integer getSemanticsCount() {
-    return semanticsCount;
-  }
-
-  public void setSemanticsCount(Integer semanticsCount) {
-    this.semanticsCount = semanticsCount;
-  }
-
-  public ProcedureResponse cfg(Map<String, List<String>> cfg) {
-    this.cfg = cfg;
-    return this;
-  }
-
-  public ProcedureResponse putCfgItem(String key, List<String> cfgItem) {
-    this.cfg.put(key, cfgItem);
-    return this;
-  }
-
-   /**
-   * Get cfg
-   * @return cfg
+   * Get errors
+   * @return errors
   **/
   @Schema(required = true, description = "")
-  public Map<String, List<String>> getCfg() {
-    return cfg;
+  public List<ErrorObject> getErrors() {
+    return errors;
   }
 
-  public void setCfg(Map<String, List<String>> cfg) {
-    this.cfg = cfg;
+  public void setErrors(List<ErrorObject> errors) {
+    this.errors = errors;
+  }
+
+  public EnvelopedFileUploadResponse200 links(Map<String, String> links) {
+    this.links = links;
+    return this;
+  }
+
+  public EnvelopedFileUploadResponse200 putLinksItem(String key, String linksItem) {
+    if (this.links == null) {
+      this.links = new HashMap<String, String>();
+    }
+    this.links.put(key, linksItem);
+    return this;
+  }
+
+   /**
+   * Get links
+   * @return links
+  **/
+  @Schema(description = "")
+  public Map<String, String> getLinks() {
+    return links;
+  }
+
+  public void setLinks(Map<String, String> links) {
+    this.links = links;
+  }
+
+  public EnvelopedFileUploadResponse200 resource(FileUploadResponse resource) {
+    this.resource = resource;
+    return this;
+  }
+
+   /**
+   * Get resource
+   * @return resource
+  **/
+  @Schema(required = true, description = "")
+  public FileUploadResponse getResource() {
+    return resource;
+  }
+
+  public void setResource(FileUploadResponse resource) {
+    this.resource = resource;
   }
 
 
@@ -509,62 +180,32 @@ public class ProcedureResponse implements Serializable{
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    ProcedureResponse procedureResponse = (ProcedureResponse) o;
-    return Objects.equals(this.procedureName, procedureResponse.procedureName) &&
-        Objects.equals(this.tags, procedureResponse.tags) &&
-        Objects.equals(this.notes, procedureResponse.notes) &&
-        Objects.equals(this.hardHash, procedureResponse.hardHash) &&
-        Objects.equals(this.variantHash, procedureResponse.variantHash) &&
-        Objects.equals(this.binaryId, procedureResponse.binaryId) &&
-        Objects.equals(this.startEA, procedureResponse.startEA) &&
-        Objects.equals(this.endEA, procedureResponse.endEA) &&
-        Objects.equals(this.procedureSegment, procedureResponse.procedureSegment) &&
-        Objects.equals(this.isLibary, procedureResponse.isLibary) &&
-        Objects.equals(this.isThunk, procedureResponse.isThunk) &&
-        Objects.equals(this.strings, procedureResponse.strings) &&
-        Objects.equals(this.apiCalls, procedureResponse.apiCalls) &&
-        Objects.equals(this.version, procedureResponse.version) &&
-        Objects.equals(this.procedureId, procedureResponse.procedureId) &&
-        Objects.equals(this.procHash, procedureResponse.procHash) &&
-        Objects.equals(this.blocks, procedureResponse.blocks) &&
-        Objects.equals(this.blockCount, procedureResponse.blockCount) &&
-        Objects.equals(this.codeCount, procedureResponse.codeCount) &&
-        Objects.equals(this.semanticsCount, procedureResponse.semanticsCount) &&
-        Objects.equals(this.cfg, procedureResponse.cfg);
+    EnvelopedFileUploadResponse200 envelopedFileUploadResponse200 = (EnvelopedFileUploadResponse200) o;
+    return Objects.equals(this.success, envelopedFileUploadResponse200.success) &&
+        Objects.equals(this.status, envelopedFileUploadResponse200.status) &&
+        Objects.equals(this.message, envelopedFileUploadResponse200.message) &&
+        Objects.equals(this.errors, envelopedFileUploadResponse200.errors) &&
+        Objects.equals(this.links, envelopedFileUploadResponse200.links) &&
+        Objects.equals(this.resource, envelopedFileUploadResponse200.resource);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(procedureName, tags, notes, hardHash, variantHash, binaryId, startEA, endEA, procedureSegment, isLibary, isThunk, strings, apiCalls, version, procedureId, procHash, blocks, blockCount, codeCount, semanticsCount, cfg);
+    return Objects.hash(success, status, message, errors, links, resource);
   }
 
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class ProcedureResponse {\n");
+    sb.append("class EnvelopedFileUploadResponse200 {\n");
     
-    sb.append("    procedureName: ").append(toIndentedString(procedureName)).append("\n");
-    sb.append("    tags: ").append(toIndentedString(tags)).append("\n");
-    sb.append("    notes: ").append(toIndentedString(notes)).append("\n");
-    sb.append("    hardHash: ").append(toIndentedString(hardHash)).append("\n");
-    sb.append("    variantHash: ").append(toIndentedString(variantHash)).append("\n");
-    sb.append("    binaryId: ").append(toIndentedString(binaryId)).append("\n");
-    sb.append("    startEA: ").append(toIndentedString(startEA)).append("\n");
-    sb.append("    endEA: ").append(toIndentedString(endEA)).append("\n");
-    sb.append("    procedureSegment: ").append(toIndentedString(procedureSegment)).append("\n");
-    sb.append("    isLibary: ").append(toIndentedString(isLibary)).append("\n");
-    sb.append("    isThunk: ").append(toIndentedString(isThunk)).append("\n");
-    sb.append("    strings: ").append(toIndentedString(strings)).append("\n");
-    sb.append("    apiCalls: ").append(toIndentedString(apiCalls)).append("\n");
-    sb.append("    version: ").append(toIndentedString(version)).append("\n");
-    sb.append("    procedureId: ").append(toIndentedString(procedureId)).append("\n");
-    sb.append("    procHash: ").append(toIndentedString(procHash)).append("\n");
-    sb.append("    blocks: ").append(toIndentedString(blocks)).append("\n");
-    sb.append("    blockCount: ").append(toIndentedString(blockCount)).append("\n");
-    sb.append("    codeCount: ").append(toIndentedString(codeCount)).append("\n");
-    sb.append("    semanticsCount: ").append(toIndentedString(semanticsCount)).append("\n");
-    sb.append("    cfg: ").append(toIndentedString(cfg)).append("\n");
+    sb.append("    success: ").append(toIndentedString(success)).append("\n");
+    sb.append("    status: ").append(toIndentedString(status)).append("\n");
+    sb.append("    message: ").append(toIndentedString(message)).append("\n");
+    sb.append("    errors: ").append(toIndentedString(errors)).append("\n");
+    sb.append("    links: ").append(toIndentedString(links)).append("\n");
+    sb.append("    resource: ").append(toIndentedString(resource)).append("\n");
     sb.append("}");
     return sb.toString();
   }
