@@ -22,6 +22,11 @@ import java.awt.GridBagLayout;
 
 import javax.swing.*;
 
+import ghidra.program.model.listing.Function;
+import ghidra.program.model.listing.FunctionManager;
+import ghidra.program.model.listing.FunctionIterator;
+import ghidra.program.database.function.FunctionManagerDB;
+
 import docking.ActionContext;
 import docking.WindowPosition;
 import docking.action.*;
@@ -59,11 +64,13 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 	private JScrollPane matchScroller;
 	protected ApiClient apiClient;
 	protected FilesApi filesApi;
+    protected FunctionManager fMan;
 
     protected Program program;
 
     public void setProgram(Program programIn) {
         program = programIn;
+        fMan = program.getFunctionManager();
     }
 
 	
@@ -117,12 +124,56 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 		// Run API call
 		// Re-enable buttons on completion
 		// Ping user of success/failure
+
+        Msg.debug(this, "functions!");
+        Msg.debug(this, fMan.getFunctionCount());
+        FunctionIterator funs = fMan.getFunctions(true);
+        for (Function f : funs) {
+          String name = f.getName();
+          // OPen {name}.json file to write
+             // create json payload
+             /*
+              * Use dummy values for now
+              * {
+              * blocks (list of objects)
+              * startEA - int (in decimal)
+              * endEA - int (in decimal)
+              * lines (list of objects)
+              * startEA - int (in decimal)
+              * endEA - int (in decimal)
+              * type - str
+              * bytes - str
+              * mnem - str
+              * operands - List<str>
+              * prolog_format - str
+              * api_call_name - str
+              * is_call - bool
+              * is_library - bool (0 = false, 128 = true)  <==== isExternal()
+              * is_thunk - bool (0 = false, 128 = true)  <=== isThunk()
+              * startEA - int (in decimal)  <=== getEntryPoint()
+              * endEA - int (in decimal)
+              * procedure_name - str <=== getName()
+              * segment_name - str
+              * strings - List<str>
+              * api_calls - List<str>
+              * cfg - Dict<str, List[str]>
+              * }
+             */
+          // Write to file
+          /*
+          Msg.debug(this, f.getName());
+          Msg.debug(this, f.getEntryPoint());
+          Msg.debug(this, f.isThunk());
+          Msg.debug(this, f.isExternal()); // isLibrary
+          Msg.debug(this, f.getReturnType());
+          Msg.debug(this, f.getSignature());
+          */
+        }
+        // Create archive
+        // Add list of json files to it 
+        // Upload archive
         try {
-            Msg.debug(this, "Getting files");
-            EnvelopedFileList200 files = filesApi.listFiles(
-                "json", false, false, "", true, false, 1, 25, 0, "", "", "", "", "lskjdfk=aslkdjf"
-            );
-            Msg.info(this, files.getMessage());
+            Msg.debug(this, "Testing getting values from Ghidra");
         } catch (Exception e) {
             Msg.info(this, e);
         }
