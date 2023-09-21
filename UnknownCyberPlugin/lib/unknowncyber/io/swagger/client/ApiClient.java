@@ -540,19 +540,19 @@ public class ApiClient {
     if (contentType.startsWith("multipart/form-data")) {
       MultiPart multiPart = new MultiPart();
       for (Entry<String, Object> param: formParams.entrySet()) {
-        if (param.getValue() instanceof File || param.getKey() == "filedata") {
-          if (param.getKey() == "filedata") {
+        if (param.getKey() == "filedata") {
+          if (param.getValue() instanceof File) {
+            File file = (File) param.getValue();
+            FormDataContentDisposition contentDisp = FormDataContentDisposition.name(param.getKey())
+                .fileName(file.getName()).size(file.length()).build();
+            multiPart.bodyPart(new FormDataBodyPart(contentDisp, file, MediaType.APPLICATION_OCTET_STREAM_TYPE));
+          } else {
             List<File> files = (List<File>) param.getValue();
             for (File f : files) {
               FormDataContentDisposition contentDisp = FormDataContentDisposition.name("filedata")
                   .fileName(f.getName()).size(f.length()).build();
               multiPart.bodyPart(new FormDataBodyPart(contentDisp, f, MediaType.APPLICATION_OCTET_STREAM_TYPE));
             }
-          } else {
-            File file = (File) param.getValue();
-            FormDataContentDisposition contentDisp = FormDataContentDisposition.name(param.getKey())
-                .fileName(file.getName()).size(file.length()).build();
-            multiPart.bodyPart(new FormDataBodyPart(contentDisp, file, MediaType.APPLICATION_OCTET_STREAM_TYPE));
           }
         } else {
           FormDataContentDisposition contentDisp = FormDataContentDisposition.name(param.getKey()).build();

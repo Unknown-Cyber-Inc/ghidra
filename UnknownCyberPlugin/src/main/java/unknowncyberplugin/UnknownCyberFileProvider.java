@@ -31,20 +31,31 @@ import docking.ActionContext;
 import docking.WindowPosition;
 import docking.action.*;
 import docking.widgets.EmptyBorderButton;
+
+import ghidra.framework.model.DomainFile;
 import ghidra.framework.plugintool.ComponentProviderAdapter;
 import ghidra.framework.plugintool.PluginTool;
+import ghidra.program.model.listing.Function;
+import ghidra.program.model.listing.FunctionIterator;
+import ghidra.program.model.listing.Program;
 import ghidra.util.HelpLocation;
 import ghidra.util.Msg;
+
 import resources.ResourceManager;
+import net.lingala.zip4j.ZipFile;
 import java.util.Arrays;
 import java.util.List;
 import java.io.File;
+import java.io.FileWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import ghidra.program.model.listing.Program;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
 
 import com.unknowncyber.magic.model.EnvelopedFileList200;
+import com.unknowncyber.magic.model.EnvelopedFileUploadResponse200;
 import com.unknowncyber.magic.model.EnvelopedFileUploadResponseList200;
 import com.unknowncyber.magic.api.FilesApi;
 import io.swagger.client.ApiClient;
@@ -62,16 +73,18 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 	private JTable matchTable;
 	private JButton submitButton, submitDisassembledButton;
 	private JScrollPane matchScroller;
-	protected ApiClient apiClient;
-	protected FilesApi filesApi;
-    protected FunctionManager fMan;
+	private ApiClient apiClient;
+	private FilesApi filesApi;
 
-    protected Program program;
+  private Program program;
+	private FunctionIterator fIterator;
 
-    public void setProgram(Program programIn) {
-        program = programIn;
-        fMan = program.getFunctionManager();
-    }
+	public void setProgram(Program programIn) {
+		program = programIn;
+		if (program != null) {
+			fIterator = program.getFunctionManager().getFunctions(true);
+		}
+	}
 
 	
 	public UnknownCyberFileProvider(PluginTool tool, String name) {
@@ -84,9 +97,9 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 		setDefaultWindowPosition(WindowPosition.WINDOW);
 		setTitle("Unknown Cyber File Interface");
 		setVisible(true);
-//		createActions();
-        apiClient = new ApiClient();
-        filesApi = new FilesApi(apiClient);
+		// createActions();
+		apiClient = new ApiClient();
+		filesApi = new FilesApi(apiClient);
 	}
 	
 	private void checkFileAccess(String hash) {
@@ -94,92 +107,136 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 		// Used for easy display to user
 	}
 	
-	private void submitFile() {
-		// TODO: submits whole file to API
-		// Need to figure out actual filetype
-		
+	private void submitFile() {		
 		// TODO: disable submit/disassembly buttons at start
-		// Run API call
 		// Re-enable buttons on completion
-		// Ping user of success/failure via popup
 
-        File myFile = new File(program.getExecutablePath());
-        List<File> files = Arrays.asList(myFile);
+		File myFile = new File(program.getExecutablePath());
+		List<File> files = Arrays.asList(myFile);
 		try {
 			EnvelopedFileUploadResponseList200 response = filesApi.uploadFile(files, "", Arrays.asList(), Arrays.asList(), "json", false, false, "", true, false, false, false, false, false, false);
 		} catch (Exception e) {
-			Msg.info(null, e);
+			Msg.error(this, e);
 		}
-		announce("Success or Failure");
+		// announce("Success or Failure");
 		
 		// Edit file access on success
 	}
 	
 	private void submitDisassembly() {
-		// TODO: submits disassembled file to API
-		// Need to figure out actual data type to intake
-		// Need to figure out how to format for API
-		
-		// TODO: disable submit/disassembly buttons at start
-		// Run API call
-		// Re-enable buttons on completion
-		// Ping user of success/failure
+		// Declare important paths here so they can be deleted in the finally clause
+		Path procDirectory = null;
+		Path fileJson = null;
+		ZipFile zip = null;
 
-        Msg.debug(this, "functions!");
-        Msg.debug(this, fMan.getFunctionCount());
-        FunctionIterator funs = fMan.getFunctions(true);
-        for (Function f : funs) {
-          String name = f.getName();
-          // OPen {name}.json file to write
-             // create json payload
-             /*
-              * Use dummy values for now
-              * {
-              * blocks (list of objects)
-              * startEA - int (in decimal)
-              * endEA - int (in decimal)
-              * lines (list of objects)
-              * startEA - int (in decimal)
-              * endEA - int (in decimal)
-              * type - str
-              * bytes - str
-              * mnem - str
-              * operands - List<str>
-              * prolog_format - str
-              * api_call_name - str
-              * is_call - bool
-              * is_library - bool (0 = false, 128 = true)  <==== isExternal()
-              * is_thunk - bool (0 = false, 128 = true)  <=== isThunk()
-              * startEA - int (in decimal)  <=== getEntryPoint()
-              * endEA - int (in decimal)
-              * procedure_name - str <=== getName()
-              * segment_name - str
-              * strings - List<str>
-              * api_calls - List<str>
-              * cfg - Dict<str, List[str]>
-              * }
-             */
-          // Write to file
-          /*
-          Msg.debug(this, f.getName());
-          Msg.debug(this, f.getEntryPoint());
-          Msg.debug(this, f.isThunk());
-          Msg.debug(this, f.isExternal()); // isLibrary
-          Msg.debug(this, f.getReturnType());
-          Msg.debug(this, f.getSignature());
-          */
-        }
-        // Create archive
-        // Add list of json files to it 
-        // Upload archive
-        try {
-            Msg.debug(this, "Testing getting values from Ghidra");
-        } catch (Exception e) {
-            Msg.info(this, e);
-        }
-		announce("Success or Failure");
-		
-		// Edit file access on success?
+		try {
+			// Generate the file's JSON data
+			JSONObject fileData = new JSONObject();
+			fileData.put("image_base", 0);
+			fileData.put("md5", "5a83cf3cbaf56e12b2031d26ec67196d");
+			fileData.put("sha1", "000ecad6190822c7e4cf19b187bbc28b1f4f587b");
+			fileData.put("sha256", "e839682a57d41561ab9c822e0d7f312fc407b13dad152e670b60bcdc23c40f6a");
+			fileData.put("sha512", "691b43b8f117362a9753c8620ec386b174b12d7c2ceba77825431b8daf5434e5d379ec5f300c1c3ecf437991d489e7ce5c9fde29d8921583c3ebed3595294c15");
+			fileData.put("unix_filetype", "COFF (X386MAGIC)");
+
+			// Create and write to the file's JSON file
+			fileJson = Files.createTempFile("", ".json");
+			Files.write(fileJson, fileData.toJSONString().getBytes());
+
+			// Create the procedure's subdirectory
+			procDirectory = Files.createTempDirectory("");
+
+			//for (Function f : fIterator) {
+				// Set top-level blocks array
+				JSONArray blockArray = new JSONArray();
+				
+				//foreach block
+
+				// Set line array that exists per block
+				JSONArray lineArray = new JSONArray();
+
+				//foreach line
+
+				// Create the each JSON line object
+				JSONObject lineItem = new JSONObject();
+				lineItem.put("startEA", 800);
+				lineItem.put("endEA", 806);
+				lineItem.put("type", "code");
+				lineItem.put("bytes", "FF 25 E0 02 01 00");
+				lineItem.put("mnem", "jmp");
+				// Implementation for this will differ based on how operands is obtained
+				lineItem.put("operands", new String[]{"dword ptr ds:102E0h"});
+				lineItem.put("prolog_format", "jmp(dptr(ds+66272))");
+				lineItem.put("api_call_name", null);
+				lineItem.put("is_call", false);
+
+				// Add the newly created JSON line object to the array
+				lineArray.add(lineItem);
+
+				//END foreach line
+
+				// Create each JSON block object
+				JSONObject blockItem = new JSONObject();
+				blockItem.put("startEA", 800);
+				blockItem.put("endEA", 806);
+				// Populate the JSON block's lines field with the line array
+				blockItem.put("lines", lineArray);
+
+				// Add the newly created JSON block object to the array
+				blockArray.add(blockItem);
+
+				//END foreach block
+
+				// Create and populate the overall JSON object for this procedure
+				JSONObject procData = new JSONObject();
+				procData.put("blocks", blockArray);
+				procData.put("is_library", 0);
+				procData.put("is_think", 128);
+				procData.put("startEA", 800);
+				procData.put("endEA", 806);
+				procData.put("procedure_name", "sub_320");
+				procData.put("segment_name", ".rsrc$02");
+				procData.put("strings", new String[0]);
+				procData.put("api_calls", new String[0]);
+				// cfg will need further investigation
+				procData.put("cfg", new JSONObject());
+
+				// Create and write to the temporary file containing this procedure's JSON data
+				Path procJson = Files.createTempFile(procDirectory, "", ".json");
+				Files.write(procJson, procData.toJSONString().getBytes());
+			//}
+
+			// Create zip file in temp directory, load in the file.json and procedure directory
+			zip = new ZipFile(Files.createTempFile("", ".zip").toFile());
+			zip.addFile(fileJson.toFile());
+			zip.addFolder(procDirectory.toFile());
+
+			try {
+				EnvelopedFileUploadResponse200 response = filesApi.uploadDisassembly(zip.getFile(), "COFF (X386MAGIC)", "000ecad6190822c7e4cf19b187bbc28b1f4f587b", "json", false, false, "", true, false, false);
+				Msg.info("DEBUG", response);  // TODO: remove this
+			} catch (Exception e) {
+				Msg.error(this, e);
+			}
+		} catch (Exception e) {
+			Msg.error(this, e);
+		} finally {
+			// Clean up
+			if (fileJson != null) {
+				if (fileJson.toFile().exists()) {
+					fileJson.toFile().delete();
+				}
+			}
+			if (procDirectory != null) {
+				if (procDirectory.toFile().exists()) {
+					procDirectory.toFile().delete();
+				}
+			}
+			if (zip != null) {
+				if (zip.getFile().exists()) {
+					zip.getFile().delete();
+				}
+			}
+		}
 	}
 	
 	private void getFileMatches(String hash) {

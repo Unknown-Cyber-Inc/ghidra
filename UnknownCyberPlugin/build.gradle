@@ -67,6 +67,9 @@ dependencies {
     // this extension is built.
     implementation 'io.swagger.core.v3:swagger-annotations:2.2.15'
 
+    implementation 'net.lingala.zip4j:zip4j:2.11.5'
+    implementation 'org.apache.clerezza.ext:org.json.simple:0.4'
+
     implementation 'org.glassfish.jersey.core:jersey-client:2.34'
     implementation 'org.glassfish.jersey.media:jersey-media-json-jackson:2.34'
     implementation 'org.glassfish.jersey.media:jersey-media-multipart:2.34'

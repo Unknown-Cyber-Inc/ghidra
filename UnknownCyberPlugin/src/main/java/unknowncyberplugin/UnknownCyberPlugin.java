@@ -17,9 +17,9 @@ package unknowncyberplugin;
 
 import ghidra.app.ExamplesPluginPackage;
 import ghidra.app.plugin.PluginCategoryNames;
+import ghidra.app.plugin.ProgramPlugin;
 import ghidra.framework.plugintool.*;
 import ghidra.framework.plugintool.util.PluginStatus;
-import ghidra.app.plugin.ProgramPlugin;
 
 import ghidra.program.model.listing.Program;
 
@@ -38,9 +38,9 @@ public class UnknownCyberPlugin extends ProgramPlugin {
 
     @Override
     public void programOpened(Program program) {
-        if (fileProvider != null) {
-                        fileProvider.setProgram(program);
-        }
+			if (fileProvider != null) {
+				fileProvider.setProgram(program);
+			}
     }
 
 	/**
@@ -52,6 +52,8 @@ public class UnknownCyberPlugin extends ProgramPlugin {
 		super(tool);
 
 		fileProvider = new UnknownCyberFileProvider(tool, getName());
+
+		fileProvider.setProgram(currentProgram);
 	}
 
 	@Override
