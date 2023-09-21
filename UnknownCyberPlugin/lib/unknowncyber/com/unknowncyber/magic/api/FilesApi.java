@@ -26,6 +26,8 @@ import com.unknowncyber.magic.model.EnvelopedFileSearchResponseList200;
 import com.unknowncyber.magic.model.EnvelopedFileSimilarityResponseList200;
 import com.unknowncyber.magic.model.EnvelopedFileStringsResponseList200;
 import com.unknowncyber.magic.model.EnvelopedFileUpdateResponse206;
+import com.unknowncyber.magic.model.EnvelopedFileUploadResponse200;
+import com.unknowncyber.magic.model.EnvelopedFileUploadResponse201;
 import com.unknowncyber.magic.model.EnvelopedFileUploadResponseList200;
 import com.unknowncyber.magic.model.EnvelopedFileUploadResponseList201;
 import com.unknowncyber.magic.model.EnvelopedIdList201;
@@ -3161,6 +3163,73 @@ public class FilesApi {
 
     GenericType<EnvelopedTag200> localVarReturnType = new GenericType<EnvelopedTag200>() {};
     return apiClient.invokeAPI(localVarPath, "PATCH", localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAccept, localVarContentType, localVarAuthNames, localVarReturnType);
+  }
+  /**
+   * Upload an archive containing extracted data to be juiced
+   *    Upload an archive containing extracted data to be juiced         
+   * @param filedata  (required)
+   * @param filetype  (required)
+   * @param binaryId  (required)
+   * @param format Format of the response from this endpoint (optional, default to json)
+   * @param explain Shows the explain for this endpoint (optional)
+   * @param download Determines whether to download the response.(Content-Disposition:\&quot;attachment\&quot; vs \&quot;inline\&quot;) (optional)
+   * @param filename If download is True, this sets the name of the file. (Content-Disposition:\&quot;attachment; filename&#x3D;&#x60;filename&#x60;\&quot;) (optional)
+   * @param noLinks Removes the &#x27;links&#x27; key (optional)
+   * @param uri Use resource uri&#x27;s in place of string ids (optional)
+   * @param dryrun If True, don&#x27;t cause any side effects.(Useful to check that an endpoint will work as constructed) (optional)
+   * @return EnvelopedFileUploadResponse200
+   * @throws ApiException if fails to make API call
+   */
+  public EnvelopedFileUploadResponse200 uploadDisassembly(File filedata, String filetype, String binaryId, String format, Boolean explain, Boolean download, String filename, Boolean noLinks, Boolean uri, Boolean dryrun) throws ApiException {
+    Object localVarPostBody = null;
+    // verify the required parameter 'filedata' is set
+    if (filedata == null) {
+      throw new ApiException(400, "Missing the required parameter 'filedata' when calling uploadDisassembly");
+    }
+    // verify the required parameter 'filetype' is set
+    if (filetype == null) {
+      throw new ApiException(400, "Missing the required parameter 'filetype' when calling uploadDisassembly");
+    }
+    // verify the required parameter 'binaryId' is set
+    if (binaryId == null) {
+      throw new ApiException(400, "Missing the required parameter 'binaryId' when calling uploadDisassembly");
+    }
+    // create path and map variables
+    String localVarPath = "/files/{binary_id}/disassembly/"
+      .replaceAll("\\{" + "binary_id" + "\\}", apiClient.escapeString(binaryId.toString()));
+
+    // query params
+    List<Pair> localVarQueryParams = new ArrayList<Pair>();
+    Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+    Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+
+    localVarQueryParams.addAll(apiClient.parameterToPairs("", "format", format));
+    localVarQueryParams.addAll(apiClient.parameterToPairs("", "explain", explain));
+    localVarQueryParams.addAll(apiClient.parameterToPairs("", "download", download));
+    localVarQueryParams.addAll(apiClient.parameterToPairs("", "filename", filename));
+    localVarQueryParams.addAll(apiClient.parameterToPairs("", "no_links", noLinks));
+    localVarQueryParams.addAll(apiClient.parameterToPairs("", "uri", uri));
+    localVarQueryParams.addAll(apiClient.parameterToPairs("", "dryrun", dryrun));
+
+    if (filedata != null)
+      localVarFormParams.put("filedata", filedata);
+    if (filetype != null)
+      localVarFormParams.put("filetype", filetype);
+
+    final String[] localVarAccepts = {
+      "application/json", "application/xml", "text/csv", "application/taxii+json"
+    };
+    final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
+
+    final String[] localVarContentTypes = {
+      "multipart/form-data"
+    };
+    final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
+
+    String[] localVarAuthNames = new String[] { "Api Key Header Authentication", "Api Key Query Authentication", "Basic Authentication", "JWT Access Token Authentication" };
+
+    GenericType<EnvelopedFileUploadResponse200> localVarReturnType = new GenericType<EnvelopedFileUploadResponse200>() {};
+    return apiClient.invokeAPI(localVarPath, "POST", localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAccept, localVarContentType, localVarAuthNames, localVarReturnType);
   }
   /**
    * Upload new files for processing
