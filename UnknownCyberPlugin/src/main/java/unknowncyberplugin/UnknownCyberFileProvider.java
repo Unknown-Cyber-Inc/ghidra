@@ -57,6 +57,8 @@ import org.json.simple.JSONObject;
 import com.unknowncyber.magic.model.EnvelopedFileList200;
 import com.unknowncyber.magic.model.EnvelopedFileUploadResponse200;
 import com.unknowncyber.magic.model.EnvelopedFileUploadResponseList200;
+import com.unknowncyber.magic.model.EnvelopedFileMatchResponseList200EnvelopedIdList200;
+import com.unknowncyber.magic.model.EnvelopedFileGenomicsResponse200;
 import com.unknowncyber.magic.api.FilesApi;
 import io.swagger.client.ApiClient;
 
@@ -77,17 +79,20 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 	private JLabel idLabel, nameLabel, changedLabel, accessLabel;
 	private JTable matchTable;
 	private JButton submitButton, submitDisassembledButton;
+	protected JButton listMatchesButton, listProceduresButton;
 	private JScrollPane matchScroller;
-	private ApiClient apiClient;
-	private FilesApi filesApi;
+	protected ApiClient apiClient;
+	protected FilesApi filesApi;
+    protected String sha256;
 
-  private Program program;
+    private Program program;
 	private FunctionIterator fIterator;
 
 	public void setProgram(Program programIn) {
 		program = programIn;
 		if (program != null) {
 			fIterator = program.getFunctionManager().getFunctions(true);
+            sha256 = program.getExecutableSHA256();
 		}
 	}
 
@@ -135,6 +140,7 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 		Path fileJson = null;
 		ZipFile zip = null;
 
+        Msg.info(this, program.getExecutableFormat());
 		try {
 			BasicBlockModel bbm = new BasicBlockModel(program);
 			CodeBlockIterator cbit = bbm.getCodeBlocks(TaskMonitor.DUMMY);
@@ -278,9 +284,28 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 		}
 	}
 	
-	private void getFileMatches(String hash) {
+	private void listMatches() {
 		// TODO: get file match data from API
 		// Load into data table
+        Msg.info(this, "Inside matches");
+		try {
+            EnvelopedFileMatchResponseList200EnvelopedIdList200 response = filesApi.listFileMatches(sha256, "json", false, false, "", true, false, 1, 25, 0, "", "", (float) 1.0, (float) 0.7);
+			Msg.info(this, response);
+		} catch (Exception e) {
+			Msg.error(this, e);
+		}
+	}
+	
+	private void listProcedures() {
+		// TODO: get file match data from API
+		// Load into data table
+        Msg.info(this, "Inside procedures");
+		try {
+            EnvelopedFileGenomicsResponse200 response = filesApi.listFileGenomics(sha256, "json", false, false, "", true, false, 1, 25, 0, "", "", false);
+			Msg.info(this, response);
+		} catch (Exception e) {
+			Msg.error(this, e);
+		}
 	}
 	
 	// This was used as part of the original code to create the menu bar popup action
@@ -345,7 +370,7 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 	// This function puts together the UI
 	private void buildMainPanel() {
 		mainPanel = new JPanel(new BorderLayout());
-		mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+		mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		panel.setBorder(BorderFactory.createTitledBorder("Example of a Component"));
 		
@@ -397,7 +422,6 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 		panel.add(matchTable, gbc);
 		
 		submitButton = new JButton("Submit File");
-		submitDisassembledButton = new JButton("Submit Disassembly");
 		submitButton.addActionListener(new ActionListener() {
 			// You can't just set this to a function, it has to be a 
 			// public void actionPerformed(){}, but you can outsource to another function
@@ -408,10 +432,25 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 				// changedLabel.setText("DING");
 			}
 		});
+		submitDisassembledButton = new JButton("Submit Disassembly");
 		submitDisassembledButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("Disassembly button has been clicked");
 				submitDisassembly();
+			}
+		});
+		listMatchesButton = new JButton("List Matches");
+		listMatchesButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Msg.info(this, "Matches button has been clicked");
+				listMatches();
+			}
+		});
+		listProceduresButton = new JButton("List Procedures");
+		listProceduresButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Msg.info(this, "Procedures button has been clicked");
+				listProcedures();
 			}
 		});
 		
@@ -421,6 +460,12 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 		gbc.gridx = 1;
 		gbc.gridy = 4;
 		panel.add(submitDisassembledButton, gbc);
+		gbc.gridx = 0;
+		gbc.gridy = 5;
+		panel.add(listMatchesButton, gbc);
+		gbc.gridx = 1;
+		gbc.gridy = 5;
+		panel.add(listProceduresButton, gbc);
 		
 		mainPanel.add(panel, BorderLayout.CENTER);
 	}
