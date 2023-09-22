@@ -60,6 +60,11 @@ import com.unknowncyber.magic.model.EnvelopedFileUploadResponseList200;
 import com.unknowncyber.magic.api.FilesApi;
 import io.swagger.client.ApiClient;
 
+import ghidra.program.model.block.BasicBlockModel;
+import ghidra.program.model.block.CodeBlock;
+import ghidra.program.model.block.CodeBlockIterator;
+import ghidra.util.task.TaskMonitor;
+
 public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 	private final static String PREV_IMAGE = "/images/check_icon.jpg";
 	private final static HelpLocation HELP = new HelpLocation("SampleHelpTopic", "SampleHelpTopic_Anchor_Name");
@@ -115,6 +120,7 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 		List<File> files = Arrays.asList(myFile);
 		try {
 			EnvelopedFileUploadResponseList200 response = filesApi.uploadFile(files, "", Arrays.asList(), Arrays.asList(), "json", false, false, "", true, false, false, false, false, false, false);
+			Msg.info(this, response);
 		} catch (Exception e) {
 			Msg.error(this, e);
 		}
@@ -130,13 +136,31 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 		ZipFile zip = null;
 
 		try {
+			BasicBlockModel bbm = new BasicBlockModel(program);
+			CodeBlockIterator cbit = bbm.getCodeBlocks(TaskMonitor.DUMMY);
+			CodeBlock block = cbit.next();
+
+			/*
+			Msg.info(null, block.getName());
+			int y = 5;
+			if (y == 5) {
+				return;
+			}//*/
+
+
+
+			File originalFile = new File(program.getExecutablePath());
+			// Calculate sha1 here since it's used elsewhere
+			String originalSha1 = helpers.hashFile(originalFile, "SHA-1");
+
 			// Generate the file's JSON data
 			JSONObject fileData = new JSONObject();
 			fileData.put("image_base", 0);
-			fileData.put("md5", "5a83cf3cbaf56e12b2031d26ec67196d");
-			fileData.put("sha1", "000ecad6190822c7e4cf19b187bbc28b1f4f587b");
-			fileData.put("sha256", "e839682a57d41561ab9c822e0d7f312fc407b13dad152e670b60bcdc23c40f6a");
-			fileData.put("sha512", "691b43b8f117362a9753c8620ec386b174b12d7c2ceba77825431b8daf5434e5d379ec5f300c1c3ecf437991d489e7ce5c9fde29d8921583c3ebed3595294c15");
+			fileData.put("md5", program.getExecutableMD5());
+			fileData.put("sha1", originalSha1);
+			fileData.put("sha256", program.getExecutableSHA256());
+			fileData.put("sha512", helpers.hashFile(originalFile, "SHA-512"));
+			//String originalSha1 = "deleteMe";
 			fileData.put("unix_filetype", "COFF (X386MAGIC)");
 
 			// Create and write to the file's JSON file
@@ -146,7 +170,21 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 			// Create the procedure's subdirectory
 			procDirectory = Files.createTempDirectory("");
 
-			//for (Function f : fIterator) {
+			// Iterate over all functions in a program
+			for (Function f : fIterator) {
+
+				/*
+				Msg.info(null, program.getExecutableFormat());
+				Msg.info(null, f.getBody());
+				Msg.info(null, f.getEntryPoint());
+				Msg.info(null, f.getBody().getMaxAddress());
+				Msg.info(null, f.getBody().getMinAddress());
+
+				int x = 5;
+				if (x == 5) {
+					return;
+				}//*/
+
 				// Set top-level blocks array
 				JSONArray blockArray = new JSONArray();
 				
@@ -190,21 +228,22 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 				// Create and populate the overall JSON object for this procedure
 				JSONObject procData = new JSONObject();
 				procData.put("blocks", blockArray);
-				procData.put("is_library", 0);
-				procData.put("is_think", 128);
-				procData.put("startEA", 800);
-				procData.put("endEA", 806);
-				procData.put("procedure_name", "sub_320");
+				procData.put("is_library", (f.isExternal() ? 128 : 0));
+				procData.put("is_thunk", (f.isThunk() ? 128 : 0));
+				procData.put("startEA", f.getEntryPoint());
+				procData.put("endEA", 806); // TODO: getStackPurgeSize() as a way to calculate?
+				procData.put("procedure_name", f.getName());
+				// I can search for and find the segment name, but I can't figure out if/how ghidra can access it
 				procData.put("segment_name", ".rsrc$02");
 				procData.put("strings", new String[0]);
-				procData.put("api_calls", new String[0]);
+				procData.put("api_calls", new String[0]); // TODO: look ingto getCalledFunctions(); look at getBody()
 				// cfg will need further investigation
 				procData.put("cfg", new JSONObject());
 
 				// Create and write to the temporary file containing this procedure's JSON data
 				Path procJson = Files.createTempFile(procDirectory, "", ".json");
 				Files.write(procJson, procData.toJSONString().getBytes());
-			//}
+			}
 
 			// Create zip file in temp directory, load in the file.json and procedure directory
 			zip = new ZipFile(Files.createTempFile("", ".zip").toFile());
@@ -212,8 +251,8 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 			zip.addFolder(procDirectory.toFile());
 
 			try {
-				EnvelopedFileUploadResponse200 response = filesApi.uploadDisassembly(zip.getFile(), "COFF (X386MAGIC)", "000ecad6190822c7e4cf19b187bbc28b1f4f587b", "json", false, false, "", true, false, false);
-				Msg.info("DEBUG", response);  // TODO: remove this
+				// TODO: program.getExecutableFormat() does not return values that we use; it will need some form of mapping
+				EnvelopedFileUploadResponse200 response = filesApi.uploadDisassembly(zip.getFile(), program.getExecutableFormat(), originalSha1, "json", false, false, "", true, false, false);
 			} catch (Exception e) {
 				Msg.error(this, e);
 			}
