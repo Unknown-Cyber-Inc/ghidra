@@ -22,11 +22,6 @@ import java.awt.GridBagLayout;
 
 import javax.swing.*;
 
-import ghidra.program.model.listing.Function;
-import ghidra.program.model.listing.FunctionManager;
-import ghidra.program.model.listing.FunctionIterator;
-import ghidra.program.database.function.FunctionManagerDB;
-
 import docking.ActionContext;
 import docking.WindowPosition;
 import docking.action.*;
@@ -35,14 +30,19 @@ import docking.widgets.EmptyBorderButton;
 import ghidra.framework.model.DomainFile;
 import ghidra.framework.plugintool.ComponentProviderAdapter;
 import ghidra.framework.plugintool.PluginTool;
+import ghidra.program.model.block.BasicBlockModel;
+import ghidra.program.model.block.CodeBlock;
+import ghidra.program.model.block.CodeBlockIterator;
 import ghidra.program.model.listing.Function;
 import ghidra.program.model.listing.FunctionIterator;
+import ghidra.program.model.listing.InstructionIterator;
 import ghidra.program.model.listing.Program;
 import ghidra.util.HelpLocation;
 import ghidra.util.Msg;
-
+import ghidra.util.task.TaskMonitor;
 import resources.ResourceManager;
-import net.lingala.zip4j.ZipFile;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.io.File;
@@ -50,20 +50,17 @@ import java.io.FileWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
+import net.lingala.zip4j.ZipFile;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-
+import com.unknowncyber.magic.api.FilesApi;
 import com.unknowncyber.magic.model.EnvelopedFileList200;
 import com.unknowncyber.magic.model.EnvelopedFileUploadResponse200;
 import com.unknowncyber.magic.model.EnvelopedFileUploadResponseList200;
-import com.unknowncyber.magic.api.FilesApi;
 import io.swagger.client.ApiClient;
 
-import ghidra.program.model.block.BasicBlockModel;
-import ghidra.program.model.block.CodeBlock;
-import ghidra.program.model.block.CodeBlockIterator;
-import ghidra.util.task.TaskMonitor;
 
 public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 	private final static String PREV_IMAGE = "/images/check_icon.jpg";
@@ -136,19 +133,11 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 		ZipFile zip = null;
 
 		try {
-			BasicBlockModel bbm = new BasicBlockModel(program);
-			CodeBlockIterator cbit = bbm.getCodeBlocks(TaskMonitor.DUMMY);
-			CodeBlock block = cbit.next();
+			BasicBlockModel blockModel = new BasicBlockModel(program);
 
-			/*
-			Msg.info(null, block.getName());
-			int y = 5;
-			if (y == 5) {
-				return;
-			}//*/
-
-
-
+			// TODO: this keeps giving issues, but it HAS worked, as Lee can attest.
+			// Leaving this for now to focus on more fruitful pursuits.
+			// We can do a deep dive on this later, or have someone look in parallel.
 			File originalFile = new File(program.getExecutablePath());
 			// Calculate sha1 here since it's used elsewhere
 			String originalSha1 = helpers.hashFile(originalFile, "SHA-1");
@@ -160,8 +149,8 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 			fileData.put("sha1", originalSha1);
 			fileData.put("sha256", program.getExecutableSHA256());
 			fileData.put("sha512", helpers.hashFile(originalFile, "SHA-512"));
-			//String originalSha1 = "deleteMe";
-			fileData.put("unix_filetype", "COFF (X386MAGIC)");
+			// TODO: program.getExecutableFormat() does not return values that we use; it will need some form of mapping
+			fileData.put("unix_filetype", program.getExecutableFormat());
 
 			// Create and write to the file's JSON file
 			fileJson = Files.createTempFile("", ".json");
@@ -172,58 +161,48 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 
 			// Iterate over all functions in a program
 			for (Function f : fIterator) {
-
-				/*
-				Msg.info(null, program.getExecutableFormat());
-				Msg.info(null, f.getBody());
-				Msg.info(null, f.getEntryPoint());
-				Msg.info(null, f.getBody().getMaxAddress());
-				Msg.info(null, f.getBody().getMinAddress());
-
-				int x = 5;
-				if (x == 5) {
-					return;
-				}//*/
-
 				// Set top-level blocks array
 				JSONArray blockArray = new JSONArray();
-				
-				//foreach block
 
-				// Set line array that exists per block
-				JSONArray lineArray = new JSONArray();
+				// Iterate over blocks
+				CodeBlockIterator blockIterator = blockModel.getCodeBlocksContaining(f.getBody(), TaskMonitor.DUMMY);
+				while (blockIterator.hasNext()) {
+					CodeBlock currentBlock = blockIterator.next();
 
-				//foreach line
+					// Set line array that exists per block
+					JSONArray lineArray = new JSONArray();
 
-				// Create the each JSON line object
-				JSONObject lineItem = new JSONObject();
-				lineItem.put("startEA", 800);
-				lineItem.put("endEA", 806);
-				lineItem.put("type", "code");
-				lineItem.put("bytes", "FF 25 E0 02 01 00");
-				lineItem.put("mnem", "jmp");
-				// Implementation for this will differ based on how operands is obtained
-				lineItem.put("operands", new String[]{"dword ptr ds:102E0h"});
-				lineItem.put("prolog_format", "jmp(dptr(ds+66272))");
-				lineItem.put("api_call_name", null);
-				lineItem.put("is_call", false);
+					// Iterate over lines
+					InstructionIterator lineIterator = program.getListing().getInstructions(currentBlock, true);
+					while (lineIterator.hasNext()) {
+						// Create each JSON line object
+						JSONObject lineJson = new JSONObject();
+						// TODO: un-hardcode these values
+						lineJson.put("startEA", 800);
+						lineJson.put("endEA", 806);
+						lineJson.put("type", "code");
+						lineJson.put("bytes", "FF 25 E0 02 01 00");
+						lineJson.put("mnem", "jmp");
+						// Implementation for this will differ based on how operands is obtained
+						lineJson.put("operands", new String[]{"dword ptr ds:102E0h"});
+						lineJson.put("prolog_format", "jmp(dptr(ds+66272))");
+						lineJson.put("api_call_name", null);
+						lineJson.put("is_call", false);
 
-				// Add the newly created JSON line object to the array
-				lineArray.add(lineItem);
+						lineArray.add(lineJson);
+					}
 
-				//END foreach line
+					// Create each JSON block object
+					JSONObject blockJson = new JSONObject();
+					blockJson.put("startEA", currentBlock.getMinAddress());
+					blockJson.put("endEA", currentBlock.getMaxAddress());
 
-				// Create each JSON block object
-				JSONObject blockItem = new JSONObject();
-				blockItem.put("startEA", 800);
-				blockItem.put("endEA", 806);
-				// Populate the JSON block's lines field with the line array
-				blockItem.put("lines", lineArray);
+					// Populate the JSON block's lines field with the line array
+					blockJson.put("lines", lineArray);
 
-				// Add the newly created JSON block object to the array
-				blockArray.add(blockItem);
-
-				//END foreach block
+					// Add the newly created JSON block object to the array
+					blockArray.add(blockJson);
+				}
 
 				// Create and populate the overall JSON object for this procedure
 				JSONObject procData = new JSONObject();
@@ -231,13 +210,16 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 				procData.put("is_library", (f.isExternal() ? 128 : 0));
 				procData.put("is_thunk", (f.isThunk() ? 128 : 0));
 				procData.put("startEA", f.getEntryPoint());
-				procData.put("endEA", 806); // TODO: getStackPurgeSize() as a way to calculate?
+				// TODO: getStackPurgeSize() as a way to calculate?
+				procData.put("endEA", 806);
 				procData.put("procedure_name", f.getName());
-				// I can search for and find the segment name, but I can't figure out if/how ghidra can access it
+				// TODO: I can search for and find the segment name, but I can't figure out if/how ghidra can access it
 				procData.put("segment_name", ".rsrc$02");
+				// TODO: I need a better understanding of "Strings" to know what to look for here
 				procData.put("strings", new String[0]);
-				procData.put("api_calls", new String[0]); // TODO: look ingto getCalledFunctions(); look at getBody()
-				// cfg will need further investigation
+				// TODO: look into getCalledFunctions(); look at getBody()
+				procData.put("api_calls", new String[0]);
+				// TODO: cfg will need further investigation
 				procData.put("cfg", new JSONObject());
 
 				// Create and write to the temporary file containing this procedure's JSON data
@@ -256,6 +238,7 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 			} catch (Exception e) {
 				Msg.error(this, e);
 			}
+		// TODO: Granularize try/catch behavior so we can have more intelligent error handling
 		} catch (Exception e) {
 			Msg.error(this, e);
 		} finally {
