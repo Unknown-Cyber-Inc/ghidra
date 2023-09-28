@@ -33,8 +33,10 @@ import ghidra.framework.plugintool.PluginTool;
 import ghidra.program.model.block.BasicBlockModel;
 import ghidra.program.model.block.CodeBlock;
 import ghidra.program.model.block.CodeBlockIterator;
+import ghidra.program.model.block.CodeBlockReferenceIterator;
 import ghidra.program.model.listing.Function;
 import ghidra.program.model.listing.FunctionIterator;
+import ghidra.program.model.listing.Instruction;
 import ghidra.program.model.listing.InstructionIterator;
 import ghidra.program.model.listing.Program;
 import ghidra.util.HelpLocation;
@@ -139,18 +141,20 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 			// Leaving this for now to focus on more fruitful pursuits.
 			// We can do a deep dive on this later, or have someone look in parallel.
 			File originalFile = new File(program.getExecutablePath());
-			// Calculate sha1 here since it's used elsewhere
+			// Calculate reusable sha1
 			String originalSha1 = helpers.hashFile(originalFile, "SHA-1");
+			// TODO: program.getExecutableFormat() does not return values that we use; it will need some form of mapping
+			// Get reusable filetype
+			String fileType = program.getExecutableFormat();
 
 			// Generate the file's JSON data
 			JSONObject fileData = new JSONObject();
-			fileData.put("image_base", 0);
+			fileData.put("image_base", program.getImageBase());
 			fileData.put("md5", program.getExecutableMD5());
 			fileData.put("sha1", originalSha1);
 			fileData.put("sha256", program.getExecutableSHA256());
 			fileData.put("sha512", helpers.hashFile(originalFile, "SHA-512"));
-			// TODO: program.getExecutableFormat() does not return values that we use; it will need some form of mapping
-			fileData.put("unix_filetype", program.getExecutableFormat());
+			fileData.put("unix_filetype", fileType);
 
 			// Create and write to the file's JSON file
 			fileJson = Files.createTempFile("", ".json");
@@ -164,6 +168,9 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 				// Set top-level blocks array
 				JSONArray blockArray = new JSONArray();
 
+				// Set top-level cfg object
+				JSONObject cfgObject = new JSONObject();
+
 				// Iterate over blocks
 				CodeBlockIterator blockIterator = blockModel.getCodeBlocksContaining(f.getBody(), TaskMonitor.DUMMY);
 				while (blockIterator.hasNext()) {
@@ -175,17 +182,37 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 					// Iterate over lines
 					InstructionIterator lineIterator = program.getListing().getInstructions(currentBlock, true);
 					while (lineIterator.hasNext()) {
+						Instruction currentLine = lineIterator.next();
+
+						// Calculate byteString
+						String byteString = "";
+						byte[] byteArray = currentLine.getBytes();
+						for (byte myByte : byteArray) {
+							byteString = byteString + " " + String.format("%02x", myByte & 0xff);
+						}
+						byteString = byteString.trim();
+
+						// Generate operand JSONArray
+						JSONArray operandArray = new JSONArray();
+						int operandCount = currentLine.getNumOperands();
+						for (int i = 0; i < operandCount; i++) {
+							operandArray.add(currentLine.getDefaultOperandRepresentation(i));
+						}
+
 						// Create each JSON line object
 						JSONObject lineJson = new JSONObject();
-						// TODO: un-hardcode these values
-						lineJson.put("startEA", 800);
-						lineJson.put("endEA", 806);
+						lineJson.put("startEA", currentLine.getMinAddress().toString());
+						lineJson.put("endEA", currentLine.getMaxAddress().toString());
+						// TODO: figure out type
 						lineJson.put("type", "code");
-						lineJson.put("bytes", "FF 25 E0 02 01 00");
-						lineJson.put("mnem", "jmp");
-						// Implementation for this will differ based on how operands is obtained
-						lineJson.put("operands", new String[]{"dword ptr ds:102E0h"});
-						lineJson.put("prolog_format", "jmp(dptr(ds+66272))");
+						// TODO: check how addresses map, given they need a hex -> decimal conversion
+						lineJson.put("bytes", byteString);
+						// TODO: does this also need prolog translating?
+						lineJson.put("mnem", currentLine.getMnemonicString().toLowerCase());
+						// TODO: figure out what needs doing to make prolog formatting work for these 2
+						lineJson.put("operands", operandArray);
+						lineJson.put("prolog_format", currentLine.toString());
+						// TODO: figure these out
 						lineJson.put("api_call_name", null);
 						lineJson.put("is_call", false);
 
@@ -194,14 +221,25 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 
 					// Create each JSON block object
 					JSONObject blockJson = new JSONObject();
-					blockJson.put("startEA", currentBlock.getMinAddress());
-					blockJson.put("endEA", currentBlock.getMaxAddress());
+					blockJson.put("startEA", currentBlock.getMinAddress().toString());
+					blockJson.put("endEA", currentBlock.getMaxAddress().toString());
 
 					// Populate the JSON block's lines field with the line array
 					blockJson.put("lines", lineArray);
 
 					// Add the newly created JSON block object to the array
 					blockArray.add(blockJson);
+
+					// Do cfg stuff for this block
+					JSONArray blockDestinations = new JSONArray();
+					CodeBlockReferenceIterator destinationIterator = currentBlock.getDestinations(TaskMonitor.DUMMY);
+
+					// TODO: these values are mosly in hex, but prepend 0040 instead of 0x
+					// likely to do with a need to normalize for image base or something
+					while (destinationIterator.hasNext()) {
+						blockDestinations.add(destinationIterator.next().getDestinationAddress().toString());
+					}
+					cfgObject.put(currentBlock.getMinAddress().toString(), blockDestinations);
 				}
 
 				// Create and populate the overall JSON object for this procedure
@@ -209,18 +247,17 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 				procData.put("blocks", blockArray);
 				procData.put("is_library", (f.isExternal() ? 128 : 0));
 				procData.put("is_thunk", (f.isThunk() ? 128 : 0));
-				procData.put("startEA", f.getEntryPoint());
-				// TODO: getStackPurgeSize() as a way to calculate?
-				procData.put("endEA", 806);
+				procData.put("startEA", f.getBody().getMinAddress().toString());
+				procData.put("endEA", f.getBody().getMaxAddress().toString());
 				procData.put("procedure_name", f.getName());
-				// TODO: I can search for and find the segment name, but I can't figure out if/how ghidra can access it
+				// TODO: I can search for and find the segment name in the GUI, but I can't figure out if/how ghidra's API can access it
 				procData.put("segment_name", ".rsrc$02");
-				// TODO: I need a better understanding of "Strings" to know what to look for here
+				// TODO: Strings are the likely-string values held in referenced memory addresses
 				procData.put("strings", new String[0]);
 				// TODO: look into getCalledFunctions(); look at getBody()
+				// API calls are the names of functions external to this binary entirely
 				procData.put("api_calls", new String[0]);
-				// TODO: cfg will need further investigation
-				procData.put("cfg", new JSONObject());
+				procData.put("cfg", cfgObject);
 
 				// Create and write to the temporary file containing this procedure's JSON data
 				Path procJson = Files.createTempFile(procDirectory, "", ".json");
@@ -234,7 +271,7 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 
 			try {
 				// TODO: program.getExecutableFormat() does not return values that we use; it will need some form of mapping
-				EnvelopedFileUploadResponse200 response = filesApi.uploadDisassembly(zip.getFile(), program.getExecutableFormat(), originalSha1, "json", false, false, "", true, false, false);
+				EnvelopedFileUploadResponse200 response = filesApi.uploadDisassembly(zip.getFile(), fileType, originalSha1, "json", false, false, "", true, false, false);
 			} catch (Exception e) {
 				Msg.error(this, e);
 			}
