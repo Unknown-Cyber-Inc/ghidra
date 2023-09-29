@@ -171,6 +171,9 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 				// Set top-level cfg object
 				JSONObject cfgObject = new JSONObject();
 
+				// Set top-level api_calls array
+				JSONArray apiCallArray = new JSONArray();
+
 				// Iterate over blocks
 				CodeBlockIterator blockIterator = blockModel.getCodeBlocksContaining(f.getBody(), TaskMonitor.DUMMY);
 				while (blockIterator.hasNext()) {
@@ -193,9 +196,19 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 						byteString = byteString.trim();
 
 						// Generate operand JSONArray
+						// Simultaneously, handle api_call behavior since that requires operand-level granularity
 						JSONArray operandArray = new JSONArray();
+
+						String apiCallName = null;
+						Boolean isCall = false;
+
 						int operandCount = currentLine.getNumOperands();
 						for (int i = 0; i < operandCount; i++) {
+							if (currentLine.getExternalReference(i) != null) {
+								apiCallName = currentLine.getExternalReference(i).getLabel();
+								isCall = true;
+								apiCallArray.add(currentLine.getExternalReference(i).getLabel());
+							}
 							operandArray.add(currentLine.getDefaultOperandRepresentation(i));
 						}
 
@@ -212,9 +225,8 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 						// TODO: figure out what needs doing to make prolog formatting work for these 2
 						lineJson.put("operands", operandArray);
 						lineJson.put("prolog_format", currentLine.toString());
-						// TODO: figure these out
-						lineJson.put("api_call_name", null);
-						lineJson.put("is_call", false);
+						lineJson.put("api_call_name", apiCallName);
+						lineJson.put("is_call", isCall);
 
 						lineArray.add(lineJson);
 					}
@@ -256,7 +268,7 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 				procData.put("strings", new String[0]);
 				// TODO: look into getCalledFunctions(); look at getBody()
 				// API calls are the names of functions external to this binary entirely
-				procData.put("api_calls", new String[0]);
+				procData.put("api_calls", apiCallArray);
 				procData.put("cfg", cfgObject);
 
 				// Create and write to the temporary file containing this procedure's JSON data
