@@ -48,6 +48,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -83,10 +84,42 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
   private Program program;
 	private FunctionIterator fIterator;
 
+	// Declare file-dependent variables in advance
+	File originalFile;
+	String originalSha1;
+	String originalSha512;
 	public void setProgram(Program programIn) {
 		program = programIn;
 		if (program != null) {
 			fIterator = program.getFunctionManager().getFunctions(true);
+			try {
+				originalFile = new File(program.getExecutablePath());
+				originalSha1 = helpers.hashFile(originalFile, "SHA-1");
+				originalSha512 = helpers.hashFile(originalFile, "SHA-256");
+			} catch (FileNotFoundException e) {
+				announce(
+					"ERROR\n" +
+					"\n" +
+					"Ghidra is unable to access the original copy of this file.\n" +
+					"Therefore, this file cannot be uploaded to Unknown Cyber.\n" +
+					"\n" +
+					"Potential causes:\n" +
+					" - The file is not present on your computer.\n" +
+					" - The file has been moved from its original location.\n" +
+					" - The file is inside an archive."
+				);
+
+				// TODO: disable upload buttons
+			} catch (Exception e) {
+				announce(
+					"ERROR\n" +
+					"\n" +
+					"An unexpected error has occurred when trying to access the original copy of this file.\n" +
+					"Therefore, this file cannot be uploaded to Unknown Cyber."
+				);
+
+				// TODO: disable upload buttons
+			}
 		}
 	}
 
@@ -134,17 +167,12 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 		Path fileJson = null;
 		ZipFile zip = null;
 
+		Msg.info("", "");
+		Msg.info("", "");
+		Msg.info("", "");
+
 		try {
 			BasicBlockModel blockModel = new BasicBlockModel(program);
-
-			// TODO: this keeps giving issues, but it HAS worked, as Lee can attest.
-			// Leaving this for now to focus on more fruitful pursuits.
-			// We can do a deep dive on this later, or have someone look in parallel.
-			File originalFile = new File(program.getExecutablePath());
-			// Calculate reusable sha1
-			String originalSha1 = helpers.hashFile(originalFile, "SHA-1");
-			// TODO: program.getExecutableFormat() does not return values that we use; it will need some form of mapping
-			// Get reusable filetype
 			String fileType = program.getExecutableFormat();
 
 			// Generate the file's JSON data
@@ -153,7 +181,7 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 			fileData.put("md5", program.getExecutableMD5());
 			fileData.put("sha1", originalSha1);
 			fileData.put("sha256", program.getExecutableSHA256());
-			fileData.put("sha512", helpers.hashFile(originalFile, "SHA-512"));
+			fileData.put("sha512", originalSha512);
 			fileData.put("unix_filetype", fileType);
 
 			// Create and write to the file's JSON file
@@ -214,8 +242,8 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 
 						// Create each JSON line object
 						JSONObject lineJson = new JSONObject();
-						lineJson.put("startEA", currentLine.getMinAddress().toString());
-						lineJson.put("endEA", currentLine.getMaxAddress().toString());
+						lineJson.put("startEA", helpers.cleanAddress(currentLine.getMinAddress().toString()));
+						lineJson.put("endEA", helpers.cleanAddress(currentLine.getMaxAddress().toString()));
 						// TODO: figure out type
 						lineJson.put("type", "code");
 						// TODO: check how addresses map, given they need a hex -> decimal conversion
@@ -233,8 +261,8 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 
 					// Create each JSON block object
 					JSONObject blockJson = new JSONObject();
-					blockJson.put("startEA", currentBlock.getMinAddress().toString());
-					blockJson.put("endEA", currentBlock.getMaxAddress().toString());
+					blockJson.put("startEA", helpers.cleanAddress(currentBlock.getMinAddress().toString()));
+					blockJson.put("endEA", helpers.cleanAddress(currentBlock.getMaxAddress().toString()));
 
 					// Populate the JSON block's lines field with the line array
 					blockJson.put("lines", lineArray);
@@ -251,7 +279,7 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 					while (destinationIterator.hasNext()) {
 						blockDestinations.add(destinationIterator.next().getDestinationAddress().toString());
 					}
-					cfgObject.put(currentBlock.getMinAddress().toString(), blockDestinations);
+					cfgObject.put(helpers.cleanAddress(currentBlock.getMinAddress().toString()), blockDestinations);
 				}
 
 				// Create and populate the overall JSON object for this procedure
@@ -259,8 +287,8 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 				procData.put("blocks", blockArray);
 				procData.put("is_library", (f.isExternal() ? 128 : 0));
 				procData.put("is_thunk", (f.isThunk() ? 128 : 0));
-				procData.put("startEA", f.getBody().getMinAddress().toString());
-				procData.put("endEA", f.getBody().getMaxAddress().toString());
+				procData.put("startEA", helpers.cleanAddress(f.getBody().getMinAddress().toString()));
+				procData.put("endEA", helpers.cleanAddress(f.getBody().getMaxAddress().toString()));
 				procData.put("procedure_name", f.getName());
 				// TODO: I can search for and find the segment name in the GUI, but I can't figure out if/how ghidra's API can access it
 				procData.put("segment_name", ".rsrc$02");
@@ -272,12 +300,12 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 				procData.put("cfg", cfgObject);
 
 				// Create and write to the temporary file containing this procedure's JSON data
-				Path procJson = Files.createTempFile(procDirectory, "", ".json");
+				Path procJson = Files.createTempFile(procDirectory, f.getBody().getMinAddress().toString() + "_", ".json");
 				Files.write(procJson, procData.toJSONString().getBytes());
 			}
 
 			// Create zip file in temp directory, load in the file.json and procedure directory
-			zip = new ZipFile(Files.createTempFile("", ".zip").toFile());
+			zip = new ZipFile(Files.createTempFile(originalSha1 + "_", ".zip").toFile());
 			zip.addFile(fileJson.toFile());
 			zip.addFolder(procDirectory.toFile());
 
