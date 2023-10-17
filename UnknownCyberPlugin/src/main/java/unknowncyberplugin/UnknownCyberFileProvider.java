@@ -110,6 +110,7 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 				);
 
 				// TODO: disable upload buttons
+				return;
 			} catch (Exception e) {
 				announce(
 					"ERROR\n" +
@@ -119,7 +120,9 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 				);
 
 				// TODO: disable upload buttons
+				return;
 			}
+			// TODO: enable upload buttons if previously disabled
 		}
 	}
 
@@ -167,9 +170,8 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 		Path fileJson = null;
 		ZipFile zip = null;
 
-		Msg.info("", "");
-		Msg.info("", "");
-		Msg.info("", "");
+		// TODO: number stuff:
+		//   Potentially look into cleaning up 0-padding?
 
 		try {
 			BasicBlockModel blockModel = new BasicBlockModel(program);
@@ -237,22 +239,23 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 								isCall = true;
 								apiCallArray.add(currentLine.getExternalReference(i).getLabel());
 							}
-							operandArray.add(currentLine.getDefaultOperandRepresentation(i));
+							operandArray.add(currentLine.getDefaultOperandRepresentation(i).toLowerCase());
 						}
 
 						// Create each JSON line object
 						JSONObject lineJson = new JSONObject();
-						lineJson.put("startEA", helpers.cleanAddress(currentLine.getMinAddress().toString()));
-						lineJson.put("endEA", helpers.cleanAddress(currentLine.getMaxAddress().toString()));
+						lineJson.put("startEA", helpers.formatEA(currentLine.getMinAddress()));
+						lineJson.put("endEA", helpers.formatEA(currentLine.getMaxAddress()));
 						// TODO: figure out type
 						lineJson.put("type", "code");
-						// TODO: check how addresses map, given they need a hex -> decimal conversion
 						lineJson.put("bytes", byteString);
-						// TODO: does this also need prolog translating?
 						lineJson.put("mnem", currentLine.getMnemonicString().toLowerCase());
-						// TODO: figure out what needs doing to make prolog formatting work for these 2
+						// TODO: operands come out of ghidra with 0x-format hexes; we prefer h-format hexes
+						//   except sometimes, because jumps tend to be off.  For now, I'll leave operands as
+						//   they natively appear; it will be easier to adjust the backend to account for 0x-
+						//   and h-format hexes, than try to brute force acceptable decision logic here
 						lineJson.put("operands", operandArray);
-						lineJson.put("prolog_format", currentLine.toString());
+						lineJson.put("prolog_format", prolog.formatInstruction(currentLine.getMnemonicString(), operandArray);
 						lineJson.put("api_call_name", apiCallName);
 						lineJson.put("is_call", isCall);
 
@@ -261,8 +264,8 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 
 					// Create each JSON block object
 					JSONObject blockJson = new JSONObject();
-					blockJson.put("startEA", helpers.cleanAddress(currentBlock.getMinAddress().toString()));
-					blockJson.put("endEA", helpers.cleanAddress(currentBlock.getMaxAddress().toString()));
+					blockJson.put("startEA", helpers.formatEA(currentBlock.getMinAddress()));
+					blockJson.put("endEA", helpers.formatEA(currentBlock.getMaxAddress()));
 
 					// Populate the JSON block's lines field with the line array
 					blockJson.put("lines", lineArray);
@@ -275,11 +278,13 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 					CodeBlockReferenceIterator destinationIterator = currentBlock.getDestinations(TaskMonitor.DUMMY);
 
 					// TODO: these values are mosly in hex, but prepend 0040 instead of 0x
-					// likely to do with a need to normalize for image base or something
+					//   likely to do with a need to normalize for image base or something
+					// Ghidra addresses do not use 0x-format; cleanAddress cleans all non-hex digits.
+					//   Ergo, we must prepend "0x" to a cleaned hex to make it 0x-formatted
 					while (destinationIterator.hasNext()) {
-						blockDestinations.add(destinationIterator.next().getDestinationAddress().toString());
+						blockDestinations.add("0x" + helpers.cleanAddress(destinationIterator.next().getDestinationAddress().toString()));
 					}
-					cfgObject.put(helpers.cleanAddress(currentBlock.getMinAddress().toString()), blockDestinations);
+					cfgObject.put("0x" + helpers.cleanAddress(currentBlock.getMinAddress().toString()), blockDestinations);
 				}
 
 				// Create and populate the overall JSON object for this procedure
@@ -287,15 +292,13 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 				procData.put("blocks", blockArray);
 				procData.put("is_library", (f.isExternal() ? 128 : 0));
 				procData.put("is_thunk", (f.isThunk() ? 128 : 0));
-				procData.put("startEA", helpers.cleanAddress(f.getBody().getMinAddress().toString()));
-				procData.put("endEA", helpers.cleanAddress(f.getBody().getMaxAddress().toString()));
+				procData.put("startEA", helpers.formatEA(f.getBody().getMinAddress()));
+				procData.put("endEA", helpers.formatEA(f.getBody().getMaxAddress()));
 				procData.put("procedure_name", f.getName());
 				// TODO: I can search for and find the segment name in the GUI, but I can't figure out if/how ghidra's API can access it
 				procData.put("segment_name", ".rsrc$02");
 				// TODO: Strings are the likely-string values held in referenced memory addresses
 				procData.put("strings", new String[0]);
-				// TODO: look into getCalledFunctions(); look at getBody()
-				// API calls are the names of functions external to this binary entirely
 				procData.put("api_calls", apiCallArray);
 				procData.put("cfg", cfgObject);
 
