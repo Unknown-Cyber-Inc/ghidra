@@ -297,8 +297,7 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 				procData.put("startEA", helpers.formatEA(f.getBody().getMinAddress()));
 				procData.put("endEA", helpers.formatEA(f.getBody().getMaxAddress()));
 				procData.put("procedure_name", f.getName());
-				// TODO: I can search for and find the segment name in the GUI, but I can't figure out if/how ghidra's API can access it
-				procData.put("segment_name", ".rsrc$02");
+				procData.put("segment_name", program.getMemory().getBlock(f.getBody().getMinAddress()).getName());
 				// TODO: Strings are the likely-string values held in referenced memory addresses
 				procData.put("strings", new String[0]);
 				procData.put("api_calls", apiCallArray);

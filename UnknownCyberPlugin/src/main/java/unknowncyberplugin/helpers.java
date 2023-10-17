@@ -1,6 +1,7 @@
 package unknowncyberplugin;
 
 import ghidra.program.model.address.Address;
+import ghidra.program.model.listing.Program;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -165,5 +166,20 @@ public class helpers {
    */
   public static String formatEA(Address input) {
     return hexToDecimal(cleanAddress(input.toString()));
+  }
+
+  /**
+   * Determines whether a program is 32 or 64 bit by way of its pointer sizes.
+   *   Returns either "32" or "64" for each, or returns null for failure to determine.
+   * 
+   * Note:  This is a dummy function right now, mostly put in place to document how
+   *   to get architecture.  This is subject to change as needed, or absorption into
+   *   the main body of code.
+   */
+  public static String getArchitecture(Program program) {
+    int pointer = program.getLanguage().getDefaultSpace().getPointerSize();
+    if (pointer == 4) return "32";
+    if (pointer == 8) return "64";
+    return null;
   }
 }
