@@ -27,6 +27,7 @@ import docking.WindowPosition;
 import docking.action.*;
 import docking.widgets.EmptyBorderButton;
 
+import ghidra.framework.Application;
 import ghidra.framework.model.DomainFile;
 import ghidra.framework.plugintool.ComponentProviderAdapter;
 import ghidra.framework.plugintool.PluginTool;
@@ -185,6 +186,7 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 			fileData.put("sha256", program.getExecutableSHA256());
 			fileData.put("sha512", originalSha512);
 			fileData.put("unix_filetype", fileType);
+			fileData.put("version", Application.getApplicationVersion());
 
 			// Create and write to the file's JSON file
 			fileJson = Files.createTempFile("", ".json");
@@ -255,7 +257,7 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 						//   they natively appear; it will be easier to adjust the backend to account for 0x-
 						//   and h-format hexes, than try to brute force acceptable decision logic here
 						lineJson.put("operands", operandArray);
-						lineJson.put("prolog_format", prolog.formatInstruction(currentLine.getMnemonicString(), operandArray);
+						lineJson.put("prolog_format", prolog.formatInstruction(currentLine.getMnemonicString(), operandArray));
 						lineJson.put("api_call_name", apiCallName);
 						lineJson.put("is_call", isCall);
 
