@@ -124,9 +124,7 @@ public class helpers {
       // Extract the first hex value, removing the 0x prefix
       String hex = xMatcher.group().substring(2);
 
-      String decimal = Integer.toString(Integer.parseInt(hex, 16));
-
-      String result = xMatcher.replaceFirst(decimal);
+      String result = xMatcher.replaceFirst(twosComplement(hex));
 
       if (xMatcher.find() || hMatcher.find()) {
         // If there are more matches, recurse for next potential match
@@ -140,9 +138,7 @@ public class helpers {
       // Extract the first hex value, removing the h suffix
       String hex = hMatcher.group().substring(0, hMatcher.group().length() - 1);
 
-      String decimal = Integer.toString(Integer.parseInt(hex, 16));
-
-      String result = hMatcher.replaceFirst(decimal);
+      String result = hMatcher.replaceFirst(twosComplement(hex));
 
       if (hMatcher.find()) {
         // If there are more matches, recurse for next potential match
@@ -154,7 +150,7 @@ public class helpers {
 
     } else if (matcher.find()) {
       // If the string is just a full hex value with no formatting, convert and return immediately
-      return Integer.toString(Integer.parseInt(matcher.group(), 16));
+      return twosComplement(matcher.group());
     }
 
     // If no match is found, return original input
