@@ -340,6 +340,21 @@ public class api {
   }
 
   /**
+   * Wraps the deleteFileNote endpoint.
+   *  - Takes a fileProvider to access the current program and other at-runtime data.
+   *  - Takes a hash string to reference the file.
+   *  - Takes a noteId string to reference the specific note.
+   */
+  public void deleteFileNote(UnknownCyberFileProvider fileProvider, String hash, String noteId) {
+    try {
+      // This does not return a response
+      fileProvider.getFilesApi().deleteFileNote(hash, noteId, "json", false, false, "", true, false, true);
+    } catch (Exception e) {
+      Msg.error(fileProvider, e);
+    }
+  }
+
+  /**
    * Wraps the listFileTags endpoint.
    *  - Takes a fileProvider to access the current program and other at-runtime data.
    *  - Takes a hash string to query the API with.
