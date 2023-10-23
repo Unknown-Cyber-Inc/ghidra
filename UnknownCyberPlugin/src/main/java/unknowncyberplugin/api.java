@@ -31,6 +31,7 @@ import com.unknowncyber.magic.model.EnvelopedFileUploadResponse200;
 import com.unknowncyber.magic.model.EnvelopedFileUploadResponseList200;
 import com.unknowncyber.magic.model.EnvelopedNote201;
 import com.unknowncyber.magic.model.EnvelopedNoteList200;
+import com.unknowncyber.magic.model.EnvelopedTagCreatedResponse200;
 import com.unknowncyber.magic.model.EnvelopedTagList200;
 
 /**
@@ -363,6 +364,21 @@ public class api {
     try {
       String expandMask = "tags";
       EnvelopedTagList200 response = fileProvider.getFilesApi().listFileTags(hash, "json", false, false, "", true, false, expandMask);
+    } catch (Exception e) {
+      Msg.error(fileProvider, e);
+    }
+  }
+
+  /**
+   * Wraps the createFileTag endpoint.
+   *  - Takes a fileProvider to access the current program and other at-runtime data.
+   *  - Takes a hash string to query the API with.
+   *  - Takes a name string to label the tag with.
+   */
+  private void createFileTag(UnknownCyberFileProvider fileProvider, String hash, String name) {
+    try {
+      // Color is set to null to use default color
+      EnvelopedTagCreatedResponse200 response = fileProvider.getFilesApi().createFileTag(hash, name, null, "json", false, false, "", true, false);
     } catch (Exception e) {
       Msg.error(fileProvider, e);
     }
