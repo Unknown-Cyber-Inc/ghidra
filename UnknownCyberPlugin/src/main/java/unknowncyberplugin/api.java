@@ -29,6 +29,7 @@ import com.unknowncyber.magic.model.EnvelopedFileGenomicsResponse200;
 import com.unknowncyber.magic.model.EnvelopedFileMatchResponseList200EnvelopedIdList200;
 import com.unknowncyber.magic.model.EnvelopedFileUploadResponse200;
 import com.unknowncyber.magic.model.EnvelopedFileUploadResponseList200;
+import com.unknowncyber.magic.model.EnvelopedNoteList200;
 
 /**
  * Serves to hold easy-use wrappers for Unknown Cyber API calls.
@@ -271,7 +272,7 @@ public class api {
 			Float minThreshold = 0.7f;
 			EnvelopedFileMatchResponseList200EnvelopedIdList200 response = fileProvider.getFilesApi().listFileMatches(hash, "json", false, false, "", false, pageCount, pageSize, 0, readMask, expandMask, maxThreshold, minThreshold);
 		} catch (Exception e) {
-			Msg.error(this, e);
+			Msg.error(fileProvider, e);
 		}
 	}
 
@@ -288,7 +289,20 @@ public class api {
       Integer pageSize = 25;
       EnvelopedFileGenomicsResponse200 response = fileProvider.getFilesApi().listFileGenomics(hash, "json", false, false, "", true, false, pageCount, pageSize, 0, readMask, orderBy, false);
     } catch (Exception e) {
-      Msg.error(this, e);
+      Msg.error(fileProvider, e);
+    }
+  }
+
+  /**
+   * Wraps the listFileNotes endpoint.
+   *  - Takes a fileProvider to access the current program and other at-runtime data.
+   *  - Takes a hash string to query the API with.
+   */
+  private void listFileNotes(UnknownCyberFileProvider fileProvider, String hash) {
+    try {
+      EnvelopedNoteList200 response = fileProvider.getFilesApi().listFileNotes(hash, "json", false, false, "", true, false);
+    } catch (Exception e) {
+      Msg.error(fileProvider, e);
     }
   }
 }
