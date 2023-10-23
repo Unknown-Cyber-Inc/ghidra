@@ -24,6 +24,8 @@ import org.json.simple.JSONObject;
 
 import net.lingala.zip4j.ZipFile;
 
+import com.unknowncyber.magic.model.EnvelopedFile200;
+import com.unknowncyber.magic.model.EnvelopedFileMatchResponseList200EnvelopedIdList200;
 import com.unknowncyber.magic.model.EnvelopedFileUploadResponse200;
 import com.unknowncyber.magic.model.EnvelopedFileUploadResponseList200;
 
@@ -33,6 +35,7 @@ import com.unknowncyber.magic.model.EnvelopedFileUploadResponseList200;
 public class api {
   /**
    * Wraps the original file upload endpoint.
+   *  - Takes a fileProvider to access the current program and other at-runtime data.
    */
   public static void submitFile(UnknownCyberFileProvider fileProvider) {
 		File myFile = new File(fileProvider.getProgram().getExecutablePath());
@@ -51,7 +54,7 @@ public class api {
 
   /**
    * Wraps the disassembled file upload endpoint.
-   * Takes a fileProvider to access the current program and other at-runtime data.
+   *  - Takes a fileProvider to access the current program and other at-runtime data.
    */
   public static void submitDisassembly(UnknownCyberFileProvider fileProvider) {
 		// Declare important paths here so they can be deleted in the finally clause
@@ -228,6 +231,48 @@ public class api {
 					zip.getFile().delete();
 				}
 			}
+		}
+	}
+
+  /**
+   * Checks if a file exists and is accessible to the user.
+   * - Takes a fileProvider to access the current program and other at-runtime data.
+   * - Takes a hash string to query the API with.
+   * TODO: return
+   */
+  public static void isFileAccessible(UnknownCyberFileProvider fileProvider, String hash) {
+    // TODO: This grabs the filename, in case we want to display it.  If not, just remove it from the readMask.
+    String readMask = "sha1, filename";
+    String expandMask = "";
+    String dynamicMask = "";
+    try {
+			EnvelopedFile200 response = fileProvider.getFilesApi().getFile(hash, "json", false, false, "", true, false, readMask, expandMask, dynamicMask);
+		} catch (Exception e) {
+			// This means the file cannot be accessed by the current user.
+			// Generally, the file either does not exist, or is private.
+      // We should probably indicate this to the user.
+		}
+  }
+
+  /**
+   * Grabs the matches for a file, assuming it is available.
+   *  - Takes a fileProvider to access the current program and other at-runtime data.
+   *  - Takes a hash string to query the API with.
+   * TODO: return
+   */
+  private void getFileMatches(UnknownCyberFileProvider fileProvider, String hash) {
+		// TODO: get file match data from API
+		// Load into data table
+		try {
+			String readMask = "";
+			String expandMask = "matches";
+			Integer pageCount = 1;
+			Integer pageSize = 25;
+			Float maxThreshold = 1.0f;
+			Float minThreshold = 0.7f;
+			EnvelopedFileMatchResponseList200EnvelopedIdList200 response = fileProvider.getFilesApi().listFileMatches(hash, "json", false, false, "", false, pageCount, pageSize, 0, readMask, expandMask, maxThreshold, minThreshold);
+		} catch (Exception e) {
+			Msg.error(this, e);
 		}
 	}
 }

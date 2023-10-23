@@ -19,18 +19,11 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.List;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
 import com.unknowncyber.magic.api.FilesApi;
 
@@ -42,9 +35,7 @@ import ghidra.program.model.listing.FunctionIterator;
 import ghidra.program.model.listing.Program;
 import ghidra.util.HelpLocation;
 import ghidra.util.Msg;
-import ghidra.util.task.TaskMonitor;
 import io.swagger.client.ApiClient;
-import net.lingala.zip4j.ZipFile;
 import resources.ResourceManager;
 import unknowncyberplugin.Components.*;
 import unknowncyberplugin.Components.Buttons.*;
@@ -151,42 +142,6 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 	public FunctionIterator getFunctionIterator(){
 		return fIterator;
 	}
-
-	/*
-	private void checkFileAccess(String hash) {
-		// TODO: ping API for hash, check if user is owner of hash, set visible indicator for user
-		// Used for easy display to user
-	}
-
-	// TODO: move to api
-	private Boolean pullFileData(String hash) {
-		try {
-			EnvelopedFile200 response = filesApi.getFile(hash, "json", false, false, "", true, false, "sha1, filename", "", "");
-			return true;
-		} catch (Exception e) {
-			// This means the file cannot be accessed by the current user.
-			// Generally, the file either does not exist, or is private.
-			return false;
-		}
-	}
-	
-	// TODO: move to api
-	private void getFileMatches(String hash) {
-		// TODO: get file match data from API
-		// Load into data table
-		try {
-			String readMask = "TODO";
-			String expandMask = "TODO";
-			Integer pageCount = 1;
-			Integer pageSize = 25;
-			Float maxThreshold = 1.0f;
-			Float minThreshold = 0.7f;
-			EnvelopedFileMatchResponseList200EnvelopedIdList200 response = filesApi.listFileMatches(hash, "json", false, false, "", false, pageCount, pageSize, 0, readMask, expandMask, maxThreshold, minThreshold);
-		} catch (Exception e) {
-			Msg.error(this, e);
-		}
-	}
-	*/
 
 	// This was used as part of the original code to create the menu bar popup action
 	// Keeping for now as an example
