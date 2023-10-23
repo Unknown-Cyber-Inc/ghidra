@@ -33,8 +33,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.unknowncyber.magic.api.FilesApi;
-import com.unknowncyber.magic.model.EnvelopedFileUploadResponse200;
-import com.unknowncyber.magic.model.EnvelopedFileUploadResponseList200;
 
 import docking.WindowPosition;
 import docking.action.*;
@@ -50,7 +48,6 @@ import net.lingala.zip4j.ZipFile;
 import resources.ResourceManager;
 import unknowncyberplugin.Components.*;
 import unknowncyberplugin.Components.Buttons.*;
-
 
 
 public class UnknownCyberFileProvider extends ComponentProviderAdapter {
@@ -78,7 +75,7 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 	private JButton centralCreate, centralEdit, centralDelete;
 	private JButton procToggle, procRequest;
 
-    private Program program;
+  private Program program;
 	private FunctionIterator fIterator;
 
 	// Declare file-dependent variables in advance
@@ -88,12 +85,17 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 	public void setProgram(Program programIn) {
 		program = programIn;
 		if (program != null) {
+			// Set up program-dependent function iterator
 			fIterator = program.getFunctionManager().getFunctions(true);
+
+			// Attempt to hash file locally, alert user on failure
 			try {
 				originalFile = new File(program.getExecutablePath());
 				originalSha1 = helpers.hashFile(originalFile, "SHA-1");
 				originalSha512 = helpers.hashFile(originalFile, "SHA-256");
+				// TODO: enable upload buttons if previously disabled
 			} catch (FileNotFoundException e) {
+				// TODO: disable upload buttons
 				announce(
 					"ERROR\n" +
 					"\n" +
@@ -105,18 +107,16 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 					" - The file has been moved from its original location.\n" +
 					" - The file is inside an archive."
 				);
-
-				// TODO: disable upload buttons
 			} catch (Exception e) {
+				// TODO: disable upload buttons
 				announce(
 					"ERROR\n" +
 					"\n" +
 					"An unexpected error has occurred when trying to access the original copy of this file.\n" +
 					"Therefore, this file cannot be uploaded to Unknown Cyber."
 				);
-
-				// TODO: disable upload buttons
 			}
+			// Check if file is accessible to user on the backend
 		}
 	}
 
@@ -152,15 +152,41 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 		return fIterator;
 	}
 
+	/*
 	private void checkFileAccess(String hash) {
 		// TODO: ping API for hash, check if user is owner of hash, set visible indicator for user
 		// Used for easy display to user
 	}
 
+	// TODO: move to api
+	private Boolean pullFileData(String hash) {
+		try {
+			EnvelopedFile200 response = filesApi.getFile(hash, "json", false, false, "", true, false, "sha1, filename", "", "");
+			return true;
+		} catch (Exception e) {
+			// This means the file cannot be accessed by the current user.
+			// Generally, the file either does not exist, or is private.
+			return false;
+		}
+	}
+	
+	// TODO: move to api
 	private void getFileMatches(String hash) {
 		// TODO: get file match data from API
 		// Load into data table
+		try {
+			String readMask = "TODO";
+			String expandMask = "TODO";
+			Integer pageCount = 1;
+			Integer pageSize = 25;
+			Float maxThreshold = 1.0f;
+			Float minThreshold = 0.7f;
+			EnvelopedFileMatchResponseList200EnvelopedIdList200 response = filesApi.listFileMatches(hash, "json", false, false, "", false, pageCount, pageSize, 0, readMask, expandMask, maxThreshold, minThreshold);
+		} catch (Exception e) {
+			Msg.error(this, e);
+		}
 	}
+	*/
 
 	// This was used as part of the original code to create the menu bar popup action
 	// Keeping for now as an example
