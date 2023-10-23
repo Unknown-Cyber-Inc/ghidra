@@ -25,6 +25,7 @@ import org.json.simple.JSONObject;
 import net.lingala.zip4j.ZipFile;
 
 import com.unknowncyber.magic.model.EnvelopedFile200;
+import com.unknowncyber.magic.model.EnvelopedFileGenomicsResponse200;
 import com.unknowncyber.magic.model.EnvelopedFileMatchResponseList200EnvelopedIdList200;
 import com.unknowncyber.magic.model.EnvelopedFileUploadResponse200;
 import com.unknowncyber.magic.model.EnvelopedFileUploadResponseList200;
@@ -242,7 +243,7 @@ public class api {
    */
   public static void isFileAccessible(UnknownCyberFileProvider fileProvider, String hash) {
     // TODO: This grabs the filename, in case we want to display it.  If not, just remove it from the readMask.
-    String readMask = "sha1, filename";
+    String readMask = "sha1,filename";
     String expandMask = "";
     String dynamicMask = "";
     try {
@@ -255,14 +256,12 @@ public class api {
   }
 
   /**
-   * Grabs the matches for a file, assuming it is available.
+   * Wraps the getFileMatches endpoint.
    *  - Takes a fileProvider to access the current program and other at-runtime data.
    *  - Takes a hash string to query the API with.
    * TODO: return
    */
   private void getFileMatches(UnknownCyberFileProvider fileProvider, String hash) {
-		// TODO: get file match data from API
-		// Load into data table
 		try {
 			String readMask = "";
 			String expandMask = "matches";
@@ -275,4 +274,21 @@ public class api {
 			Msg.error(this, e);
 		}
 	}
+
+  /**
+   * Wraps the getFileGenomics endpoint.
+   *  - Takes a fileProvider to access the current program and other at-runtime data.
+   *  - Takes a hash string to query the API with.
+   */
+  private void getFileGenomics(UnknownCyberFileProvider fileProvider, String hash) {
+    try {
+      String readMask = "cfg,start_ea,is_library,status,procedure_hash,occurrence_count,strings,api_calls,procedure_name";
+      String orderBy = "start_ea";
+      Integer pageCount = 1;
+      Integer pageSize = 25;
+      EnvelopedFileGenomicsResponse200 response = fileProvider.getFilesApi().listFileGenomics(hash, "json", false, false, "", true, false, pageCount, pageSize, 0, readMask, orderBy, false);
+    } catch (Exception e) {
+      Msg.error(this, e);
+    }
+  }
 }
