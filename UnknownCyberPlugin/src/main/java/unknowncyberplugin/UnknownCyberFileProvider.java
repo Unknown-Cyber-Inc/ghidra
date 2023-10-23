@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,72 +17,68 @@ package unknowncyberplugin;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-
-import javax.swing.*;
-
-import docking.ActionContext;
-import docking.WindowPosition;
-import docking.action.*;
-import docking.widgets.EmptyBorderButton;
-
-import ghidra.framework.Application;
-import ghidra.framework.model.DomainFile;
-import ghidra.framework.plugintool.ComponentProviderAdapter;
-import ghidra.framework.plugintool.PluginTool;
-import ghidra.program.model.block.BasicBlockModel;
-import ghidra.program.model.block.CodeBlock;
-import ghidra.program.model.block.CodeBlockIterator;
-import ghidra.program.model.block.CodeBlockReferenceIterator;
-import ghidra.program.model.listing.Function;
-import ghidra.program.model.listing.FunctionIterator;
-import ghidra.program.model.listing.Instruction;
-import ghidra.program.model.listing.InstructionIterator;
-import ghidra.program.model.listing.Program;
-import ghidra.util.HelpLocation;
-import ghidra.util.Msg;
-import ghidra.util.task.TaskMonitor;
-import resources.ResourceManager;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
 
-import net.lingala.zip4j.ZipFile;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.unknowncyber.magic.api.FilesApi;
-import com.unknowncyber.magic.model.EnvelopedFileList200;
 import com.unknowncyber.magic.model.EnvelopedFileUploadResponse200;
 import com.unknowncyber.magic.model.EnvelopedFileUploadResponseList200;
+
+import docking.WindowPosition;
+import docking.action.*;
+import ghidra.framework.plugintool.ComponentProviderAdapter;
+import ghidra.framework.plugintool.PluginTool;
+import ghidra.program.model.listing.FunctionIterator;
+import ghidra.program.model.listing.Program;
+import ghidra.util.HelpLocation;
+import ghidra.util.Msg;
+import ghidra.util.task.TaskMonitor;
 import io.swagger.client.ApiClient;
+import net.lingala.zip4j.ZipFile;
+import resources.ResourceManager;
+import unknowncyberplugin.Components.*;
+import unknowncyberplugin.Components.Buttons.*;
+
 
 
 public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 	private final static String PREV_IMAGE = "/images/check_icon.jpg";
 	private final static HelpLocation HELP = new HelpLocation("SampleHelpTopic", "SampleHelpTopic_Anchor_Name");
-	private MyButton activeButtonObj;
-	private JPanel mainPanel;
 	private DockingAction action;
-	
+
 	// Set component references ahead of time so they can be accessed at a global level
 	// as opposed to being passed into functions as a local reference.
-	private JLabel idLabel, nameLabel, changedLabel, accessLabel;
-	private JTable matchTable;
-	private JButton submitButton, submitDisassembledButton;
-	private JScrollPane matchScroller;
 	private ApiClient apiClient;
 	private FilesApi filesApi;
 
-  private Program program;
+	// GUI starts here
+	private JPanel mainPanel;
+	private JPanel fileButtonsPanel, filePanel, fileCRUDPanel;
+	private JPanel centralPanel, centralCRUDPanel;
+	private JPanel procButtonsPanel, procTablePanel;
+	private JTabbedPane fileTabs, centralTabs;
+	private JScrollPane fileScroll, centralScroll, procScroll;
+	private FileList<String> fileList;
+	private JTree centralTree;
+	private JTable procTable;
+	private JButton fileToggle, fileUpload, fileDisassemblyUpload;
+	private JButton fileCreate, fileEdit, fileDelete;
+	private JButton centralCreate, centralEdit, centralDelete;
+	private JButton procToggle, procRequest;
+
+    private Program program;
 	private FunctionIterator fIterator;
 
 	// Declare file-dependent variables in advance
@@ -111,7 +107,6 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 				);
 
 				// TODO: disable upload buttons
-				return;
 			} catch (Exception e) {
 				announce(
 					"ERROR\n" +
@@ -121,13 +116,10 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 				);
 
 				// TODO: disable upload buttons
-				return;
 			}
-			// TODO: enable upload buttons if previously disabled
 		}
 	}
 
-	
 	public UnknownCyberFileProvider(PluginTool tool, String name) {
 		super(tool, name, name);
 		buildMainPanel();
@@ -141,212 +133,35 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 		// createActions();
 		apiClient = new ApiClient();
 		filesApi = new FilesApi(apiClient);
+		// procsApi = new ProcsApi(apiClient);
 	}
-	
+
+	public Program getProgram(){
+		return program;
+	}
+
+	public String getHash(String hashType){
+		return (hashType.equals("sha1") ? originalSha1 : originalSha512);
+	}
+
+	public FilesApi getFilesApi() {
+		return filesApi;
+	}
+
+	public FunctionIterator getFunctionIterator(){
+		return fIterator;
+	}
+
 	private void checkFileAccess(String hash) {
 		// TODO: ping API for hash, check if user is owner of hash, set visible indicator for user
 		// Used for easy display to user
 	}
-	
-	private void submitFile() {		
-		// TODO: disable submit/disassembly buttons at start
-		// Re-enable buttons on completion
 
-		File myFile = new File(program.getExecutablePath());
-		List<File> files = Arrays.asList(myFile);
-		try {
-			EnvelopedFileUploadResponseList200 response = filesApi.uploadFile(files, "", Arrays.asList(), Arrays.asList(), "json", false, false, "", true, false, false, false, false, false, false);
-			Msg.info(this, response);
-		} catch (Exception e) {
-			Msg.error(this, e);
-		}
-		// announce("Success or Failure");
-		
-		// Edit file access on success
-	}
-	
-	private void submitDisassembly() {
-		// Declare important paths here so they can be deleted in the finally clause
-		Path procDirectory = null;
-		Path fileJson = null;
-		ZipFile zip = null;
-
-		// TODO: number stuff:
-		//   Potentially look into cleaning up 0-padding?
-
-		try {
-			BasicBlockModel blockModel = new BasicBlockModel(program);
-			String fileType = program.getExecutableFormat();
-
-			// Generate the file's JSON data
-			JSONObject fileData = new JSONObject();
-			fileData.put("image_base", program.getImageBase());
-			fileData.put("md5", program.getExecutableMD5());
-			fileData.put("sha1", originalSha1);
-			fileData.put("sha256", program.getExecutableSHA256());
-			fileData.put("sha512", originalSha512);
-			fileData.put("unix_filetype", fileType);
-			fileData.put("version", Application.getApplicationVersion());
-
-			// Create and write to the file's JSON file
-			fileJson = Files.createTempFile("", ".json");
-			Files.write(fileJson, fileData.toJSONString().getBytes());
-
-			// Create the procedure's subdirectory
-			procDirectory = Files.createTempDirectory("");
-
-			// Iterate over all functions in a program
-			for (Function f : fIterator) {
-				// Set top-level blocks array
-				JSONArray blockArray = new JSONArray();
-
-				// Set top-level cfg object
-				JSONObject cfgObject = new JSONObject();
-
-				// Set top-level api_calls array
-				JSONArray apiCallArray = new JSONArray();
-
-				// Iterate over blocks
-				CodeBlockIterator blockIterator = blockModel.getCodeBlocksContaining(f.getBody(), TaskMonitor.DUMMY);
-				while (blockIterator.hasNext()) {
-					CodeBlock currentBlock = blockIterator.next();
-
-					// Set line array that exists per block
-					JSONArray lineArray = new JSONArray();
-
-					// Iterate over lines
-					InstructionIterator lineIterator = program.getListing().getInstructions(currentBlock, true);
-					while (lineIterator.hasNext()) {
-						Instruction currentLine = lineIterator.next();
-
-						// Calculate byteString
-						String byteString = "";
-						byte[] byteArray = currentLine.getBytes();
-						for (byte myByte : byteArray) {
-							byteString = byteString + " " + String.format("%02x", myByte & 0xff);
-						}
-						byteString = byteString.trim();
-
-						// Generate operand JSONArray
-						// Simultaneously, handle api_call behavior since that requires operand-level granularity
-						JSONArray operandArray = new JSONArray();
-
-						String apiCallName = null;
-						Boolean isCall = false;
-
-						int operandCount = currentLine.getNumOperands();
-						for (int i = 0; i < operandCount; i++) {
-							if (currentLine.getExternalReference(i) != null) {
-								apiCallName = currentLine.getExternalReference(i).getLabel();
-								isCall = true;
-								apiCallArray.add(currentLine.getExternalReference(i).getLabel());
-							}
-							operandArray.add(currentLine.getDefaultOperandRepresentation(i).toLowerCase());
-						}
-
-						// Create each JSON line object
-						JSONObject lineJson = new JSONObject();
-						lineJson.put("startEA", helpers.formatEA(currentLine.getMinAddress()));
-						lineJson.put("endEA", helpers.formatEA(currentLine.getMaxAddress()));
-						// TODO: figure out type
-						lineJson.put("type", "code");
-						lineJson.put("bytes", byteString);
-						lineJson.put("mnem", currentLine.getMnemonicString().toLowerCase());
-						// TODO: operands come out of ghidra with 0x-format hexes; we prefer h-format hexes
-						//   except sometimes, because jumps tend to be off.  For now, I'll leave operands as
-						//   they natively appear; it will be easier to adjust the backend to account for 0x-
-						//   and h-format hexes, than try to brute force acceptable decision logic here
-						lineJson.put("operands", operandArray);
-						lineJson.put("prolog_format", prolog.formatInstruction(currentLine.getMnemonicString(), operandArray));
-						lineJson.put("api_call_name", apiCallName);
-						lineJson.put("is_call", isCall);
-
-						lineArray.add(lineJson);
-					}
-
-					// Create each JSON block object
-					JSONObject blockJson = new JSONObject();
-					blockJson.put("startEA", helpers.formatEA(currentBlock.getMinAddress()));
-					blockJson.put("endEA", helpers.formatEA(currentBlock.getMaxAddress()));
-
-					// Populate the JSON block's lines field with the line array
-					blockJson.put("lines", lineArray);
-
-					// Add the newly created JSON block object to the array
-					blockArray.add(blockJson);
-
-					// Do cfg stuff for this block
-					JSONArray blockDestinations = new JSONArray();
-					CodeBlockReferenceIterator destinationIterator = currentBlock.getDestinations(TaskMonitor.DUMMY);
-
-					// TODO: these values are mosly in hex, but prepend 0040 instead of 0x
-					//   likely to do with a need to normalize for image base or something
-					// Ghidra addresses do not use 0x-format; cleanAddress cleans all non-hex digits.
-					//   Ergo, we must prepend "0x" to a cleaned hex to make it 0x-formatted
-					while (destinationIterator.hasNext()) {
-						blockDestinations.add("0x" + helpers.cleanAddress(destinationIterator.next().getDestinationAddress().toString()));
-					}
-					cfgObject.put("0x" + helpers.cleanAddress(currentBlock.getMinAddress().toString()), blockDestinations);
-				}
-
-				// Create and populate the overall JSON object for this procedure
-				JSONObject procData = new JSONObject();
-				procData.put("blocks", blockArray);
-				procData.put("is_library", (f.isExternal() ? 128 : 0));
-				procData.put("is_thunk", (f.isThunk() ? 128 : 0));
-				procData.put("startEA", helpers.formatEA(f.getBody().getMinAddress()));
-				procData.put("endEA", helpers.formatEA(f.getBody().getMaxAddress()));
-				procData.put("procedure_name", f.getName());
-				procData.put("segment_name", program.getMemory().getBlock(f.getBody().getMinAddress()).getName());
-				// TODO: Strings are the likely-string values held in referenced memory addresses
-				procData.put("strings", new String[0]);
-				procData.put("api_calls", apiCallArray);
-				procData.put("cfg", cfgObject);
-
-				// Create and write to the temporary file containing this procedure's JSON data
-				Path procJson = Files.createTempFile(procDirectory, f.getBody().getMinAddress().toString() + "_", ".json");
-				Files.write(procJson, procData.toJSONString().getBytes());
-			}
-
-			// Create zip file in temp directory, load in the file.json and procedure directory
-			zip = new ZipFile(Files.createTempFile(originalSha1 + "_", ".zip").toFile());
-			zip.addFile(fileJson.toFile());
-			zip.addFolder(procDirectory.toFile());
-
-			try {
-				// TODO: program.getExecutableFormat() does not return values that we use; it will need some form of mapping
-				EnvelopedFileUploadResponse200 response = filesApi.uploadDisassembly(zip.getFile(), fileType, originalSha1, "json", false, false, "", true, false, false);
-			} catch (Exception e) {
-				Msg.error(this, e);
-			}
-		// TODO: Granularize try/catch behavior so we can have more intelligent error handling
-		} catch (Exception e) {
-			Msg.error(this, e);
-		} finally {
-			// Clean up
-			if (fileJson != null) {
-				if (fileJson.toFile().exists()) {
-					fileJson.toFile().delete();
-				}
-			}
-			if (procDirectory != null) {
-				if (procDirectory.toFile().exists()) {
-					procDirectory.toFile().delete();
-				}
-			}
-			if (zip != null) {
-				if (zip.getFile().exists()) {
-					zip.getFile().delete();
-				}
-			}
-		}
-	}
-	
 	private void getFileMatches(String hash) {
 		// TODO: get file match data from API
 		// Load into data table
 	}
-	
+
 	// This was used as part of the original code to create the menu bar popup action
 	// Keeping for now as an example
 	/*
@@ -357,37 +172,37 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 				announce("Hello World announcement");
 			}
 		};
-		
+
 		action.setEnabled(true);
-		
+
 		ImageIcon prevImage = ResourceManager.loadImage(PREV_IMAGE);
 		// This adds an in-window menu dropdown
 		action.setMenuBarData(new MenuData(new String[] {"Misc", "Unknown Cyber"}, prevImage));
 		// This fires the action on keybind
 		action.setKeyBindingData(new KeyBindingData(KeyStroke.getKeyStroke(KeyEvent.VK_W, InputEvent.CTRL_MASK)));
-		
+
 		action.setToolBarData(new ToolBarData(prevImage));
 		action.setDescription("Unknown Cyber setDescription");
-		
+
 		// No clue what this actually does
 		action.setHelpLocation(HELP);
-		
+
 		// This adds the action to a local button in the in-window menu
 		addLocalAction(action);
-		
+
 		// No idea how this is meant to fire
 		// I assume it has to do with the myButton suppressing an unused warning...
 		DockingAction popupAction = new DockingAction("Unknown Cyber Popup", getName()) {
 			@Override
 			public void actionPerformed(ActionContext context) {
 				announce("Hello World announcement2");
-				
+
 				Object contextObject = context.getContextObject();
-				
+
 				@SuppressWarnings("unused")
 				MyButton myButton = (MyButton) contextObject;
 			}
-			
+
 			@Override
 			public boolean isAddToPopup(ActionContext context) {
 				if (context.getContextObject() instanceof MyButton) {
@@ -400,127 +215,97 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 		popupAction.setPopupMenuData(new MenuData(new String[] { "Example of Popup" }));
 		addLocalAction(popupAction);
 	} //*/
-	
+
 	@Override
 	public JComponent getComponent() {
 		return mainPanel;
 	}
-	
+
 	// This function puts together the UI
 	private void buildMainPanel() {
-		mainPanel = new JPanel(new BorderLayout());
-		mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-		JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-		panel.setBorder(BorderFactory.createTitledBorder("Example of a Component"));
-		
-		idLabel = new JLabel("ID LABEL");
-		nameLabel = new JLabel("NAME LABEL");
-		
-		activeButtonObj = new MyButton("Dummy button");
-		Font f = activeButtonObj.getFont();
-		activeButtonObj.setFont(new Font(f.getFontName(), Font.BOLD, 14));
-		
-		GridBagLayout grid = new GridBagLayout();
-		GridBagConstraints gbc = new GridBagConstraints();
-		panel.setLayout(grid);
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		panel.add(idLabel, gbc);
-		gbc.gridx = 1;
-		gbc.gridy = 0;
-		panel.add(nameLabel, gbc);
-		gbc.gridx = 0;
-		gbc.gridy = 1;
-		panel.add(activeButtonObj, gbc);
-		
-		changedLabel = new JLabel("Has file changed?");
-		accessLabel = new JLabel("Do I have access?");
-		gbc.gridx = 0;
-		gbc.gridy = 2;
-		panel.add(changedLabel, gbc);
-		gbc.gridx = 1;
-		gbc.gridy = 2;
-		panel.add(accessLabel, gbc);
-		
-		String matchColumns[] = {"ID", "FILENAME", "MATCHES", "OWNED?"};
-		String matchDummyData[][] = {
-				{"0001", "dummy1", "16", "true"},
-				{"0002", "dummy2", "2", "false"},
-		};
-		matchTable = new JTable(matchDummyData, matchColumns);
-		// Setting bounds doesn't seem to do anything right now.  Whether it's a constraint of
-		// the gridBag or whether I'm doing something wrong is unknown
-		// matchTable.setBounds(30, 40, 200, 300);
-		matchTable.setEnabled(false);
-		// should show table in scrollpane, but the bastard doesn't want to accept a size
-		//matchScroller = new JScrollPane(matchTable);
-		//matchScroller.setBounds(30, 40, 200, 300);
-		gbc.gridx = 0;
-		gbc.gridy = 3;
-		panel.add(matchTable, gbc);
-		
-		submitButton = new JButton("Submit File");
-		submitDisassembledButton = new JButton("Submit Disassembly");
-		submitButton.addActionListener(new ActionListener() {
-			// You can't just set this to a function, it has to be a 
-			// public void actionPerformed(){}, but you can outsource to another function
-			public void actionPerformed(ActionEvent e) {
-				System.out.println("Submit button has been clicked");
-				submitFile();
-				// this is how to set label text
-				// changedLabel.setText("DING");
-			}
-		});
-		submitDisassembledButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				System.out.println("Disassembly button has been clicked");
-				submitDisassembly();
-			}
-		});
-		
-		gbc.gridx = 0;
-		gbc.gridy = 4;
-		panel.add(submitButton, gbc);
-		gbc.gridx = 1;
-		gbc.gridy = 4;
-		panel.add(submitDisassembledButton, gbc);
-		
-		mainPanel.add(panel, BorderLayout.CENTER);
+			mainPanel = new JPanel();
+			mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+			mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+				// file buttons panel
+				fileButtonsPanel = new JPanel();
+				fileButtonsPanel.setLayout(new FlowLayout());
+					fileToggle = new FileToggleButton();
+					fileUpload = new FileUploadButton(this);
+				fileButtonsPanel.add(fileToggle);
+				fileButtonsPanel.add(fileUpload);
+				// file list panel
+				filePanel = new JPanel();
+				filePanel.setLayout(new BoxLayout(filePanel, BoxLayout.Y_AXIS));
+					fileTabs = new JTabbedPane();
+						DefaultListModel<String> fileListModel = new DefaultListModel<>();
+						fileList = new FileList<>(fileListModel);
+						fileScroll = new JScrollPane(fileList);
+					fileTabs.addTab("Notes", fileScroll);
+						DefaultListModel<String> fileListModel2 = new DefaultListModel<>();
+						DefaultListModel<String> fileListModel3 = new DefaultListModel<>();
+						FileList<String> fileList2 = new FileList<>(fileListModel2);
+						FileList<String> fileList3 = new FileList<>(fileListModel3);
+						JScrollPane fileScroll2 = new JScrollPane(fileList2);
+						JScrollPane fileScroll3 = new JScrollPane(fileList3);
+					fileTabs.addTab("Tags", fileScroll2);
+					fileTabs.addTab("Matches", fileScroll3);
+				filePanel.add(fileTabs);
+					fileCRUDPanel = new JPanel();
+					fileCRUDPanel.setLayout(new FlowLayout());
+						fileCreate = new FileCreateButton();
+						fileEdit = new FileEditButton();
+						fileDelete = new FileDeleteButton();
+					fileCRUDPanel.add(fileCreate);
+					fileCRUDPanel.add(fileEdit);
+					fileCRUDPanel.add(fileDelete);
+				filePanel.add(fileCRUDPanel);
+				// central tabbed tree panel
+				centralPanel = new JPanel();
+				centralPanel.setLayout(new BoxLayout(centralPanel, BoxLayout.Y_AXIS));
+					centralTabs = new JTabbedPane();
+						DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Placeholder name");
+						DefaultMutableTreeNode notesRootNode = new DefaultMutableTreeNode("Notes");
+						DefaultMutableTreeNode tagsRootNode = new DefaultMutableTreeNode("Tags");
+						rootNode.add(notesRootNode);
+						rootNode.add(tagsRootNode);
+						DefaultTreeModel treeModel = new DefaultTreeModel(rootNode);
+						centralTree = new CentralTree(treeModel);
+						centralScroll = new JScrollPane(centralTree);
+					centralTabs.addTab("Placeholder tab", centralScroll);
+				centralPanel.add(centralTabs);
+					centralCRUDPanel = new JPanel();
+					centralCRUDPanel.setLayout(new FlowLayout());
+						centralCreate = new CenterCreateButton();
+						centralEdit = new CenterEditButton();
+						centralDelete = new CenterDeleteButton();
+					centralCRUDPanel.add(centralCreate);
+					centralCRUDPanel.add(centralEdit);
+					centralCRUDPanel.add(centralDelete);
+				centralPanel.add(centralCRUDPanel);
+				// procedure buttons panel
+				procButtonsPanel = new JPanel();
+				procButtonsPanel.setLayout(new FlowLayout());
+					procToggle = new ProcToggleButton();
+					procRequest = new ProcRetrievalButton();
+				procButtonsPanel.add(procToggle);
+				procButtonsPanel.add(procRequest);
+				// procedure table panel
+				procTablePanel = new JPanel();
+				procTablePanel.setLayout(new BoxLayout(procTablePanel, BoxLayout.Y_AXIS));
+					Object[][] rowData = {{"0x1", "5", "Mlwr", "0", "0"}};
+					procTable = new ProcTable(rowData);
+					procScroll = new JScrollPane(procTable);
+				procTablePanel.add(procScroll);
+			mainPanel.add(fileButtonsPanel);
+			mainPanel.add(filePanel);
+			mainPanel.add(centralPanel);
+			mainPanel.add(procButtonsPanel);
+			mainPanel.add(procTablePanel);
 	}
-	
-	// This is part of the original "Dummy Button" code.  Not sure what this is
-	// actually doing or why it's not just a JButton.  JButtons seem to work just fine
-	@Override
-	public ActionContext getActionContext(MouseEvent event) {
-		if (event != null) {
-			Object source = event.getSource();
-			if (source == activeButtonObj) {
-				return new ActionContext(this, activeButtonObj);
-			}
-		}
-		return null;
-	}
-	
+
 	// This is the built announce function that runs on the DummyButton
 	// Original code used it in other places as well, as a general use function
 	protected void announce(String message) {
 		Msg.showInfo(getClass(),  mainPanel,  "Hello World showInfo", message);
-	}
-	
-	// This constructs the Dummy Button.  Again, no idea why it has to extend
-	// the EmptyBorderButton instead of using a JButton
-	private class MyButton extends EmptyBorderButton {
-		MyButton(String name) {
-			super(name);
-			setBorder(BorderFactory.createEmptyBorder(10, 5, 10, 5));
-			
-			addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					announce("Hello World announcement3");
-				}
-			});
-		}
 	}
 }
