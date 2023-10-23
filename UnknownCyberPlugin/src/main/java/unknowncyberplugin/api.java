@@ -30,6 +30,7 @@ import com.unknowncyber.magic.model.EnvelopedFileMatchResponseList200EnvelopedId
 import com.unknowncyber.magic.model.EnvelopedFileUploadResponse200;
 import com.unknowncyber.magic.model.EnvelopedFileUploadResponseList200;
 import com.unknowncyber.magic.model.EnvelopedNoteList200;
+import com.unknowncyber.magic.model.EnvelopedTagList200;
 
 /**
  * Serves to hold easy-use wrappers for Unknown Cyber API calls.
@@ -301,6 +302,20 @@ public class api {
   private void listFileNotes(UnknownCyberFileProvider fileProvider, String hash) {
     try {
       EnvelopedNoteList200 response = fileProvider.getFilesApi().listFileNotes(hash, "json", false, false, "", true, false);
+    } catch (Exception e) {
+      Msg.error(fileProvider, e);
+    }
+  }
+
+  /**
+   * Wraps the listFileTags endpoint.
+   *  - Takes a fileProvider to access the current program and other at-runtime data.
+   *  - Takes a hash string to query the API with.
+   */
+  private void listFileTags(UnknownCyberFileProvider fileProvider, String hash) {
+    try {
+      String expandMask = "tags";
+      EnvelopedTagList200 response = fileProvider.getFilesApi().listFileTags(hash, "json", false, false, "", true, false, expandMask);
     } catch (Exception e) {
       Msg.error(fileProvider, e);
     }
