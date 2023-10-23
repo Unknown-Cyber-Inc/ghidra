@@ -372,13 +372,28 @@ public class api {
   /**
    * Wraps the createFileTag endpoint.
    *  - Takes a fileProvider to access the current program and other at-runtime data.
-   *  - Takes a hash string to query the API with.
+   *  - Takes a hash string to reference the file.
    *  - Takes a name string to label the tag with.
    */
   private void createFileTag(UnknownCyberFileProvider fileProvider, String hash, String name) {
     try {
       // Color is set to null to use default color
       EnvelopedTagCreatedResponse200 response = fileProvider.getFilesApi().createFileTag(hash, name, null, "json", false, false, "", true, false);
+    } catch (Exception e) {
+      Msg.error(fileProvider, e);
+    }
+  }
+
+  /**
+   * Wraps the removeFileTag endpoint.
+   *  - Takes a fileProvider to access the current program and other at-runtime data.
+   *  - Takes a hash string to reference the file.
+   *  - Takes a tagId string to reference the specific tag.
+   */
+  private void removeFileTag(UnknownCyberFileProvider fileProvider, String hash, String tagId) {
+    try {
+      // This does not return a response
+      fileProvider.getFilesApi().removeFileTag(hash, tagId, "json", false, false, "", true, false, true);
     } catch (Exception e) {
       Msg.error(fileProvider, e);
     }
