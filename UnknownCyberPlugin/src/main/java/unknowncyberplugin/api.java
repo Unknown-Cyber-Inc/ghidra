@@ -323,6 +323,23 @@ public class api {
   }
 
   /**
+   * Wraps the updateFileNote endpoint.
+   *  - Takes a fileProvider to access the current program and other at-runtime data.
+   *  - Takes a hash string to reference the file.
+   *  - Takes a noteId string to reference the specific note.
+   *  - Takes a note string that contains the updated text of the note.
+   */
+  private void updateFileNote(UnknownCyberFileProvider fileProvider, String hash, String noteId, String note) {
+    try {
+      String updateMask = "note";
+      // This does not return a response
+      fileProvider.getFilesApi().updateFileNote(hash, noteId, note, false, "json", false, false, "", true, false, updateMask);
+    } catch (Exception e) {
+      Msg.error(fileProvider, e);
+    }
+  }
+
+  /**
    * Wraps the listFileTags endpoint.
    *  - Takes a fileProvider to access the current program and other at-runtime data.
    *  - Takes a hash string to query the API with.
