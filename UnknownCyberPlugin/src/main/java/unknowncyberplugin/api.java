@@ -29,6 +29,7 @@ import com.unknowncyber.magic.model.EnvelopedFileGenomicsResponse200;
 import com.unknowncyber.magic.model.EnvelopedFileMatchResponseList200EnvelopedIdList200;
 import com.unknowncyber.magic.model.EnvelopedFileUploadResponse200;
 import com.unknowncyber.magic.model.EnvelopedFileUploadResponseList200;
+import com.unknowncyber.magic.model.EnvelopedNote201;
 import com.unknowncyber.magic.model.EnvelopedNoteList200;
 import com.unknowncyber.magic.model.EnvelopedTagList200;
 
@@ -302,6 +303,20 @@ public class api {
   private void listFileNotes(UnknownCyberFileProvider fileProvider, String hash) {
     try {
       EnvelopedNoteList200 response = fileProvider.getFilesApi().listFileNotes(hash, "json", false, false, "", true, false);
+    } catch (Exception e) {
+      Msg.error(fileProvider, e);
+    }
+  }
+
+  /** 
+   * Wraps the createFileNote endpoint.
+   *  - Takes a fileProvider to access the current program and other at-runtime data.
+   *  - Takes a hash string to reference the file.
+   *  - Takes a note string that contains the text of the note.
+   */
+  private void createFileNote(UnknownCyberFileProvider fileProvider, String hash, String note) {
+    try {
+      EnvelopedNote201 response = fileProvider.getFilesApi().createFileNote(note, false, hash, "json", false, false, "", true, false, false);
     } catch (Exception e) {
       Msg.error(fileProvider, e);
     }
