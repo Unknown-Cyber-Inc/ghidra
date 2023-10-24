@@ -265,7 +265,7 @@ public class api {
    *  - Takes a hash string to query the API with.
    * TODO: return
    */
-  private void getFileMatches(UnknownCyberFileProvider fileProvider, String hash) {
+  public static void getFileMatches(UnknownCyberFileProvider fileProvider, String hash) {
 		try {
 			String readMask = "";
 			String expandMask = "matches";
@@ -273,7 +273,7 @@ public class api {
 			Integer pageSize = 25;
 			Float maxThreshold = 1.0f;
 			Float minThreshold = 0.7f;
-			EnvelopedFileMatchResponseList200EnvelopedIdList200 response = fileProvider.getFilesApi().listFileMatches(hash, "json", false, false, "", false, pageCount, pageSize, 0, readMask, expandMask, maxThreshold, minThreshold);
+			EnvelopedFileMatchResponseList200EnvelopedIdList200 response = fileProvider.getFilesApi().listFileMatches(hash, "json", false, false, "", true, false, pageCount, pageSize, 0, readMask, expandMask, maxThreshold, minThreshold);
 		} catch (Exception e) {
 			Msg.error(fileProvider, e);
 		}
@@ -284,7 +284,7 @@ public class api {
    *  - Takes a fileProvider to access the current program and other at-runtime data.
    *  - Takes a hash string to query the API with.
    */
-  private void getFileGenomics(UnknownCyberFileProvider fileProvider, String hash) {
+  public static void getFileGenomics(UnknownCyberFileProvider fileProvider, String hash) {
     try {
       String readMask = "cfg,start_ea,is_library,status,procedure_hash,occurrence_count,strings,api_calls,procedure_name";
       String orderBy = "start_ea";
@@ -301,7 +301,7 @@ public class api {
    *  - Takes a fileProvider to access the current program and other at-runtime data.
    *  - Takes a hash string to query the API with.
    */
-  private void listFileNotes(UnknownCyberFileProvider fileProvider, String hash) {
+  public static void listFileNotes(UnknownCyberFileProvider fileProvider, String hash) {
     try {
       EnvelopedNoteList200 response = fileProvider.getFilesApi().listFileNotes(hash, "json", false, false, "", true, false);
     } catch (Exception e) {
@@ -315,7 +315,7 @@ public class api {
    *  - Takes a hash string to reference the file.
    *  - Takes a note string that contains the text of the note.
    */
-  private void createFileNote(UnknownCyberFileProvider fileProvider, String hash, String note) {
+  public static void createFileNote(UnknownCyberFileProvider fileProvider, String hash, String note) {
     try {
       EnvelopedNote201 response = fileProvider.getFilesApi().createFileNote(note, false, hash, "json", false, false, "", true, false, false);
     } catch (Exception e) {
@@ -330,7 +330,7 @@ public class api {
    *  - Takes a noteId string to reference the specific note.
    *  - Takes a note string that contains the updated text of the note.
    */
-  private void updateFileNote(UnknownCyberFileProvider fileProvider, String hash, String noteId, String note) {
+  public static void updateFileNote(UnknownCyberFileProvider fileProvider, String hash, String noteId, String note) {
     try {
       String updateMask = "note";
       // This does not return a response
@@ -346,7 +346,7 @@ public class api {
    *  - Takes a hash string to reference the file.
    *  - Takes a noteId string to reference the specific note.
    */
-  public void deleteFileNote(UnknownCyberFileProvider fileProvider, String hash, String noteId) {
+  public static void deleteFileNote(UnknownCyberFileProvider fileProvider, String hash, String noteId) {
     try {
       // This does not return a response
       fileProvider.getFilesApi().deleteFileNote(hash, noteId, "json", false, false, "", true, false, true);
@@ -360,7 +360,7 @@ public class api {
    *  - Takes a fileProvider to access the current program and other at-runtime data.
    *  - Takes a hash string to query the API with.
    */
-  private void listFileTags(UnknownCyberFileProvider fileProvider, String hash) {
+  public static void listFileTags(UnknownCyberFileProvider fileProvider, String hash) {
     try {
       String expandMask = "tags";
       EnvelopedTagList200 response = fileProvider.getFilesApi().listFileTags(hash, "json", false, false, "", true, false, expandMask);
@@ -375,7 +375,7 @@ public class api {
    *  - Takes a hash string to reference the file.
    *  - Takes a name string to label the tag with.
    */
-  private void createFileTag(UnknownCyberFileProvider fileProvider, String hash, String name) {
+  public static void createFileTag(UnknownCyberFileProvider fileProvider, String hash, String name) {
     try {
       // Color is set to null to use default color
       EnvelopedTagCreatedResponse200 response = fileProvider.getFilesApi().createFileTag(hash, name, null, "json", false, false, "", true, false);
@@ -390,7 +390,7 @@ public class api {
    *  - Takes a hash string to reference the file.
    *  - Takes a tagId string to reference the specific tag.
    */
-  private void removeFileTag(UnknownCyberFileProvider fileProvider, String hash, String tagId) {
+  public static void removeFileTag(UnknownCyberFileProvider fileProvider, String hash, String tagId) {
     try {
       // This does not return a response
       fileProvider.getFilesApi().removeFileTag(hash, tagId, "json", false, false, "", true, false, true);
