@@ -29,6 +29,7 @@ import com.unknowncyber.magic.model.EnvelopedFileGenomicsResponse200;
 import com.unknowncyber.magic.model.EnvelopedFileMatchResponseList200EnvelopedIdList200;
 import com.unknowncyber.magic.model.EnvelopedFileUploadResponse200;
 import com.unknowncyber.magic.model.EnvelopedFileUploadResponseList200;
+import com.unknowncyber.magic.model.EnvelopedNote200;
 import com.unknowncyber.magic.model.EnvelopedNote201;
 import com.unknowncyber.magic.model.EnvelopedNoteList200;
 import com.unknowncyber.magic.model.EnvelopedProcedureList200;
@@ -428,6 +429,21 @@ public class api {
 	public static void listProcedureGenomicsNotes(UnknownCyberFileProvider fileProvider, String hash, String address) {
 		try {
 			EnvelopedNoteList200 response = fileProvider.getFilesApi().listProcedureGenomicsNotes(hash, address, "json", false, false, "", true, false);
+		} catch (Exception e) {
+			Msg.error(fileProvider, e);
+		}
+	}
+
+	/**
+	 * Wraps the createProcedureGenomicsNote endpoint.
+	 *  - Takes a fileProvider to access the current program and other at-runtime data.
+   *  - Takes a hash string to reference the file.
+	 *  - Takes an address string to reference the procedure.
+	 *  - Takes a note string that contains the text of the note.
+	 */
+	public static void createProcedureGenomicsNote(UnknownCyberFileProvider fileProvider, String hash, String address, String note) {
+		try {
+			EnvelopedNote200 response = fileProvider.getFilesApi().createProcedureGenomicsNote(note, false, hash, address, "json", false, false, "", true, false);
 		} catch (Exception e) {
 			Msg.error(fileProvider, e);
 		}
