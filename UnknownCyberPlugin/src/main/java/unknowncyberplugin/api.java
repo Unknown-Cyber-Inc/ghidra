@@ -467,6 +467,22 @@ public class api {
 	}
 
 	/**
+	 * Wraps the deleteProcedureGenomicsNote endpoint.
+	 *  - Takes a fileProvider to access the current program and other at-runtime data.
+   *  - Takes a hash string to reference the file.
+	 *  - Takes an address string to reference the procedure.
+	 *  - Takes a noteId string that refernces the specific note.
+	 */
+	public static void deleteProcedureGenomicsNote(UnknownCyberFileProvider fileProvider, String hash, String address, String noteId) {
+		try {
+			// This does not return a response
+			fileProvider.getFilesApi().deleteProcedureGenomicsNote(hash, address, noteId, "json", false, false, "", true, false, true);
+		} catch (Exception e) {
+			Msg.error(fileProvider, e);
+		}
+	}
+
+	/**
 	 * Wraps the listProcedureGenomicsTags endpoint.
 	 *  - Takes a fileProvider to access the current program and other at-runtime data.
    *  - Takes a hash string to reference the file.
