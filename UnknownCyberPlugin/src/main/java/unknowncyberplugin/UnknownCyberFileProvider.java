@@ -40,6 +40,8 @@ import io.swagger.client.ApiClient;
 import resources.ResourceManager;
 import unknowncyberplugin.Components.*;
 import unknowncyberplugin.Components.Buttons.*;
+import unknowncyberplugin.Components.Panes.BaseFilePane;
+import unknowncyberplugin.Components.Panes.FileTabbedPane;
 
 
 public class UnknownCyberFileProvider extends ComponentProviderAdapter {
@@ -60,10 +62,9 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 	private JPanel procButtonsPanel, procTablePanel;
 	private JTabbedPane fileTabs, centralTabs;
 	private JScrollPane fileScroll, centralScroll, procScroll;
-	private FileList<String> fileList;
 	private JTree centralTree;
 	private JTable procTable;
-	private JButton fileToggle, fileUpload, fileDisassemblyUpload;
+	private JButton fileToggle, fileUpload;
 	private JButton fileCreate, fileEdit, fileDelete;
 	private JButton centralCreate, centralEdit, centralDelete;
 	private JButton procToggle, procRequest;
@@ -85,7 +86,7 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 			try {
 				originalFile = new File(program.getExecutablePath());
 				originalSha1 = helpers.hashFile(originalFile, "SHA-1");
-				originalSha512 = helpers.hashFile(originalFile, "SHA-256");
+				originalSha512 = helpers.hashFile(originalFile, "SHA-512");
 				// TODO: enable upload buttons if previously disabled
 			} catch (FileNotFoundException e) {
 				// TODO: disable upload buttons
@@ -224,19 +225,7 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 				// file list panel
 				filePanel = new JPanel();
 				filePanel.setLayout(new BoxLayout(filePanel, BoxLayout.Y_AXIS));
-					fileTabs = new JTabbedPane();
-						DefaultListModel<String> fileListModel = new DefaultListModel<>();
-						fileList = new FileList<>(fileListModel);
-						fileScroll = new JScrollPane(fileList);
-					fileTabs.addTab("Notes", fileScroll);
-						DefaultListModel<String> fileListModel2 = new DefaultListModel<>();
-						DefaultListModel<String> fileListModel3 = new DefaultListModel<>();
-						FileList<String> fileList2 = new FileList<>(fileListModel2);
-						FileList<String> fileList3 = new FileList<>(fileListModel3);
-						JScrollPane fileScroll2 = new JScrollPane(fileList2);
-						JScrollPane fileScroll3 = new JScrollPane(fileList3);
-					fileTabs.addTab("Tags", fileScroll2);
-					fileTabs.addTab("Matches", fileScroll3);
+					fileTabs = new FileTabbedPane(this);
 				filePanel.add(fileTabs);
 					fileCRUDPanel = new JPanel();
 					fileCRUDPanel.setLayout(new FlowLayout());

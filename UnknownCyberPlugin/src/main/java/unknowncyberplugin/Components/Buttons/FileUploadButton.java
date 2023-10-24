@@ -25,10 +25,9 @@ public class FileUploadButton extends BaseButton {
 		} else if (uploadType.equals("Disassembly")) {
 			System.out.println("Disassembly upload button clicked");
 			api.submitDisassembly(fileProvider);
-			// TODO: Remove IDB elif, Ghidra cannot upload IDB files
-		} else if (uploadType.equals("IDB")) {
-			System.out.println("IDB upload clicked");
-			// upload IDB
+		} else if (uploadType.equals("GPR")) {
+			System.out.println("GPR upload clicked");
+			// upload GPR
 		}
 	}
 }
