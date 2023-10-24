@@ -418,4 +418,18 @@ public class api {
 			Msg.error(fileProvider, e);
 		}
 	}
+
+	/**
+	 * Wraps the listProcedureGenomicsNotes endpoint.
+	 * - Takes a fileProvider to access the current program and other at-runtime data.
+   *  - Takes a hash string to reference the file.
+	 *  - Takes an address string to reference the procedure
+	 */
+	public static void listProcedureGenomicsNotes(UnknownCyberFileProvider fileProvider, String hash, String address) {
+		try {
+			EnvelopedNoteList200 response = fileProvider.getFilesApi().listProcedureGenomicsNotes(hash, address, "json", false, false, "", true, false);
+		} catch (Exception e) {
+			Msg.error(fileProvider, e);
+		}
+	}
 }
