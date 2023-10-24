@@ -2,9 +2,14 @@ package unknowncyberplugin.Components.Panes;
 
 import javax.swing.DefaultListModel;
 
-public class FileTagsPane extends BaseFilePane{
+import unknowncyberplugin.Components.Panels.FileCRUDPanel;
 
+public class FileTagsPane extends BaseFilePane{
     DefaultListModel<?> model = (DefaultListModel<?>) list.getModel();
+
+    public FileTagsPane(String listType, FileCRUDPanel fileCRUDPanel){
+        super(listType, fileCRUDPanel);
+    }
 
     public void populate(){
         // for (String item : items) {

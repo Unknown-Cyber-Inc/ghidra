@@ -17,6 +17,7 @@ public class FileDeleteButton extends BaseButton {
         int response = delPopup.displayAndGetResponse();
         System.out.println("Confirmation response: " + response);
 
-        // make api delete call
+        // only if response int is "0"
+            // delete currently selected item in list
     }
 }

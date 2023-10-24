@@ -9,6 +9,8 @@ public class FileEditButton extends BaseButton {
     @Override
     protected void runClickedAction(){
         System.out.println("File edit button clicked");
-        // bring up file text popup filled with current data
+        // check tab instanceof
+        // if note:
+            // bring up FileCRUDPopup filled with current data
     }
 }

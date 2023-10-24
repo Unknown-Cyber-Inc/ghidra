@@ -5,13 +5,17 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import unknowncyberplugin.Components.Panels.FileCRUDPanel;
+
 public class FileList<T extends Serializable> extends JList<T> {
     private DefaultListModel<T> listModel;
     private transient ListSelectionModel selectionModel;
     private T currentSelection;
+    private FileCRUDPanel fileCRUDPanel;
 
-    public FileList(DefaultListModel<T> model){
+    public FileList(String listType, FileCRUDPanel fileCRUDPanel, DefaultListModel<T> model){
         super(model);
+        this.fileCRUDPanel = fileCRUDPanel;
         listModel = model;
         selectionModel = getSelectionModel();
         selectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -20,6 +24,7 @@ public class FileList<T extends Serializable> extends JList<T> {
             public void valueChanged(ListSelectionEvent ev){
                 if (!ev.getValueIsAdjusting()){
                     setSelection(getSelectedValue());
+                    updateButtons(listType);
                 }
             }
         });
@@ -55,12 +60,16 @@ public class FileList<T extends Serializable> extends JList<T> {
 
     public void setSelection(T item){
         this.currentSelection = item;
-        updateButtons();
     }
 
-    // This is subject to move out of this class and into the parent panel.
-    public void updateButtons(){
-        // update CRUD buttons
+    public void updateButtons(String listType){
+        if (listType.equalsIgnoreCase("notes")){
+            fileCRUDPanel.noteItemSelected();
+        } else if (listType.equalsIgnoreCase("tags")){
+            fileCRUDPanel.tagItemSelected();
+        } else {
+            fileCRUDPanel.disableButtons();
+        }
     }
 
 }

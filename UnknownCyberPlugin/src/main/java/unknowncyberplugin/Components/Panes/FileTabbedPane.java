@@ -2,9 +2,8 @@ package unknowncyberplugin.Components.Panes;
 
 import unknowncyberplugin.UnknownCyberFileProvider;
 import unknowncyberplugin.api;
-import unknowncyberplugin.Components.FileList;
-
-import java.awt.Component;
+import unknowncyberplugin.Components.Panels.FileCRUDPanel;
+import unknowncyberplugin.Components.Panels.FilePanel;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -12,18 +11,20 @@ import javax.swing.event.ChangeListener;
 
 public class FileTabbedPane extends JTabbedPane {
     UnknownCyberFileProvider fileProvider;
-    BaseFilePane notesPane;
-    BaseFilePane tagsPane;
-    BaseFilePane matchesPane;
+    FileCRUDPanel fileCRUDPanel;
+    FileNotesPane notesPane;
+    FileTagsPane tagsPane;
+    FileMatchesPane matchesPane;
     
-    public FileTabbedPane(UnknownCyberFileProvider fileProvider) {
+    public FileTabbedPane(UnknownCyberFileProvider fileProvider, FileCRUDPanel fileCRUDPanel) {
         super();
         this.fileProvider = fileProvider;
+        this.fileCRUDPanel = fileCRUDPanel;
 
-        // create and add BaseFilePanes as tabs
-        notesPane = new FileNotesPane();
-		tagsPane = new FileTagsPane();
-		matchesPane = new FileMatchesPane();
+        // create and add panes as tabs
+        notesPane = new FileNotesPane("notes", fileCRUDPanel);
+		tagsPane = new FileTagsPane("tags", fileCRUDPanel);
+		matchesPane = new FileMatchesPane("matches", fileCRUDPanel);
         addTab("Notes", notesPane);
         addTab("Tags", tagsPane);
         addTab("Matches", matchesPane);
@@ -31,30 +32,32 @@ public class FileTabbedPane extends JTabbedPane {
         this.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
-                int index = getSelectedIndex();
-                String tabTitle = getTitleAt(index);
-
-                System.out.println("Selected tab: " + tabTitle);
-                fetchAndPopulateList(tabTitle);
+                fetchAndPopulateList();
             }
         });
     }
 
-    private void fetchAndPopulateList(String listType){
+    private void fetchAndPopulateList(){
         String hash = fileProvider.getHash("sha1");
-        BaseFilePane tabComponent = (BaseFilePane) getTabComponentAt(getSelectedIndex());
+        BaseFilePane tabComponent = getTabComponent();
 
         if (tabComponent instanceof FileNotesPane){
             // response = api.listFileNotes(fileProvider, hash);
-            // PROCESS RESPONSE TO GET DATA OUT
+            // PROCESS RESPONSE TO GET DATA OUT IF NOT DONE IN REQUEST METHOD
+
+            fileCRUDPanel.notesTabSelected();
             api.listFileNotes(fileProvider, hash);
         } else if (tabComponent instanceof FileTagsPane){
             // response = api.listFileTags(fileProvider, hash);
-            // PROCESS RESPONSE TO GET DATA OUT
+            // PROCESS RESPONSE TO GET DATA OUT IF NOT DONE IN REQUEST METHOD
+
+            fileCRUDPanel.tagsTabSelected();
             api.listFileTags(fileProvider, hash);
         } else if (tabComponent instanceof FileMatchesPane){
             // response = api.getFileMatches
-            // PROCESS RESPONSE TO GET DATA OUT
+            // PROCESS RESPONSE TO GET DATA OUT IF NOT DONE IN REQUEST METHOD
+
+            fileCRUDPanel.disableButtons();
             api.getFileMatches(fileProvider, hash);
         }
 
@@ -62,8 +65,8 @@ public class FileTabbedPane extends JTabbedPane {
         tabComponent.populate();
     }
 
-    public String getSelectedTabTitle() {
-        return getTitleAt(getSelectedIndex());
+    public BaseFilePane getTabComponent() {
+        return (BaseFilePane) getTabComponentAt(getSelectedIndex());
     }
 
 }

@@ -9,6 +9,14 @@ public class FileCreateButton extends BaseButton {
     @Override
     protected void runClickedAction(){
         System.out.println("File create button clicked");
-        // bring up file text popup
+
+        // create FileCRUDPopup
+        // capture user input
+
+        // check tab instanceof
+        // if note:
+            // make create file note request
+        // elif tags:
+            // make create file tag request
     }
 }

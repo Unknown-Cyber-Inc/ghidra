@@ -40,6 +40,9 @@ import io.swagger.client.ApiClient;
 import resources.ResourceManager;
 import unknowncyberplugin.Components.*;
 import unknowncyberplugin.Components.Buttons.*;
+import unknowncyberplugin.Components.Panels.FileButtonsPanel;
+import unknowncyberplugin.Components.Panels.FileCRUDPanel;
+import unknowncyberplugin.Components.Panels.FilePanel;
 import unknowncyberplugin.Components.Panes.BaseFilePane;
 import unknowncyberplugin.Components.Panes.FileTabbedPane;
 
@@ -216,26 +219,9 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 			mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 			mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 				// file buttons panel
-				fileButtonsPanel = new JPanel();
-				fileButtonsPanel.setLayout(new FlowLayout());
-					fileToggle = new FileToggleButton();
-					fileUpload = new FileUploadButton(this);
-				fileButtonsPanel.add(fileToggle);
-				fileButtonsPanel.add(fileUpload);
+				fileButtonsPanel = new FileButtonsPanel(this);
 				// file list panel
-				filePanel = new JPanel();
-				filePanel.setLayout(new BoxLayout(filePanel, BoxLayout.Y_AXIS));
-					fileTabs = new FileTabbedPane(this);
-				filePanel.add(fileTabs);
-					fileCRUDPanel = new JPanel();
-					fileCRUDPanel.setLayout(new FlowLayout());
-						fileCreate = new FileCreateButton();
-						fileEdit = new FileEditButton();
-						fileDelete = new FileDeleteButton();
-					fileCRUDPanel.add(fileCreate);
-					fileCRUDPanel.add(fileEdit);
-					fileCRUDPanel.add(fileDelete);
-				filePanel.add(fileCRUDPanel);
+				filePanel = new FilePanel(this);
 				// central tabbed tree panel
 				centralPanel = new JPanel();
 				centralPanel.setLayout(new BoxLayout(centralPanel, BoxLayout.Y_AXIS));

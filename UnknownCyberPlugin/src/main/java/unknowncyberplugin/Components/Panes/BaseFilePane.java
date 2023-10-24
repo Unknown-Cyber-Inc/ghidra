@@ -2,14 +2,15 @@ package unknowncyberplugin.Components.Panes;
 
 import javax.swing.*;
 import unknowncyberplugin.Components.FileList;
+import unknowncyberplugin.Components.Panels.FileCRUDPanel;
 
 public abstract class BaseFilePane extends JScrollPane{
 
     protected FileList<?> list;
     
-    protected BaseFilePane(){
+    protected BaseFilePane(String listType, FileCRUDPanel fileCRUDPanel){
         super();
-        list = new FileList<>(new DefaultListModel<>());
+        list = new FileList<>(listType, fileCRUDPanel, new DefaultListModel<>());
         setViewportView(list);
     }
 
