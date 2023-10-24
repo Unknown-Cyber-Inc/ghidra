@@ -404,7 +404,7 @@ public class api {
 	 * Wraps the listProcedureSimilarities endpoint.
 	 *  - Takes a fileProvider to access the current program and other at-runtime data.
    *  - Takes a hash string to reference the file.
-	 *  - Takes an address string to reference the procedure
+	 *  - Takes an address string to reference the procedure.
 	 */
 	public static void listProcedureSimilarities(UnknownCyberFileProvider fileProvider, String hash, String address) {
 		try {
@@ -421,13 +421,27 @@ public class api {
 
 	/**
 	 * Wraps the listProcedureGenomicsNotes endpoint.
-	 * - Takes a fileProvider to access the current program and other at-runtime data.
+	 *  - Takes a fileProvider to access the current program and other at-runtime data.
    *  - Takes a hash string to reference the file.
-	 *  - Takes an address string to reference the procedure
+	 *  - Takes an address string to reference the procedure.
 	 */
 	public static void listProcedureGenomicsNotes(UnknownCyberFileProvider fileProvider, String hash, String address) {
 		try {
 			EnvelopedNoteList200 response = fileProvider.getFilesApi().listProcedureGenomicsNotes(hash, address, "json", false, false, "", true, false);
+		} catch (Exception e) {
+			Msg.error(fileProvider, e);
+		}
+	}
+
+	/**
+	 * Wraps the listProcedureGenomicsTags endpoint.
+	 *  - Takes a fileProvider to access the current program and other at-runtime data.
+   *  - Takes a hash string to reference the file.
+	 *  - Takes an address string to reference the procedure.
+	 */
+	public static void listProcedureGenomicsTags(UnknownCyberFileProvider fileProvider, String hash, String address) {
+		try {
+			EnvelopedTagList200 response = fileProvider.getFilesApi().listProcedureGenomicsTags(hash, address, "json", false, false, "", true, false);
 		} catch (Exception e) {
 			Msg.error(fileProvider, e);
 		}
