@@ -450,6 +450,23 @@ public class api {
 	}
 
 	/**
+	 * Wraps the updateProcedureGenomicsNote endpoint.
+	 *  - Takes a fileProvider to access the current program and other at-runtime data.
+   *  - Takes a hash string to reference the file.
+	 *  - Takes an address string to reference the procedure.
+	 *  - Takes a noteId string that refernces the specific note.
+	 *  - Takes a note string that contains the updated text of the note.
+	 */
+	public static void updateProcedureGenomicsNote(UnknownCyberFileProvider fileProvider, String hash, String address, String noteId, String note) {
+		try {
+			String updateMask = "note";
+			EnvelopedNote200 response = fileProvider.getFilesApi().updateProcedureGenomicsNote(hash, address, noteId, note, false, "json", false, false, "", true, false, updateMask);
+		} catch (Exception e) {
+			Msg.error(fileProvider, e);
+		}
+	}
+
+	/**
 	 * Wraps the listProcedureGenomicsTags endpoint.
 	 *  - Takes a fileProvider to access the current program and other at-runtime data.
    *  - Takes a hash string to reference the file.
