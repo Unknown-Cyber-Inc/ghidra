@@ -33,6 +33,7 @@ import com.unknowncyber.magic.model.EnvelopedNote200;
 import com.unknowncyber.magic.model.EnvelopedNote201;
 import com.unknowncyber.magic.model.EnvelopedNoteList200;
 import com.unknowncyber.magic.model.EnvelopedProcedureList200;
+import com.unknowncyber.magic.model.EnvelopedTag200;
 import com.unknowncyber.magic.model.EnvelopedTagCreatedResponse200;
 import com.unknowncyber.magic.model.EnvelopedTagList200;
 
@@ -491,6 +492,21 @@ public class api {
 	public static void listProcedureGenomicsTags(UnknownCyberFileProvider fileProvider, String hash, String address) {
 		try {
 			EnvelopedTagList200 response = fileProvider.getFilesApi().listProcedureGenomicsTags(hash, address, "json", false, false, "", true, false);
+		} catch (Exception e) {
+			Msg.error(fileProvider, e);
+		}
+	}
+
+	/**
+	 * Wraps the createProcedureGenomicsTag endpoint.
+	 *  - Takes a fileProvider to access the current program and other at-runtime data.
+   *  - Takes a hash string to reference the file.
+	 *  - Takes an address string to reference the procedure.
+	 *  - Takes a name string to label the tag with
+	 */
+	public static void createProcedureGenomicsTag(UnknownCyberFileProvider fileProvider, String hash, String address, String name) {
+		try {
+			EnvelopedTag200 response = fileProvider.getFilesApi().createProcedureGenomicsTag(name, hash, address, "json", false, false, "", true, false);
 		} catch (Exception e) {
 			Msg.error(fileProvider, e);
 		}
