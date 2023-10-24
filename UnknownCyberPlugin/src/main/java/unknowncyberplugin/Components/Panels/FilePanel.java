@@ -11,8 +11,8 @@ public class FilePanel extends JPanel{
     FileCRUDPanel fileCRUDPanel;
     
     public FilePanel(UnknownCyberFileProvider fileProvider){
-        fileTabs = new FileTabbedPane(fileProvider, this);
         fileCRUDPanel = new FileCRUDPanel();
+        fileTabs = new FileTabbedPane(fileProvider, fileCRUDPanel);
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         add(fileTabs);
