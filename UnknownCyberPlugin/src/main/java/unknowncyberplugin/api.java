@@ -31,6 +31,7 @@ import com.unknowncyber.magic.model.EnvelopedFileUploadResponse200;
 import com.unknowncyber.magic.model.EnvelopedFileUploadResponseList200;
 import com.unknowncyber.magic.model.EnvelopedNote201;
 import com.unknowncyber.magic.model.EnvelopedNoteList200;
+import com.unknowncyber.magic.model.EnvelopedProcedureList200;
 import com.unknowncyber.magic.model.EnvelopedTagCreatedResponse200;
 import com.unknowncyber.magic.model.EnvelopedTagList200;
 
@@ -398,4 +399,23 @@ public class api {
       Msg.error(fileProvider, e);
     }
   }
+
+	/**
+	 * Wraps the listProcedureSimilarities endpoint.
+	 *  - Takes a fileProvider to access the current program and other at-runtime data.
+   *  - Takes a hash string to reference the file.
+	 *  - Takes an address string to reference the procedure
+	 */
+	public static void listProcedureSimilarities(UnknownCyberFileProvider fileProvider, String hash, String address) {
+		try {
+			String method = "semantic_similarity";
+			Integer pageCount = 1;
+			Integer pageSize = 25;
+			Float minThreshold = 0.7f;
+			Float maxThreshold = 1.0f;
+			EnvelopedProcedureList200 response = fileProvider.getFilesApi().listProcedureSimilarities(hash, address, "json", false, false, "", true, false, pageCount, pageSize, 0, maxThreshold, method, minThreshold);
+		} catch (Exception e) {
+			Msg.error(fileProvider, e);
+		}
+	}
 }
