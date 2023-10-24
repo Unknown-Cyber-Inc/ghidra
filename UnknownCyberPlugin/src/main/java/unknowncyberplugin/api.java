@@ -502,11 +502,27 @@ public class api {
 	 *  - Takes a fileProvider to access the current program and other at-runtime data.
    *  - Takes a hash string to reference the file.
 	 *  - Takes an address string to reference the procedure.
-	 *  - Takes a name string to label the tag with
+	 *  - Takes a name string to label the tag with.
 	 */
 	public static void createProcedureGenomicsTag(UnknownCyberFileProvider fileProvider, String hash, String address, String name) {
 		try {
 			EnvelopedTag200 response = fileProvider.getFilesApi().createProcedureGenomicsTag(name, hash, address, "json", false, false, "", true, false);
+		} catch (Exception e) {
+			Msg.error(fileProvider, e);
+		}
+	}
+
+	/**
+	 * Wraps the deleteProcedureGenomicsTagById endpoint.
+	 *  - Takes a fileProvider to access the current program and other at-runtime data.
+   *  - Takes a hash string to reference the file.
+	 *  - Takes an address string to reference the procedure.
+	 *  - Takes a tagId string to reference the specific tag.
+	 */
+	public static void deleteProcedureGenomicsTagById(UnknownCyberFileProvider fileProvider, String hash, String address, String tagId) {
+		try {
+			// This does not return a response
+			fileProvider.getFilesApi().deleteProcedureGenomicsTagById(hash, address, tagId, "json", false, false, "", true, false, true);
 		} catch (Exception e) {
 			Msg.error(fileProvider, e);
 		}
