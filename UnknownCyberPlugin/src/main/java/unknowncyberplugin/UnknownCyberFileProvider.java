@@ -26,6 +26,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
 import com.unknowncyber.magic.api.FilesApi;
+import com.unknowncyber.magic.api.ProceduresApi;
 
 import docking.WindowPosition;
 import docking.action.*;
@@ -50,6 +51,7 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 	// as opposed to being passed into functions as a local reference.
 	private ApiClient apiClient;
 	private FilesApi filesApi;
+	private ProceduresApi procApi;
 
 	// GUI starts here
 	private JPanel mainPanel;
@@ -124,6 +126,7 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 		// createActions();
 		apiClient = new ApiClient();
 		filesApi = new FilesApi(apiClient);
+		procApi = new ProceduresApi(apiClient);
 		// procsApi = new ProcsApi(apiClient);
 	}
 
@@ -137,6 +140,10 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 
 	public FilesApi getFilesApi() {
 		return filesApi;
+	}
+
+	public ProceduresApi getProcApi() {
+		return procApi;
 	}
 
 	public FunctionIterator getFunctionIterator(){

@@ -26,6 +26,7 @@ import net.lingala.zip4j.ZipFile;
 
 import com.unknowncyber.magic.model.EnvelopedFile200;
 import com.unknowncyber.magic.model.EnvelopedFileGenomicsResponse200;
+import com.unknowncyber.magic.model.EnvelopedFileList200;
 import com.unknowncyber.magic.model.EnvelopedFileMatchResponseList200EnvelopedIdList200;
 import com.unknowncyber.magic.model.EnvelopedFileUploadResponse200;
 import com.unknowncyber.magic.model.EnvelopedFileUploadResponseList200;
@@ -523,6 +524,23 @@ public class api {
 		try {
 			// This does not return a response
 			fileProvider.getFilesApi().deleteProcedureGenomicsTagById(hash, address, tagId, "json", false, false, "", true, false, true);
+		} catch (Exception e) {
+			Msg.error(fileProvider, e);
+		}
+	}
+
+	/**
+	 * Wraps the listProcedureFiles endpoint.
+	 *  - Takes a fileProvider to access the current program and other at-runtime data.
+	 *  - Takes a procHash string to reference the specific procedure.
+	 */
+	public static void listProcedureFiles(UnknownCyberFileProvider fileProvider, String procHash) {
+		try {
+			String readMask = "sha1,sha256,filenames";
+			String expandMask = "files";
+			Integer pageCount = 1;
+			Integer pageSize = 25;
+			EnvelopedFileList200 response = fileProvider.getProcApi().listProcedureFiles(procHash, "json", false, false, "", true, false, pageCount, pageSize, 0, readMask, expandMask);
 		} catch (Exception e) {
 			Msg.error(fileProvider, e);
 		}
