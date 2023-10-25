@@ -10,7 +10,7 @@ public class FileCreateButton extends BaseButton {
 
     @Override
     protected void runClickedAction(){
-        Msg.info("File create button clicked");
+        Msg.info(this, "File create button clicked");
 
         // create FileCRUDPopup
         // capture user input

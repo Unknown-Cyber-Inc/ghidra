@@ -12,12 +12,12 @@ public class CenterDeleteButton extends BaseButton {
     
     @Override
     protected void runClickedAction(){
-        Msg.info("Center delete button clicked");
+        Msg.info(this, "Center delete button clicked");
 
         // bring up delete confirmation popup
         DeleteConfirmationPopup delPopup = new DeleteConfirmationPopup();
         int response = delPopup.displayAndGetResponse();
-        Msg.info("Confirmation response: " + response);
+        Msg.info(this, ("Confirmation response: " + response));
 
         // make delete api call
     }

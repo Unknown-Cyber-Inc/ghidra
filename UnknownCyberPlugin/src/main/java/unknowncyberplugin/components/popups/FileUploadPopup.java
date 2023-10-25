@@ -33,7 +33,7 @@ public class FileUploadPopup extends JOptionPane {
         Object response = getValue();
         dialog.dispose();
 
-        Msg.info("Response is: " + response);
+        Msg.info(this, ("Response is: " + response));
 
         return (String) response;
     }

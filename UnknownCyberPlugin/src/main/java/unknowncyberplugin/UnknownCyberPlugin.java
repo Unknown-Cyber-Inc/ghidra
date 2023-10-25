@@ -72,7 +72,7 @@ public class UnknownCyberPlugin extends ProgramPlugin {
 	}
 
 	public void runPythonScript(String script_name, Program program) {
-		Msg.info("Program program in runPyScrpt: " + program);
+		Msg.info(this, ("Program program in runPyScrpt: " + program));
         // Create a new GhidraState
         GhidraState state = new GhidraState(this.tool, this.tool.getProject(), program, currentLocation, currentSelection, currentHighlight);
 

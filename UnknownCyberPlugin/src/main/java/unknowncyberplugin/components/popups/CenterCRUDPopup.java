@@ -26,7 +26,7 @@ public class CenterCRUDPopup extends JOptionPane {
 
         saveButton = new JButton("Save");
         saveButton.addActionListener(ev -> {
-            Msg.info("Saving: " + textArea.getText());
+            Msg.info(this, ("Saving: " + textArea.getText()));
             setValue(saveButton);
         });
 

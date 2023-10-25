@@ -26,6 +26,7 @@ public abstract class BaseCenterTabPane extends JScrollPane{
         rootNode.add(tagsNode);
 
         tree = new CenterTree(centerCRUDPanel, new DefaultTreeModel(rootNode));
+        add(tree);
     }
 
     protected BaseCenterTabPane(String rootNodeName, UnknownCyberFileProvider fileProvider, CenterCRUDPanel centerCRUDPanel){
@@ -39,6 +40,7 @@ public abstract class BaseCenterTabPane extends JScrollPane{
         rootNode.add(tagsNode);
 
         tree = new CenterTree(centerCRUDPanel, new DefaultTreeModel(rootNode));
+        add(tree);
     }
 
     public CenterTree getTree(){

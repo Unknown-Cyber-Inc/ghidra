@@ -1,9 +1,11 @@
 package unknowncyberplugin.components.panes;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
 import unknowncyberplugin.components.panels.CenterTabSubPanel;
@@ -18,14 +20,23 @@ public class CenterTabbedPane extends JTabbedPane{
     }
 
     private void generateDefaultTab(){
-        JPanel defaultTab = new JPanel(new BorderLayout());
+        JPanel defaultPanel = new JPanel(new BorderLayout());
+        defaultPanel.setBackground(Color.WHITE);
+        
         JLabel instructionLabel = new JLabel(
-            "<html>Double click an address in the table below to create a new tab.<br>" +
-            "Within that tab, you can double click a file or procedure from within the<br>" +
-            "'Similar Procedure Locations' tree.</html>"
+            "<html>Double-click an address in the table below to create a new tab.<br><br>" +
+            "Within a procedure tab's \"Similar Procedure Locations\" tree,<br>" +
+            "double-click a file or procedure to create a tab for that item.</html>"
         );
+        instructionLabel.setOpaque(true);
+        instructionLabel.setBackground(Color.WHITE);
 
-        defaultTab.add(instructionLabel);
+        JScrollPane defaultTab = new JScrollPane();
+
+        defaultPanel.add(instructionLabel);
+        defaultTab.setViewportView(defaultPanel);
+        defaultTab.getViewport().setBackground(Color.WHITE);
+        
         addTab("Get Started", defaultTab);
         defaultTabExists = true;
     }

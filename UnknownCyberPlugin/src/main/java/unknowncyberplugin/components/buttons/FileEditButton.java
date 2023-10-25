@@ -10,7 +10,7 @@ public class FileEditButton extends BaseButton {
 
     @Override
     protected void runClickedAction(){
-        Msg.info("File edit button clicked");
+        Msg.info(this, "File edit button clicked");
         // check tab instanceof
         // if note:
             // bring up FileCRUDPopup filled with current data

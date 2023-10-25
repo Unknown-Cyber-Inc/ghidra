@@ -12,7 +12,7 @@ public class ProcRetrievalButton extends BaseButton {
 
     @Override
     protected void runClickedAction(){
-        Msg.info("Proc retrieval button clicked");
+        Msg.info(this, "Proc retrieval button clicked");
         // api.listFileGenomics
     }
 }

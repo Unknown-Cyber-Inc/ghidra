@@ -12,12 +12,12 @@ public class FileDeleteButton extends BaseButton {
 
     @Override
     protected void runClickedAction(){
-        Msg.info("File delete button clicked");
+        Msg.info(this, "File delete button clicked");
 
         // Bring up confirmation popup
         DeleteConfirmationPopup delPopup = new DeleteConfirmationPopup();
         int response = delPopup.displayAndGetResponse();
-        Msg.info("Confirmation response: " + response);
+        Msg.info(this, ("Confirmation response: " + response));
 
         // only if response int is "0"
             // delete currently selected item in list

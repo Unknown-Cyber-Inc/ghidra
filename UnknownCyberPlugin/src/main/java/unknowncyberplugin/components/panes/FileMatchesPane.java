@@ -14,8 +14,10 @@ public class FileMatchesPane extends BaseFilePane<String>{
 
     @Override
     public void populate(String[] items){
-        for (String item : items) {
-            addItem(item);
+        if (items != null && items.length >0){
+            for (String item : items) {
+                addItem(item);
+            }
         }
     }
     

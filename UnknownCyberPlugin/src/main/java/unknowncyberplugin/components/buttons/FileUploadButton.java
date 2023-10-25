@@ -17,18 +17,18 @@ public class FileUploadButton extends BaseButton {
 
 	@Override
 	protected void runClickedAction(){
-		Msg.info("File upload button clicked");
+		Msg.info(this, "File upload button clicked");
 		FileUploadPopup uploadPopup = new FileUploadPopup();
 		String uploadType = uploadPopup.displayAndGetResponse();
 
 		if (uploadType.equals("Binary")) {
-			Msg.info("Binary upload button clicked");
+			Msg.info(this, "Binary upload button clicked");
 			api.submitFile(fileProvider);
 		} else if (uploadType.equals("Disassembly")) {
-			Msg.info("Disassembly upload button clicked");
+			Msg.info(this, "Disassembly upload button clicked");
 			api.submitDisassembly(fileProvider);
 		} else if (uploadType.equals("GPR")) {
-			Msg.info("GPR upload clicked");
+			Msg.info(this, "GPR upload clicked");
 			// upload GPR
 		}
 	}

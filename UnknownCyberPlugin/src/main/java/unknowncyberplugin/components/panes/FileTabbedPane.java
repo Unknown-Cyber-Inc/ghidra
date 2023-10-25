@@ -57,7 +57,7 @@ public class FileTabbedPane extends JTabbedPane {
     }
 
     public BaseFilePane<?> getActiveTabComponent() {
-        return (BaseFilePane<?>) getTabComponentAt(getSelectedIndex());
+        return (BaseFilePane<?>) getComponentAt(getSelectedIndex());
     }
 
 }

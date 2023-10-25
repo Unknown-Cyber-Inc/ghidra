@@ -11,7 +11,7 @@ public class SaveButton extends PopupOptionButton {
     }
 
     public void runClickedAction(){
-        Msg.info("Saving: " + popup.getText());
+        Msg.info(this, ("Saving: " + popup.getText()));
         popup.setValue(this);
     }
 }

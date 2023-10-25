@@ -10,7 +10,7 @@ public class CenterEditButton extends BaseButton {
     
     @Override
     protected void runClickedAction(){
-        Msg.info("Center edit button clicked");
+        Msg.info(this, "Center edit button clicked");
         // bring up center popup filled with current data
     }
     

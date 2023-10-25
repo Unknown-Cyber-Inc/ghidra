@@ -10,7 +10,7 @@ public class CenterCreateButton extends BaseButton {
     
     @Override
     protected void runClickedAction(){
-        Msg.info("Center create button clicked");
+        Msg.info(this, "Center create button clicked");
         // bring up center popup
     }
 }

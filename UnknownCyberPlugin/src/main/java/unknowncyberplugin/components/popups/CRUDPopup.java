@@ -28,7 +28,7 @@ public class CRUDPopup extends JOptionPane {
 
         saveButton = new SaveButton(this);
         saveButton.addActionListener(ev -> {
-            Msg.info("Saving: " + textArea.getText());
+            Msg.info(this, ("Saving: " + textArea.getText()));
             setValue(saveButton);
         });
 

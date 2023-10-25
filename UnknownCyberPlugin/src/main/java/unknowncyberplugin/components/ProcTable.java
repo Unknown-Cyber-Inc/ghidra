@@ -5,6 +5,7 @@ import javax.swing.table.DefaultTableModel;
 
 import unknowncyberplugin.UnknownCyberFileProvider;
 
+import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import ghidra.util.Msg;
@@ -20,9 +21,17 @@ public class ProcTable extends JTable {
         super(rowData, COLUMN_NAMES);
         this.fileProvider = fileProvider;
 
-        tableModel = new DefaultTableModel(rowData, COLUMN_NAMES);
+        tableModel = new DefaultTableModel(rowData, COLUMN_NAMES) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
         setModel(tableModel);
         setAutoCreateRowSorter(true);
+        setOpaque(true);
+        setBackground(Color.WHITE);
+        setRowHeight(20);
         
         ListSelectionModel rowSelectionModel = getSelectionModel();
         rowSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -39,12 +48,12 @@ public class ProcTable extends JTable {
         });
     }
 
-    public void addRow(Object[] rowData) {
+    public void addTableRow(Object[] rowData) {
         tableModel.addRow(rowData);
     }
 
     public void handleDoubleClick(Object value) {
-        Msg.info("Double-clicked on: " + value);
+        Msg.info(this, ("Double-clicked on: " + value));
         // Create center tab for the double-clicked procedure
     }
 }
