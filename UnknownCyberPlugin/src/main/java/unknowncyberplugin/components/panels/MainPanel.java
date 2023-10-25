@@ -12,7 +12,7 @@ public class MainPanel extends JPanel{
         FilePanel filePanel = new FilePanel(fileProvider);
         FileButtonsPanel fileButtonsPanel = new FileButtonsPanel(fileProvider, filePanel);
         CenterPanel centerPanel = new CenterPanel(fileProvider);
-        ProcTablePanel procTablePanel = new ProcTablePanel(fileProvider);
+        ProcTablePanel procTablePanel = new ProcTablePanel(fileProvider, centerPanel);
         ProcButtonsPanel procButtonsPanel = new ProcButtonsPanel(procTablePanel);
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));

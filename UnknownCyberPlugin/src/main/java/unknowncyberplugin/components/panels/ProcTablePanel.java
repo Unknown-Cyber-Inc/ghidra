@@ -9,9 +9,9 @@ import unknowncyberplugin.components.panes.ProcTablePane;
 
 public class ProcTablePanel extends JPanel{
 
-    public ProcTablePanel(UnknownCyberFileProvider fileProvider){
+    public ProcTablePanel(UnknownCyberFileProvider fileProvider, CenterPanel centerPanel){
         ProcRetrievalButton procRetrievalButton = new ProcRetrievalButton();
-        ProcTablePane tablePane = new ProcTablePane(fileProvider);
+        ProcTablePane tablePane = new ProcTablePane(fileProvider, centerPanel);
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         add(procRetrievalButton);

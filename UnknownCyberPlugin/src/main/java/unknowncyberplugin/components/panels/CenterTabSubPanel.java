@@ -10,21 +10,11 @@ import unknowncyberplugin.components.panes.CenterTabbedPane;
 
 public class CenterTabSubPanel extends JPanel{
 
-    public CenterTabSubPanel(final CenterTabbedPane pane){
+    public CenterTabSubPanel(final CenterTabbedPane pane, String tabName){
         super(new FlowLayout());
-
         setOpaque(false);
 
-        JLabel label = new JLabel() {
-            @Override
-            public String getText() {
-                int index = pane.indexOfTabComponent(this);
-                if(index != -1){
-                    return pane.getTitleAt(index);
-                }
-                return null;
-            }
-        };
+        JLabel label = new JLabel(tabName);
 
         TabCloseButton closeButton = new TabCloseButton();
         closeButton.addActionListener(ev -> {

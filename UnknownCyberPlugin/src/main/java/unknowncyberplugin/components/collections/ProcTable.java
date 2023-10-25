@@ -1,9 +1,11 @@
-package unknowncyberplugin.components;
+package unknowncyberplugin.components.collections;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 import unknowncyberplugin.UnknownCyberFileProvider;
+import unknowncyberplugin.components.panels.CenterPanel;
+import unknowncyberplugin.components.panes.CenterProcedurePane;
 
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
@@ -15,11 +17,13 @@ public class ProcTable extends JTable {
     // into an array of arrays.
     private DefaultTableModel tableModel;
     private UnknownCyberFileProvider fileProvider;
+    private CenterPanel centerPanel;
     private static final String[] COLUMN_NAMES = {"Address", "Occurrence #", "Type", "Notes", "Tags"};
 
-    public ProcTable(Object[][] rowData, UnknownCyberFileProvider fileProvider){
+    public ProcTable(Object[][] rowData, UnknownCyberFileProvider fileProvider, CenterPanel centerPanel){
         super(rowData, COLUMN_NAMES);
         this.fileProvider = fileProvider;
+        this.centerPanel = centerPanel;
 
         tableModel = new DefaultTableModel(rowData, COLUMN_NAMES) {
             @Override
@@ -54,6 +58,9 @@ public class ProcTable extends JTable {
 
     public void handleDoubleClick(Object value) {
         Msg.info(this, ("Double-clicked on: " + value));
-        // Create center tab for the double-clicked procedure
+        centerPanel.addCenterTab(
+            value.toString(),
+            new CenterProcedurePane(value.toString(), centerPanel.getCenterCRUDPanel(), fileProvider)
+        );
     }
 }

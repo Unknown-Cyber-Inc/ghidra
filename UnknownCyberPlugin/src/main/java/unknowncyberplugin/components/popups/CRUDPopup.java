@@ -14,7 +14,8 @@ public class CRUDPopup extends JOptionPane {
     
     public CRUDPopup() {
         textArea = new JTextArea();
-        JScrollPane scrollPane = new JScrollPane(textArea);
+        JScrollPane scrollPane = new JScrollPane();
+        scrollPane.setViewportView(textArea);
 
         setMessage(scrollPane);
         setOptionType(DEFAULT_OPTION);

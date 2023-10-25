@@ -12,7 +12,8 @@ public class FileCRUDPopup extends JOptionPane {
     
     public FileCRUDPopup() {
         textArea = new JTextArea();
-        JScrollPane scrollPane = new JScrollPane(textArea);
+        JScrollPane scrollPane = new JScrollPane();
+        scrollPane.setViewportView(textArea);
 
         setMessage(scrollPane);
         setOptionType(DEFAULT_OPTION);

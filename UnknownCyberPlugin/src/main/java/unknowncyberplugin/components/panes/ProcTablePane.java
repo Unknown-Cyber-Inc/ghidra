@@ -6,16 +6,17 @@ import java.awt.Dimension;
 import javax.swing.JScrollPane;
 
 import unknowncyberplugin.UnknownCyberFileProvider;
-import unknowncyberplugin.components.ProcTable;
+import unknowncyberplugin.components.collections.ProcTable;
+import unknowncyberplugin.components.panels.CenterPanel;
 
 public class ProcTablePane extends JScrollPane{
     private UnknownCyberFileProvider fileProvider;
     private ProcTable table;
 
-    public ProcTablePane(UnknownCyberFileProvider fileProvider){
+    public ProcTablePane(UnknownCyberFileProvider fileProvider, CenterPanel centerPanel){
         super();
         this.fileProvider = fileProvider;
-        table = new ProcTable(null, fileProvider);
+        table = new ProcTable(null, fileProvider, centerPanel);
 
         // PHONY DATA -- REMOVE ONCE API CALLS IN PLACE
         Object[][] data = {

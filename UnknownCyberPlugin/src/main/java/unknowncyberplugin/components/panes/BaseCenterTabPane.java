@@ -5,7 +5,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
 import unknowncyberplugin.UnknownCyberFileProvider;
-import unknowncyberplugin.components.CenterTree;
+import unknowncyberplugin.components.collections.CenterTree;
 import unknowncyberplugin.components.panels.CenterCRUDPanel;
 
 public abstract class BaseCenterTabPane extends JScrollPane{
@@ -26,7 +26,7 @@ public abstract class BaseCenterTabPane extends JScrollPane{
         rootNode.add(tagsNode);
 
         tree = new CenterTree(centerCRUDPanel, new DefaultTreeModel(rootNode));
-        add(tree);
+        setViewportView(tree);
     }
 
     protected BaseCenterTabPane(String rootNodeName, UnknownCyberFileProvider fileProvider, CenterCRUDPanel centerCRUDPanel){
@@ -40,7 +40,7 @@ public abstract class BaseCenterTabPane extends JScrollPane{
         rootNode.add(tagsNode);
 
         tree = new CenterTree(centerCRUDPanel, new DefaultTreeModel(rootNode));
-        add(tree);
+        setViewportView(tree);
     }
 
     public CenterTree getTree(){

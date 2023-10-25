@@ -1,4 +1,4 @@
-package unknowncyberplugin.components;
+package unknowncyberplugin.components.collections;
 import java.io.Serializable;
 
 import javax.swing.*;

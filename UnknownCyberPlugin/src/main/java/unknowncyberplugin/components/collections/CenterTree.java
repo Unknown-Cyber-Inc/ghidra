@@ -1,4 +1,4 @@
-package unknowncyberplugin.components;
+package unknowncyberplugin.components.collections;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;

@@ -2,6 +2,7 @@ package unknowncyberplugin.components.panes;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -16,6 +17,7 @@ public class CenterTabbedPane extends JTabbedPane{
 
     public CenterTabbedPane(){
         super();
+        setPreferredSize(new Dimension(getPreferredSize().width, 200));
         generateDefaultTab();
     }
 
@@ -44,7 +46,7 @@ public class CenterTabbedPane extends JTabbedPane{
     public void addClosableTab(String tabName, BaseCenterTabPane tabPane){
         tabName = colorizeTabTitle(tabName, tabPane);
         addTab(tabName, tabPane);
-        setTabComponentAt(getTabCount()-1, new CenterTabSubPanel(this));
+        setTabComponentAt(getTabCount()-1, new CenterTabSubPanel(this, tabName));
         if (getTabCount() == 2 && defaultTabExists){
             remove(DEFAULT_TAB_INDEX);
             defaultTabExists = false;

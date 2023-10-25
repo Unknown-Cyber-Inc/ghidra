@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import javax.swing.*;
 
-import unknowncyberplugin.components.FileList;
+import unknowncyberplugin.components.collections.FileList;
 import unknowncyberplugin.components.panels.FileCRUDPanel;
 
 public abstract class BaseFilePane<E extends Serializable> extends JScrollPane{
