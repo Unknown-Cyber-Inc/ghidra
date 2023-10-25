@@ -38,8 +38,7 @@ import ghidra.util.HelpLocation;
 import ghidra.util.Msg;
 import io.swagger.client.ApiClient;
 import resources.ResourceManager;
-import unknowncyberplugin.Components.*;
-import unknowncyberplugin.Components.Buttons.*;
+import unknowncyberplugin.components.panels.MainPanel;
 
 
 public class UnknownCyberFileProvider extends ComponentProviderAdapter {
@@ -53,20 +52,8 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 	private FilesApi filesApi;
 	private ProceduresApi procApi;
 
-	// GUI starts here
+	// GUI's main panel which holds all other panels
 	private JPanel mainPanel;
-	private JPanel fileButtonsPanel, filePanel, fileCRUDPanel;
-	private JPanel centralPanel, centralCRUDPanel;
-	private JPanel procButtonsPanel, procTablePanel;
-	private JTabbedPane fileTabs, centralTabs;
-	private JScrollPane fileScroll, centralScroll, procScroll;
-	private FileList<String> fileList;
-	private JTree centralTree;
-	private JTable procTable;
-	private JButton fileToggle, fileUpload, fileDisassemblyUpload;
-	private JButton fileCreate, fileEdit, fileDelete;
-	private JButton centralCreate, centralEdit, centralDelete;
-	private JButton procToggle, procRequest;
 
   private Program program;
 	private FunctionIterator fIterator;
@@ -85,7 +72,7 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 			try {
 				originalFile = new File(program.getExecutablePath());
 				originalSha1 = helpers.hashFile(originalFile, "SHA-1");
-				originalSha512 = helpers.hashFile(originalFile, "SHA-256");
+				originalSha512 = helpers.hashFile(originalFile, "SHA-512");
 				// TODO: enable upload buttons if previously disabled
 			} catch (FileNotFoundException e) {
 				// TODO: disable upload buttons
@@ -211,84 +198,7 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 
 	// This function puts together the UI
 	private void buildMainPanel() {
-			mainPanel = new JPanel();
-			mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-			mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-				// file buttons panel
-				fileButtonsPanel = new JPanel();
-				fileButtonsPanel.setLayout(new FlowLayout());
-					fileToggle = new FileToggleButton();
-					fileUpload = new FileUploadButton(this);
-				fileButtonsPanel.add(fileToggle);
-				fileButtonsPanel.add(fileUpload);
-				// file list panel
-				filePanel = new JPanel();
-				filePanel.setLayout(new BoxLayout(filePanel, BoxLayout.Y_AXIS));
-					fileTabs = new JTabbedPane();
-						DefaultListModel<String> fileListModel = new DefaultListModel<>();
-						fileList = new FileList<>(fileListModel);
-						fileScroll = new JScrollPane(fileList);
-					fileTabs.addTab("Notes", fileScroll);
-						DefaultListModel<String> fileListModel2 = new DefaultListModel<>();
-						DefaultListModel<String> fileListModel3 = new DefaultListModel<>();
-						FileList<String> fileList2 = new FileList<>(fileListModel2);
-						FileList<String> fileList3 = new FileList<>(fileListModel3);
-						JScrollPane fileScroll2 = new JScrollPane(fileList2);
-						JScrollPane fileScroll3 = new JScrollPane(fileList3);
-					fileTabs.addTab("Tags", fileScroll2);
-					fileTabs.addTab("Matches", fileScroll3);
-				filePanel.add(fileTabs);
-					fileCRUDPanel = new JPanel();
-					fileCRUDPanel.setLayout(new FlowLayout());
-						fileCreate = new FileCreateButton();
-						fileEdit = new FileEditButton();
-						fileDelete = new FileDeleteButton();
-					fileCRUDPanel.add(fileCreate);
-					fileCRUDPanel.add(fileEdit);
-					fileCRUDPanel.add(fileDelete);
-				filePanel.add(fileCRUDPanel);
-				// central tabbed tree panel
-				centralPanel = new JPanel();
-				centralPanel.setLayout(new BoxLayout(centralPanel, BoxLayout.Y_AXIS));
-					centralTabs = new JTabbedPane();
-						DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Placeholder name");
-						DefaultMutableTreeNode notesRootNode = new DefaultMutableTreeNode("Notes");
-						DefaultMutableTreeNode tagsRootNode = new DefaultMutableTreeNode("Tags");
-						rootNode.add(notesRootNode);
-						rootNode.add(tagsRootNode);
-						DefaultTreeModel treeModel = new DefaultTreeModel(rootNode);
-						centralTree = new CentralTree(treeModel);
-						centralScroll = new JScrollPane(centralTree);
-					centralTabs.addTab("Placeholder tab", centralScroll);
-				centralPanel.add(centralTabs);
-					centralCRUDPanel = new JPanel();
-					centralCRUDPanel.setLayout(new FlowLayout());
-						centralCreate = new CenterCreateButton();
-						centralEdit = new CenterEditButton();
-						centralDelete = new CenterDeleteButton();
-					centralCRUDPanel.add(centralCreate);
-					centralCRUDPanel.add(centralEdit);
-					centralCRUDPanel.add(centralDelete);
-				centralPanel.add(centralCRUDPanel);
-				// procedure buttons panel
-				procButtonsPanel = new JPanel();
-				procButtonsPanel.setLayout(new FlowLayout());
-					procToggle = new ProcToggleButton();
-					procRequest = new ProcRetrievalButton();
-				procButtonsPanel.add(procToggle);
-				procButtonsPanel.add(procRequest);
-				// procedure table panel
-				procTablePanel = new JPanel();
-				procTablePanel.setLayout(new BoxLayout(procTablePanel, BoxLayout.Y_AXIS));
-					Object[][] rowData = {{"0x1", "5", "Mlwr", "0", "0"}};
-					procTable = new ProcTable(rowData);
-					procScroll = new JScrollPane(procTable);
-				procTablePanel.add(procScroll);
-			mainPanel.add(fileButtonsPanel);
-			mainPanel.add(filePanel);
-			mainPanel.add(centralPanel);
-			mainPanel.add(procButtonsPanel);
-			mainPanel.add(procTablePanel);
+		mainPanel = new MainPanel(this);
 	}
 
 	// This is the built announce function that runs on the DummyButton
