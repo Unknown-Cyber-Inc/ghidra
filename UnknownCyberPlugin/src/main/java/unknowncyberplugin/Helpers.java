@@ -14,7 +14,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.xml.bind.DatatypeConverter;
 
-public class helpers {
+public class Helpers {
   /**
    * Hashes a given file according to the specifid algorithm.
    * 

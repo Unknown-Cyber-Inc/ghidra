@@ -62,8 +62,9 @@ public class UnknownCyberPlugin extends ProgramPlugin {
 		super(tool);
 
 		fileProvider = new UnknownCyberFileProvider(tool, getName());
-
 		fileProvider.setProgram(currentProgram);
+
+		Api.setFileProvider(fileProvider);
 	}
 
 	@Override

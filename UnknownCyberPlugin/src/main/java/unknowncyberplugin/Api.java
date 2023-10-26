@@ -41,12 +41,27 @@ import com.unknowncyber.magic.model.EnvelopedTagList200;
 /**
  * Serves to hold easy-use wrappers for Unknown Cyber API calls.
  */
-public class api {
+public class Api {
+
+  private static UnknownCyberFileProvider fileProvider;
+
+  private Api() {
+	throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
+  }
+
+  public static void setFileProvider(UnknownCyberFileProvider fp){
+	fileProvider = fp;
+  }
+
+  public static UnknownCyberFileProvider getFileProvider(){
+	return fileProvider;
+  }
+
   /**
    * Wraps the original file upload endpoint.
    *  - Takes a fileProvider to access the current program and other at-runtime data.
    */
-  public static void submitFile(UnknownCyberFileProvider fileProvider) {
+  public static void submitFile() {
 		File myFile = new File(fileProvider.getProgram().getExecutablePath());
 		List<File> files = Arrays.asList(myFile);
 		try {
@@ -65,7 +80,7 @@ public class api {
    * Wraps the disassembled file upload endpoint.
    *  - Takes a fileProvider to access the current program and other at-runtime data.
    */
-  public static void submitDisassembly(UnknownCyberFileProvider fileProvider) {
+  public static void submitDisassembly() {
 		// Declare important paths here so they can be deleted in the finally clause
 		Path procDirectory = null;
 		Path fileJson = null;
@@ -146,8 +161,8 @@ public class api {
 
 						// Create each JSON line object
 						JSONObject lineJson = new JSONObject();
-						lineJson.put("startEA", helpers.formatEA(currentLine.getMinAddress()));
-						lineJson.put("endEA", helpers.formatEA(currentLine.getMaxAddress()));
+						lineJson.put("startEA", Helpers.formatEA(currentLine.getMinAddress()));
+						lineJson.put("endEA", Helpers.formatEA(currentLine.getMaxAddress()));
 						// TODO: figure out type
 						lineJson.put("type", "code");
 						lineJson.put("bytes", byteString);
@@ -157,7 +172,7 @@ public class api {
 						//   they natively appear; it will be easier to adjust the backend to account for 0x-
 						//   and h-format hexes, than try to brute force acceptable decision logic here
 						lineJson.put("operands", operandArray);
-						lineJson.put("prolog_format", prolog.formatInstruction(currentLine.getMnemonicString(), operandArray));
+						lineJson.put("prolog_format", Prolog.formatInstruction(currentLine.getMnemonicString(), operandArray));
 						lineJson.put("api_call_name", apiCallName);
 						lineJson.put("is_call", isCall);
 
@@ -166,8 +181,8 @@ public class api {
 
 					// Create each JSON block object
 					JSONObject blockJson = new JSONObject();
-					blockJson.put("startEA", helpers.formatEA(currentBlock.getMinAddress()));
-					blockJson.put("endEA", helpers.formatEA(currentBlock.getMaxAddress()));
+					blockJson.put("startEA", Helpers.formatEA(currentBlock.getMinAddress()));
+					blockJson.put("endEA", Helpers.formatEA(currentBlock.getMaxAddress()));
 
 					// Populate the JSON block's lines field with the line array
 					blockJson.put("lines", lineArray);
@@ -184,9 +199,9 @@ public class api {
 					// Ghidra addresses do not use 0x-format; cleanAddress cleans all non-hex digits.
 					//   Ergo, we must prepend "0x" to a cleaned hex to make it 0x-formatted
 					while (destinationIterator.hasNext()) {
-						blockDestinations.add("0x" + helpers.cleanAddress(destinationIterator.next().getDestinationAddress().toString()));
+						blockDestinations.add("0x" + Helpers.cleanAddress(destinationIterator.next().getDestinationAddress().toString()));
 					}
-					cfgObject.put("0x" + helpers.cleanAddress(currentBlock.getMinAddress().toString()), blockDestinations);
+					cfgObject.put("0x" + Helpers.cleanAddress(currentBlock.getMinAddress().toString()), blockDestinations);
 				}
 
 				// Create and populate the overall JSON object for this procedure
@@ -194,8 +209,8 @@ public class api {
 				procData.put("blocks", blockArray);
 				procData.put("is_library", (f.isExternal() ? 128 : 0));
 				procData.put("is_thunk", (f.isThunk() ? 128 : 0));
-				procData.put("startEA", helpers.formatEA(f.getBody().getMinAddress()));
-				procData.put("endEA", helpers.formatEA(f.getBody().getMaxAddress()));
+				procData.put("startEA", Helpers.formatEA(f.getBody().getMinAddress()));
+				procData.put("endEA", Helpers.formatEA(f.getBody().getMaxAddress()));
 				procData.put("procedure_name", f.getName());
 				procData.put("segment_name", fileProvider.getProgram().getMemory().getBlock(f.getBody().getMinAddress()).getName());
 				// TODO: Strings are the likely-string values held in referenced memory addresses
@@ -249,7 +264,7 @@ public class api {
    * - Takes a hash string to query the API with.
    * TODO: return
    */
-  public static void isFileAccessible(UnknownCyberFileProvider fileProvider, String hash) {
+  public static void isFileAccessible(String hash) {
     // TODO: This grabs the filename, in case we want to display it.  If not, just remove it from the readMask.
     String readMask = "sha1,filename";
     String expandMask = "";
@@ -269,7 +284,7 @@ public class api {
    *  - Takes a hash string to query the API with.
    * TODO: return
    */
-  public static void getFileMatches(UnknownCyberFileProvider fileProvider, String hash) {
+  public static void getFileMatches(String hash) {
 		try {
 			String readMask = "";
 			String expandMask = "matches";
@@ -288,7 +303,7 @@ public class api {
    *  - Takes a fileProvider to access the current program and other at-runtime data.
    *  - Takes a hash string to query the API with.
    */
-  public static void getFileGenomics(UnknownCyberFileProvider fileProvider, String hash) {
+  public static void getFileGenomics(String hash) {
     try {
       String readMask = "cfg,start_ea,is_library,status,procedure_hash,occurrence_count,strings,api_calls,procedure_name";
       String orderBy = "start_ea";
@@ -305,7 +320,7 @@ public class api {
    *  - Takes a fileProvider to access the current program and other at-runtime data.
    *  - Takes a hash string to query the API with.
    */
-  public static void listFileNotes(UnknownCyberFileProvider fileProvider, String hash) {
+  public static void listFileNotes(String hash) {
     try {
       EnvelopedNoteList200 response = fileProvider.getFilesApi().listFileNotes(hash, "json", false, false, "", true, false);
     } catch (Exception e) {
@@ -319,7 +334,7 @@ public class api {
    *  - Takes a hash string to reference the file.
    *  - Takes a note string that contains the text of the note.
    */
-  public static void createFileNote(UnknownCyberFileProvider fileProvider, String hash, String note) {
+  public static void createFileNote(String hash, String note) {
     try {
       EnvelopedNote201 response = fileProvider.getFilesApi().createFileNote(note, false, hash, "json", false, false, "", true, false, false);
     } catch (Exception e) {
@@ -334,7 +349,7 @@ public class api {
    *  - Takes a noteId string to reference the specific note.
    *  - Takes a note string that contains the updated text of the note.
    */
-  public static void updateFileNote(UnknownCyberFileProvider fileProvider, String hash, String noteId, String note) {
+  public static void updateFileNote(String hash, String noteId, String note) {
     try {
       String updateMask = "note";
       // This does not return a response
@@ -350,7 +365,7 @@ public class api {
    *  - Takes a hash string to reference the file.
    *  - Takes a noteId string to reference the specific note.
    */
-  public static void deleteFileNote(UnknownCyberFileProvider fileProvider, String hash, String noteId) {
+  public static void deleteFileNote(String hash, String noteId) {
     try {
       // This does not return a response
       fileProvider.getFilesApi().deleteFileNote(hash, noteId, "json", false, false, "", true, false, true);
@@ -364,7 +379,7 @@ public class api {
    *  - Takes a fileProvider to access the current program and other at-runtime data.
    *  - Takes a hash string to query the API with.
    */
-  public static void listFileTags(UnknownCyberFileProvider fileProvider, String hash) {
+  public static void listFileTags(String hash) {
     try {
       String expandMask = "tags";
       EnvelopedTagList200 response = fileProvider.getFilesApi().listFileTags(hash, "json", false, false, "", true, false, expandMask);
@@ -379,7 +394,7 @@ public class api {
    *  - Takes a hash string to reference the file.
    *  - Takes a name string to label the tag with.
    */
-  public static void createFileTag(UnknownCyberFileProvider fileProvider, String hash, String name) {
+  public static void createFileTag(String hash, String name) {
     try {
       // Color is set to null to use default color
       EnvelopedTagCreatedResponse200 response = fileProvider.getFilesApi().createFileTag(hash, name, null, "json", false, false, "", true, false);
@@ -394,7 +409,7 @@ public class api {
    *  - Takes a hash string to reference the file.
    *  - Takes a tagId string to reference the specific tag.
    */
-  public static void removeFileTag(UnknownCyberFileProvider fileProvider, String hash, String tagId) {
+  public static void removeFileTag(String hash, String tagId) {
     try {
       // This does not return a response
       fileProvider.getFilesApi().removeFileTag(hash, tagId, "json", false, false, "", true, false, true);
@@ -409,7 +424,7 @@ public class api {
    *  - Takes a hash string to reference the file.
 	 *  - Takes an address string to reference the procedure.
 	 */
-	public static void listProcedureSimilarities(UnknownCyberFileProvider fileProvider, String hash, String address) {
+	public static void listProcedureSimilarities(String hash, String address) {
 		try {
 			String method = "semantic_similarity";
 			Integer pageCount = 1;
@@ -428,7 +443,7 @@ public class api {
    *  - Takes a hash string to reference the file.
 	 *  - Takes an address string to reference the procedure.
 	 */
-	public static void listProcedureGenomicsNotes(UnknownCyberFileProvider fileProvider, String hash, String address) {
+	public static void listProcedureGenomicsNotes(String hash, String address) {
 		try {
 			EnvelopedNoteList200 response = fileProvider.getFilesApi().listProcedureGenomicsNotes(hash, address, "json", false, false, "", true, false);
 		} catch (Exception e) {
@@ -443,7 +458,7 @@ public class api {
 	 *  - Takes an address string to reference the procedure.
 	 *  - Takes a note string that contains the text of the note.
 	 */
-	public static void createProcedureGenomicsNote(UnknownCyberFileProvider fileProvider, String hash, String address, String note) {
+	public static void createProcedureGenomicsNote(String hash, String address, String note) {
 		try {
 			EnvelopedNote200 response = fileProvider.getFilesApi().createProcedureGenomicsNote(note, false, hash, address, "json", false, false, "", true, false);
 		} catch (Exception e) {
@@ -459,7 +474,7 @@ public class api {
 	 *  - Takes a noteId string that refernces the specific note.
 	 *  - Takes a note string that contains the updated text of the note.
 	 */
-	public static void updateProcedureGenomicsNote(UnknownCyberFileProvider fileProvider, String hash, String address, String noteId, String note) {
+	public static void updateProcedureGenomicsNote(String hash, String address, String noteId, String note) {
 		try {
 			String updateMask = "note";
 			EnvelopedNote200 response = fileProvider.getFilesApi().updateProcedureGenomicsNote(hash, address, noteId, note, false, "json", false, false, "", true, false, updateMask);
@@ -475,7 +490,7 @@ public class api {
 	 *  - Takes an address string to reference the procedure.
 	 *  - Takes a noteId string that refernces the specific note.
 	 */
-	public static void deleteProcedureGenomicsNote(UnknownCyberFileProvider fileProvider, String hash, String address, String noteId) {
+	public static void deleteProcedureGenomicsNote(String hash, String address, String noteId) {
 		try {
 			// This does not return a response
 			fileProvider.getFilesApi().deleteProcedureGenomicsNote(hash, address, noteId, "json", false, false, "", true, false, true);
@@ -490,7 +505,7 @@ public class api {
    *  - Takes a hash string to reference the file.
 	 *  - Takes an address string to reference the procedure.
 	 */
-	public static void listProcedureGenomicsTags(UnknownCyberFileProvider fileProvider, String hash, String address) {
+	public static void listProcedureGenomicsTags(String hash, String address) {
 		try {
 			EnvelopedTagList200 response = fileProvider.getFilesApi().listProcedureGenomicsTags(hash, address, "json", false, false, "", true, false);
 		} catch (Exception e) {
@@ -505,7 +520,7 @@ public class api {
 	 *  - Takes an address string to reference the procedure.
 	 *  - Takes a name string to label the tag with.
 	 */
-	public static void createProcedureGenomicsTag(UnknownCyberFileProvider fileProvider, String hash, String address, String name) {
+	public static void createProcedureGenomicsTag(String hash, String address, String name) {
 		try {
 			EnvelopedTag200 response = fileProvider.getFilesApi().createProcedureGenomicsTag(name, hash, address, "json", false, false, "", true, false);
 		} catch (Exception e) {
@@ -520,7 +535,7 @@ public class api {
 	 *  - Takes an address string to reference the procedure.
 	 *  - Takes a tagId string to reference the specific tag.
 	 */
-	public static void deleteProcedureGenomicsTagById(UnknownCyberFileProvider fileProvider, String hash, String address, String tagId) {
+	public static void deleteProcedureGenomicsTagById(String hash, String address, String tagId) {
 		try {
 			// This does not return a response
 			fileProvider.getFilesApi().deleteProcedureGenomicsTagById(hash, address, tagId, "json", false, false, "", true, false, true);
@@ -534,7 +549,7 @@ public class api {
 	 *  - Takes a fileProvider to access the current program and other at-runtime data.
 	 *  - Takes a procHash string to reference the specific procedure.
 	 */
-	public static void listProcedureFiles(UnknownCyberFileProvider fileProvider, String procHash) {
+	public static void listProcedureFiles(String procHash) {
 		try {
 			String readMask = "sha1,sha256,filenames";
 			String expandMask = "files";

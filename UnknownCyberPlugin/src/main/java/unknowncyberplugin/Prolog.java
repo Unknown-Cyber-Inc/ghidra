@@ -6,7 +6,11 @@ import java.util.Map;
 
 import org.json.simple.JSONArray;
 
-public class prolog {
+public class Prolog {
+
+  private Prolog() {
+    throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
+  }
 
   public static void handleSign() {
 
@@ -78,7 +82,7 @@ public class prolog {
       // Convert any pointers present via dtype2ptr(), take the full cleaned operand,
       //   and recursively convert all 0x- and h-formatted hex values via hexToDecimal().
       //   If the operand is somehow just an unformatted hex, that will also be converted to decimal.
-      cleanedOps.add(helpers.hexToDecimal(dtype2ptr(op.toString())[1]));
+      cleanedOps.add(Helpers.hexToDecimal(dtype2ptr(op.toString())[1]));
     }
     return mnemonic.toLowerCase() + "(" + String.join(",", cleanedOps) + ")";
   }
