@@ -2,17 +2,14 @@ package unknowncyberplugin.components.buttons;
 
 import ghidra.util.Msg;
 
-import unknowncyberplugin.UnknownCyberFileProvider;
 import unknowncyberplugin.Api;
 import unknowncyberplugin.components.popups.FileUploadPopup;
 
 
 public class FileUploadButton extends BaseButton {
-	private UnknownCyberFileProvider fileProvider; 
 
-	public FileUploadButton(UnknownCyberFileProvider fileProvider) {
+	public FileUploadButton() {
 		super("Upload File");
-		this.fileProvider = fileProvider;
 	}
 
 	@Override

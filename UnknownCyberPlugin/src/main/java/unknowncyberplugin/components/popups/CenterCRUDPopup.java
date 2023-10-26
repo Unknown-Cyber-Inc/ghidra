@@ -47,7 +47,7 @@ public class CenterCRUDPopup extends JOptionPane {
         textArea.setText(text);
     }
 
-    public Object displayAndGetResponse(String initialText) {
+    public String displayAndGetResponse(String initialText) {
         textArea.setText(initialText);
 
         JDialog dialog = createDialog(null, "Enter your text");
@@ -61,13 +61,11 @@ public class CenterCRUDPopup extends JOptionPane {
         
         if (response == saveButton) {
             return textArea.getText();
-        } else if (response == cancelButton) {
-            return null;
         } else if (response == resetButton) {
             return displayAndGetResponse(initialText);
         }
 
-        // Adding this incase there are ways to exit the dialog that are not accounted for.
+        // Return null when either the cancel or close button selected.
         return null;
     }
 }

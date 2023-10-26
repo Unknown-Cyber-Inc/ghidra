@@ -44,8 +44,10 @@ public class CenterTabbedPane extends JTabbedPane{
     }
 
     public void addClosableTab(String tabName, BaseCenterTabPane tabPane){
-        tabName = colorizeTabTitle(tabName, tabPane);
         addTab(tabName, tabPane);
+        colorizeTabTitle(tabPane);
+
+        // Place close button ('x') in the tab header
         setTabComponentAt(getTabCount()-1, new CenterTabSubPanel(this, tabName));
         if (getTabCount() == 2 && defaultTabExists){
             remove(DEFAULT_TAB_INDEX);
@@ -53,17 +55,15 @@ public class CenterTabbedPane extends JTabbedPane{
         }
     }
 
-    public String colorizeTabTitle(String tabName, BaseCenterTabPane tabPane){
-        String end = "</font></html>";
+    public void colorizeTabTitle(BaseCenterTabPane tabPane){
 
-        if (tabPane instanceof CenterProcedurePane){
-            tabName = "<html><font color='green'>" + tabName + end;
-        } else if (tabPane instanceof CenterDerivedProcedurePane){
-            tabName = "<html><font color='blue'>" + tabName + end;
-        } else if (tabPane instanceof CenterDerivedFilePane){
-            tabName = "<html><font color='red'>" + tabName + end;
+        if (tabPane instanceof CenterProcedureTabPane){
+            setForegroundAt((getTabCount()-1), Color.GREEN);
+        } else if (tabPane instanceof CenterDerivedProcedureTabPane){
+            setForegroundAt((getTabCount()-1), Color.BLUE);
+        } else if (tabPane instanceof CenterDerivedFileTabPane){
+            setForegroundAt((getTabCount()-1), Color.RED);
         }
-        return tabName;
     }
 
     public void removeTabAndCheckTabCount(int index){

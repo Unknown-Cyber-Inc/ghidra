@@ -1,24 +1,20 @@
 package unknowncyberplugin.components.panes;
 
-import unknowncyberplugin.UnknownCyberFileProvider;
 import unknowncyberplugin.Api;
+import unknowncyberplugin.References;
 import unknowncyberplugin.components.panels.FileCRUDPanel;
 
 import javax.swing.*;
 
 public class FileTabbedPane extends JTabbedPane {
-    private UnknownCyberFileProvider fileProvider;
-    private FileCRUDPanel fileCRUDPanel;
     
-    public FileTabbedPane(UnknownCyberFileProvider fileProvider, FileCRUDPanel fileCRUDPanel) {
+    public FileTabbedPane() {
         super();
-        this.fileProvider = fileProvider;
-        this.fileCRUDPanel = fileCRUDPanel;
 
         // create and add panes as tabs
-        BaseFilePane<String> notesPane = new FileNotesPane("notes", fileCRUDPanel);
-		BaseFilePane<String> tagsPane = new FileTagsPane("tags", fileCRUDPanel);
-		BaseFilePane<String> matchesPane = new FileMatchesPane("matches", fileCRUDPanel);
+        BaseFileListPane<String> notesPane = new FileNotesPane("notes");
+		BaseFileListPane<String> tagsPane = new FileTagsPane("tags");
+		BaseFileListPane<String> matchesPane = new FileMatchesPane("matches");
         addTab("Notes", notesPane);
         addTab("Tags", tagsPane);
         addTab("Matches", matchesPane);
@@ -29,35 +25,36 @@ public class FileTabbedPane extends JTabbedPane {
     }
 
     private void fetchAndPopulateList(){
-        String hash = fileProvider.getHash("sha1");
-        BaseFilePane<?> tabComponent = getActiveTabComponent();
+        FileCRUDPanel fcp = References.getFileCRUDPanel();
+        String hash = Api.getFileProvider().getHash("sha1");
+        BaseFileListPane<?> tabComponent = getActiveTabComponent();
 
         if (tabComponent instanceof FileNotesPane){
-            // response = Api.listFileNotes(fileProvider, hash);
             // PROCESS RESPONSE TO GET DATA OUT IF NOT DONE IN REQUEST METHOD
 
-            fileCRUDPanel.notesTabSelected();
+            fcp.notesTabSelected();
             Api.listFileNotes(hash);
+            // notesPane.populate(API RESPONSE DATA);
         } else if (tabComponent instanceof FileTagsPane){
-            // response = Api.listFileTags(fileProvider, hash);
             // PROCESS RESPONSE TO GET DATA OUT IF NOT DONE IN REQUEST METHOD
 
-            fileCRUDPanel.tagsTabSelected();
+            fcp.tagsTabSelected();
             Api.listFileTags(hash);
+            // tagsPane.populate(API RESPONSE DATA);
         } else if (tabComponent instanceof FileMatchesPane){
-            // response = Api.getFileMatches
             // PROCESS RESPONSE TO GET DATA OUT IF NOT DONE IN REQUEST METHOD
 
-            fileCRUDPanel.disableButtons();
+            fcp.disableButtons();
             Api.getFileMatches(hash);
+            // matchesPane.populate(API RESPONSE DATA);
         }
 
         // populate respective list
         tabComponent.populate(null);
     }
 
-    public BaseFilePane<?> getActiveTabComponent() {
-        return (BaseFilePane<?>) getComponentAt(getSelectedIndex());
+    public BaseFileListPane<?> getActiveTabComponent() {
+        return (BaseFileListPane<?>) getComponentAt(getSelectedIndex());
     }
 
 }

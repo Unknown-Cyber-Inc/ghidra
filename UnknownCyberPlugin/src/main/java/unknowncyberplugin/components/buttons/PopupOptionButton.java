@@ -2,7 +2,7 @@ package unknowncyberplugin.components.buttons;
 
 import unknowncyberplugin.components.popups.CRUDPopup;
 
-abstract class PopupOptionButton extends BaseButton {
+public abstract class PopupOptionButton extends BaseButton {
 
     protected CRUDPopup popup;
 
