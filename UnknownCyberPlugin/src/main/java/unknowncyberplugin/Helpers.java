@@ -15,6 +15,11 @@ import java.util.regex.Pattern;
 import javax.xml.bind.DatatypeConverter;
 
 public class Helpers {
+
+  private Helpers() {
+    throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
+  }
+
   /**
    * Hashes a given file according to the specifid algorithm.
    * 
