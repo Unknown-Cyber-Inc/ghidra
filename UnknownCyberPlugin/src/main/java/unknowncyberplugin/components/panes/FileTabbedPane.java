@@ -1,7 +1,7 @@
 package unknowncyberplugin.components.panes;
 
 import unknowncyberplugin.UnknownCyberFileProvider;
-import unknowncyberplugin.api;
+import unknowncyberplugin.Api;
 import unknowncyberplugin.components.panels.FileCRUDPanel;
 
 import javax.swing.*;
@@ -33,23 +33,23 @@ public class FileTabbedPane extends JTabbedPane {
         BaseFilePane<?> tabComponent = getActiveTabComponent();
 
         if (tabComponent instanceof FileNotesPane){
-            // response = api.listFileNotes(fileProvider, hash);
+            // response = Api.listFileNotes(fileProvider, hash);
             // PROCESS RESPONSE TO GET DATA OUT IF NOT DONE IN REQUEST METHOD
 
             fileCRUDPanel.notesTabSelected();
-            api.listFileNotes(fileProvider, hash);
+            Api.listFileNotes(hash);
         } else if (tabComponent instanceof FileTagsPane){
-            // response = api.listFileTags(fileProvider, hash);
+            // response = Api.listFileTags(fileProvider, hash);
             // PROCESS RESPONSE TO GET DATA OUT IF NOT DONE IN REQUEST METHOD
 
             fileCRUDPanel.tagsTabSelected();
-            api.listFileTags(fileProvider, hash);
+            Api.listFileTags(hash);
         } else if (tabComponent instanceof FileMatchesPane){
-            // response = api.getFileMatches
+            // response = Api.getFileMatches
             // PROCESS RESPONSE TO GET DATA OUT IF NOT DONE IN REQUEST METHOD
 
             fileCRUDPanel.disableButtons();
-            api.getFileMatches(fileProvider, hash);
+            Api.getFileMatches(hash);
         }
 
         // populate respective list

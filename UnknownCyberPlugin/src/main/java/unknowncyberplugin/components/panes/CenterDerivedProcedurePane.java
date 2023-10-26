@@ -2,7 +2,7 @@ package unknowncyberplugin.components.panes;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
-import unknowncyberplugin.api;
+import unknowncyberplugin.Api;
 import unknowncyberplugin.components.panels.CenterCRUDPanel;
 
 public class CenterDerivedProcedurePane extends BaseCenterTabPane{
@@ -22,22 +22,22 @@ public class CenterDerivedProcedurePane extends BaseCenterTabPane{
 
     public void populateNotes(){
         // populate notesNode with notes
-        // api.listProcedureGenomicsNotes
+        // Api.listProcedureGenomicsNotes
     }
 
     public void populateTags(){
         // populate tagsNode with tags
-        // api.listProcedureGenomicsTags
+        // Api.listProcedureGenomicsTags
     }
 
     public void populateContainingFiles(){
         // populate filesNode with containing files
-        // api.listProcedureFiles
+        // Api.listProcedureFiles
     }
 
     public void populateSimilarities(){
         // populate similaritiesNode with procedure similarities
-        // api.listProcedureSimilarities
+        // Api.listProcedureSimilarities
     }
     
 }

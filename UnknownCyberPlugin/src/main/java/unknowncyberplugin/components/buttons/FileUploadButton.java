@@ -3,7 +3,7 @@ package unknowncyberplugin.components.buttons;
 import ghidra.util.Msg;
 
 import unknowncyberplugin.UnknownCyberFileProvider;
-import unknowncyberplugin.api;
+import unknowncyberplugin.Api;
 import unknowncyberplugin.components.popups.FileUploadPopup;
 
 
@@ -23,10 +23,11 @@ public class FileUploadButton extends BaseButton {
 
 		if (uploadType.equals("Binary")) {
 			Msg.info(this, "Binary upload button clicked");
-			api.submitFile(fileProvider);
+			Api.submitFile();
 		} else if (uploadType.equals("Disassembly")) {
 			Msg.info(this, "Disassembly upload button clicked");
-			api.submitDisassembly(fileProvider);
+			Api.isFileAccessible("b87a947f3e85701fcdadd733e9b055a65a3b1308");
+			//Api.submitDisassembly();
 		} else if (uploadType.equals("GPR")) {
 			Msg.info(this, "GPR upload clicked");
 			// upload GPR

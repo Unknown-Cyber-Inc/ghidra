@@ -2,7 +2,7 @@ package unknowncyberplugin.components.buttons;
 
 import ghidra.util.Msg;
 
-import unknowncyberplugin.api;
+import unknowncyberplugin.Api;
 
 public class ProcRetrievalButton extends BaseButton {
     
@@ -13,6 +13,6 @@ public class ProcRetrievalButton extends BaseButton {
     @Override
     protected void runClickedAction(){
         Msg.info(this, "Proc retrieval button clicked");
-        // api.listFileGenomics
+        // Api.listFileGenomics
     }
 }
