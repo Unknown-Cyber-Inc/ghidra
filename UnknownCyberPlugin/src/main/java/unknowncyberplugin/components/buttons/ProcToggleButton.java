@@ -1,24 +1,24 @@
 package unknowncyberplugin.components.buttons;
 
+import unknowncyberplugin.References;
 import unknowncyberplugin.components.panels.ProcTablePanel;
 
 public class ProcToggleButton extends BaseButton {
     private static final String HIDE_TEXT = "Hide Procedure Section";
     private static final String SHOW_TEXT = "Show Procedure Section";
-    private ProcTablePanel table;
 
-    public ProcToggleButton(ProcTablePanel table){
+    public ProcToggleButton(){
         super(HIDE_TEXT);
-        this.table = table;
     }
 
     @Override
     protected void runClickedAction(){
+        ProcTablePanel ptp = References.getProcTablePanel();
         if (HIDE_TEXT.equals(getText())){
-            table.setVisible(false);
+            ptp.setVisible(false);
             setText(SHOW_TEXT);
         } else {
-            table.setVisible(true);
+            ptp.setVisible(true);
             setText(HIDE_TEXT);
         }
     }

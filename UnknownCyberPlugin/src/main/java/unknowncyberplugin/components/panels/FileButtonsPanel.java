@@ -19,5 +19,9 @@ public class FileButtonsPanel extends JPanel {
         add(toggleButton);
         add(uploadButton);
     }
+
+    public FileToggleButton getToggleButton(){
+        return toggleButton;
+    }
     
 }

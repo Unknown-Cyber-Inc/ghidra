@@ -8,8 +8,8 @@ import unknowncyberplugin.components.buttons.ProcToggleButton;
 
 public class ProcButtonsPanel extends JPanel{
 
-    public ProcButtonsPanel(ProcTablePanel table){
-        ProcToggleButton toggleButton = new ProcToggleButton(table);
+    public ProcButtonsPanel(){
+        ProcToggleButton toggleButton = new ProcToggleButton();
 
         setLayout(new FlowLayout());
         add(toggleButton);
