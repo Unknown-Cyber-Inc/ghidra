@@ -1,5 +1,5 @@
 package unknowncyberplugin.components.popups;
-import javax.swing.*;
+import javax.swing.JOptionPane;
 
 public class DeleteConfirmationPopup extends JOptionPane {
 

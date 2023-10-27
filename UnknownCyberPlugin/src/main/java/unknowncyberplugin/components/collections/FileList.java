@@ -1,35 +1,40 @@
 package unknowncyberplugin.components.collections;
-import java.io.Serializable;
 
-import javax.swing.*;
+import javax.swing.DefaultListModel;
+import javax.swing.JList;
+import javax.swing.ListSelectionModel;
 
 import unknowncyberplugin.References;
 import unknowncyberplugin.components.panels.FileCRUDPanel;
+import unknowncyberplugin.components.panes.BaseFileListPane;
+import unknowncyberplugin.components.panes.FileNotesPane;
+import unknowncyberplugin.components.panes.FileTagsPane;
 
-public class FileList<T extends Serializable> extends JList<T> {
-    private DefaultListModel<T> listModel;
-    private T currentSelection;
+public class FileList extends JList<Object> {
+    private DefaultListModel<Object> listModel;
+    private transient Object currentSelection;
 
-    public FileList(String listType, DefaultListModel<T> model){
+    public FileList(DefaultListModel<Object> model){
         super(model);
         
         listModel = model;
         ListSelectionModel selectionModel = getSelectionModel();
         selectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
         selectionModel.addListSelectionListener(ev -> {
             if (!ev.getValueIsAdjusting()){
                 setSelection(getSelectedValue());
-                updateButtons(listType);
+                updateButtons();
             }
         });
     }
 
-    public void addItem(T item){
+    public void addItem(Object item){
         listModel.addElement(item);
     }
 
     // remove by item
-    public void removeItem(T item){
+    public void removeItem(Object item){
         listModel.removeElement(item);
     }
 
@@ -39,28 +44,29 @@ public class FileList<T extends Serializable> extends JList<T> {
     }
 
     // edit item at index
-    public void editItem(int index, T newValue){
+    public void editItem(int index, Object newValue){
         listModel.setElementAt(newValue, index);
     }
 
     // get index of an item
-    public int indexOf(T item){
+    public int indexOf(Object item){
         return listModel.indexOf(item);
     }
 
-    public T getSelection(){
-        return this.currentSelection;
+    public Object getSelection(){
+        return currentSelection;
     }
 
-    public void setSelection(T item){
-        this.currentSelection = item;
+    public void setSelection(Object item){
+        currentSelection = item;
     }
 
-    public void updateButtons(String listType){
+    public void updateButtons(){
         FileCRUDPanel fcp = References.getFileCRUDPanel();
-        if (listType.equalsIgnoreCase("notes")){
+        BaseFileListPane pane = References.getFilePanel().getActiveTabComponent();
+        if (pane instanceof FileNotesPane){
             fcp.noteItemSelected();
-        } else if (listType.equalsIgnoreCase("tags")){
+        } else if (pane instanceof FileTagsPane){
             fcp.tagItemSelected();
         } else {
             fcp.disableButtons();

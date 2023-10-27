@@ -1,6 +1,12 @@
 package unknowncyberplugin.components.popups;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.WindowConstants;
+
 import ghidra.util.Msg;
 
 public class FileCRUDPopup extends JOptionPane {
@@ -9,6 +15,7 @@ public class FileCRUDPopup extends JOptionPane {
     private JButton resetButton;
     private JButton saveButton;
     private JButton cancelButton;
+    private String currentText;
     
     public FileCRUDPopup() {
         textArea = new JTextArea();
@@ -21,8 +28,7 @@ public class FileCRUDPopup extends JOptionPane {
 
         resetButton = new JButton("Reset");
         resetButton.addActionListener(ev -> {
-            textArea.setText("");
-            setValue(resetButton);
+            textArea.setText(currentText);
         });
 
         saveButton = new JButton("Save");
@@ -47,7 +53,7 @@ public class FileCRUDPopup extends JOptionPane {
         textArea.setText(text);
     }
 
-    public Object displayAndGetResponse(String initialText) {
+    public String displayAndGetResponse(String initialText) {
         textArea.setText(initialText);
 
         JDialog dialog = createDialog(null, "Enter your text");
@@ -61,13 +67,9 @@ public class FileCRUDPopup extends JOptionPane {
         
         if (response == saveButton) {
             return textArea.getText();
-        } else if (response == cancelButton) {
-            return null;
-        } else if (response == resetButton) {
-            return displayAndGetResponse(initialText);
         }
 
-        // Adding this incase there are ways to exit the dialog that are not accounted for.
+        // Return null when either the cancel or close button selected.
         return null;
     }
 }

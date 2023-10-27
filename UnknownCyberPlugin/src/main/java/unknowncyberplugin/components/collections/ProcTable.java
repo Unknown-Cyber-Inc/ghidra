@@ -1,6 +1,7 @@
 package unknowncyberplugin.components.collections;
 
-import javax.swing.*;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
 import unknowncyberplugin.References;

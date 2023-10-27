@@ -75,11 +75,11 @@ public class CenterEditButton extends BaseButton {
         DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) node.getParent();
         String binaryId = rootNode.getBinaryId();
 
-        // If the selected node is NoteNode or TagNode
         if (node instanceof NoteNode){
             // Object result = Api.updateFileNote(binaryId, node.getId(), popupReturnedText);;
             // if (200 <= response.getStatus() <=300) {
-            //     ((NoteNode)node).setNodeData(result);
+            //     // create Note object from response data and place in method below
+            //     ((NoteNode)node).setNodeData(note);
             // }
         }
     }
