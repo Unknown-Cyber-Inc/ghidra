@@ -9,6 +9,7 @@ public class CenterCRUDPopup extends JOptionPane {
     private JButton resetButton;
     private JButton saveButton;
     private JButton cancelButton;
+    private String currentText;
     
     public CenterCRUDPopup() {
         textArea = new JTextArea();
@@ -21,8 +22,7 @@ public class CenterCRUDPopup extends JOptionPane {
 
         resetButton = new JButton("Reset");
         resetButton.addActionListener(ev -> {
-            textArea.setText("");
-            setValue(resetButton);
+            textArea.setText(currentText);
         });
 
         saveButton = new JButton("Save");
@@ -47,8 +47,9 @@ public class CenterCRUDPopup extends JOptionPane {
         textArea.setText(text);
     }
 
-    public Object displayAndGetResponse(String initialText) {
+    public String displayAndGetResponse(String initialText) {
         textArea.setText(initialText);
+        currentText = initialText;
 
         JDialog dialog = createDialog(null, "Enter your text");
         dialog.setContentPane(this);
@@ -61,13 +62,11 @@ public class CenterCRUDPopup extends JOptionPane {
         
         if (response == saveButton) {
             return textArea.getText();
-        } else if (response == cancelButton) {
-            return null;
         } else if (response == resetButton) {
-            return displayAndGetResponse(initialText);
+            displayAndGetResponse(initialText);
         }
 
-        // Adding this incase there are ways to exit the dialog that are not accounted for.
+        // Return null when either the cancel or close button selected.
         return null;
     }
 }

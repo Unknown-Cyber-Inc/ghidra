@@ -15,22 +15,15 @@
  */
 package unknowncyberplugin;
 
-import java.io.PrintWriter;
-
-import generic.jar.ResourceFile;
 import ghidra.app.ExamplesPluginPackage;
 import ghidra.app.plugin.PluginCategoryNames;
 import ghidra.app.plugin.ProgramPlugin;
 import ghidra.app.script.GhidraScript;
-import ghidra.app.script.GhidraScriptProvider;
-import ghidra.app.script.GhidraScriptUtil;
-import ghidra.app.script.GhidraState;
 import ghidra.framework.plugintool.*;
 import ghidra.framework.plugintool.PluginInfo;
 import ghidra.framework.plugintool.util.PluginStatus;
 import ghidra.program.model.listing.Program;
 import ghidra.util.Msg;
-import ghidra.util.task.ConsoleTaskMonitor;
 import ghidra.util.task.TaskMonitor;
 
 //@formatter:off
@@ -71,30 +64,4 @@ public class UnknownCyberPlugin extends ProgramPlugin {
 	public void dispose() {
 		fileProvider.setVisible(false);
 	}
-
-	public void runPythonScript(String script_name, Program program) {
-		Msg.info(this, ("Program program in runPyScrpt: " + program));
-        // Create a new GhidraState
-        GhidraState state = new GhidraState(this.tool, this.tool.getProject(), program, currentLocation, currentSelection, currentHighlight);
-
-        try {
-            // Get the script instance
-            ResourceFile sourceFile = GhidraScriptUtil.findScriptByName(script_name);
-			PrintWriter writer = new PrintWriter(System.out);
-
-			// Create a new script provider for Python
-            GhidraScriptProvider scriptProvider = GhidraScriptUtil.getProvider(sourceFile);
-			GhidraScript script = scriptProvider.getScriptInstance(sourceFile, writer);
-
-            // Set the state for the script
-			TaskMonitor monitor = new ConsoleTaskMonitor();
-            script.set(state, monitor, writer);
-
-            // Execute the script
-            // script.execute(state, monitor, writer);
-			script.runScript(script_name, state);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 }

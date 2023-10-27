@@ -3,16 +3,15 @@ import java.io.Serializable;
 
 import javax.swing.*;
 
+import unknowncyberplugin.References;
 import unknowncyberplugin.components.panels.FileCRUDPanel;
 
 public class FileList<T extends Serializable> extends JList<T> {
     private DefaultListModel<T> listModel;
     private T currentSelection;
-    private FileCRUDPanel fileCRUDPanel;
 
-    public FileList(String listType, FileCRUDPanel fileCRUDPanel, DefaultListModel<T> model){
+    public FileList(String listType, DefaultListModel<T> model){
         super(model);
-        this.fileCRUDPanel = fileCRUDPanel;
         
         listModel = model;
         ListSelectionModel selectionModel = getSelectionModel();
@@ -58,12 +57,13 @@ public class FileList<T extends Serializable> extends JList<T> {
     }
 
     public void updateButtons(String listType){
+        FileCRUDPanel fcp = References.getFileCRUDPanel();
         if (listType.equalsIgnoreCase("notes")){
-            fileCRUDPanel.noteItemSelected();
+            fcp.noteItemSelected();
         } else if (listType.equalsIgnoreCase("tags")){
-            fileCRUDPanel.tagItemSelected();
+            fcp.tagItemSelected();
         } else {
-            fileCRUDPanel.disableButtons();
+            fcp.disableButtons();
         }
     }
 

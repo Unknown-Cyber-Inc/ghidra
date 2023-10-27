@@ -46,6 +46,10 @@ public class CenterCRUDPanel extends JPanel{
         updateButtons(true, false, true);
     }
 
+    public void procedureRootSelected(){
+        updateButtons(false, true, false);
+    }
+
     public void updateButtons(boolean create, boolean edit, boolean delete){
         createButton.setEnabled(create);
         editButton.setEnabled(edit);

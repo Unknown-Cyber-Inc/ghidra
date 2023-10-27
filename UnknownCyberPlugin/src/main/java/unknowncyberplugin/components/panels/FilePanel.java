@@ -3,15 +3,17 @@ package unknowncyberplugin.components.panels;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
-import unknowncyberplugin.UnknownCyberFileProvider;
+import unknowncyberplugin.References;
 import unknowncyberplugin.components.panes.FileTabbedPane;
 
 public class FilePanel extends JPanel{
     private FileCRUDPanel fileCRUDPanel;
     
-    public FilePanel(UnknownCyberFileProvider fileProvider){
+    public FilePanel(){
         fileCRUDPanel = new FileCRUDPanel();
-        FileTabbedPane fileTabs = new FileTabbedPane(fileProvider, fileCRUDPanel);
+        FileTabbedPane fileTabs = new FileTabbedPane();
+
+        References.setFileCRUDPanel(fileCRUDPanel);
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         add(fileTabs);

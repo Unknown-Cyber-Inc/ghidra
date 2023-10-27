@@ -1,7 +1,7 @@
 package unknowncyberplugin.components.buttons;
 import javax.swing.*;
 
-abstract class BaseButton extends JButton {
+public abstract class BaseButton extends JButton {
 
     protected BaseButton(String text) {
         super(text);

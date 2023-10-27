@@ -198,7 +198,7 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 
 	// This function puts together the UI
 	private void buildMainPanel() {
-		mainPanel = new MainPanel(this);
+		mainPanel = new MainPanel();
 	}
 
 	// This is the built announce function that runs on the DummyButton

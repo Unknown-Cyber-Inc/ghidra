@@ -1,24 +1,24 @@
 package unknowncyberplugin.components.buttons;
 
+import unknowncyberplugin.References;
 import unknowncyberplugin.components.panels.FilePanel;
 
 public class FileToggleButton extends BaseButton {
     private static final String HIDE_TEXT = "Hide File Section";
     private static final String SHOW_TEXT = "Show File Section";
-    private FilePanel filePanel;
 
-    public FileToggleButton(FilePanel filePanel){
+    public FileToggleButton(){
         super(HIDE_TEXT);
-        this.filePanel = filePanel;
     }
 
     @Override
     protected void runClickedAction(){
+        FilePanel fp = References.getFilePanel();
         if (HIDE_TEXT.equals(getText())){
-            filePanel.setVisible(false);
+            fp.setVisible(false);
             setText(SHOW_TEXT);
         } else {
-            filePanel.setVisible(true);
+            fp.setVisible(true);
             setText(HIDE_TEXT);
         }
     }

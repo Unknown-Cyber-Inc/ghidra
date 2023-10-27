@@ -5,16 +5,20 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeSelectionModel;
 
+import unknowncyberplugin.References;
 import unknowncyberplugin.components.panels.CenterCRUDPanel;
+import unknowncyberplugin.models.treenodes.leaves.NoteNode;
+import unknowncyberplugin.models.treenodes.leaves.TagNode;
+import unknowncyberplugin.models.treenodes.roots.NotesRootNode;
+import unknowncyberplugin.models.treenodes.roots.ProcedureRootNode;
+import unknowncyberplugin.models.treenodes.roots.TagsRootNode;
 
 public class CenterTree extends JTree {
     private DefaultTreeModel centerTreeModel;
     private DefaultMutableTreeNode currentSelection;
-    private CenterCRUDPanel centerCRUDPanel;
     
-    public CenterTree(CenterCRUDPanel centerCRUDPanel, DefaultTreeModel model){
+    public CenterTree(DefaultTreeModel model){
         super(model);
-        this.centerCRUDPanel = centerCRUDPanel;
         centerTreeModel = model;
         setEditable(false);
 
@@ -49,18 +53,20 @@ public class CenterTree extends JTree {
 
     public void updateButtons(){
         DefaultMutableTreeNode selected = getCurrentSelection();
+        CenterCRUDPanel ccp = References.getCenterCRUDPanel();
 
-        // TODO: Find alternative to using .toString() unless we create models for node types
-        if (selected.toString().equalsIgnoreCase("notes")){
-            centerCRUDPanel.notesNodeSelected();
-        } else if (selected.getParent().toString().equalsIgnoreCase("notes")){
-            centerCRUDPanel.noteItemSelected();
-        } else if (selected.toString().equalsIgnoreCase("tags")){
-            centerCRUDPanel.tagsNodeSelected();
-        } else if (selected.getParent().toString().equalsIgnoreCase("tags")){
-            centerCRUDPanel.tagItemSelected();
+        if (selected instanceof NotesRootNode){
+            ccp.notesNodeSelected();
+        } else if (selected instanceof NoteNode){
+            ccp.noteItemSelected();
+        } else if (selected instanceof TagsRootNode){
+            ccp.tagsNodeSelected();
+        } else if (selected instanceof TagNode){
+            ccp.tagItemSelected();
+        } else if (selected instanceof ProcedureRootNode) {
+            ccp.procedureRootSelected();
         } else {
-            centerCRUDPanel.disableButtons();
+            ccp.disableButtons();
         }
     }
 }
