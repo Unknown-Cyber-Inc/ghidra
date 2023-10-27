@@ -4,9 +4,11 @@ import javax.swing.JTabbedPane;
 
 import unknowncyberplugin.Api;
 import unknowncyberplugin.References;
+import unknowncyberplugin.components.collections.FileList;
 import unknowncyberplugin.components.panels.FileCRUDPanel;
 
 public class FileTabbedPane extends JTabbedPane {
+    private FileList shownList;
     
     public FileTabbedPane() {
         super();
@@ -23,7 +25,13 @@ public class FileTabbedPane extends JTabbedPane {
         addTab("Matches", matchesPane);
 
         this.addChangeListener(ev -> {
+            if (shownList != null){
+                shownList.clearSelection();
+            }
+
             fetchAndPopulateList();
+
+            shownList = getActiveTabComponent().getList();
         });
     }
 

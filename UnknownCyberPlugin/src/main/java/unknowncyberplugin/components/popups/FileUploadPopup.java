@@ -15,8 +15,7 @@ public class FileUploadPopup extends JOptionPane {
         super("Upload with which method?", QUESTION_MESSAGE);
         JButton binaryButton = new JButton("Binary");
         JButton disassemblyButton = new JButton("Disassembly");
-        JButton idbButton = new JButton("IDB");
-        setOptions(new Object[] {binaryButton, disassemblyButton, idbButton});
+        setOptions(new Object[] {binaryButton, disassemblyButton});
 
         ActionListener buttonListener = ev -> {
             setValue(((JButton) ev.getSource()).getText());
@@ -27,7 +26,6 @@ public class FileUploadPopup extends JOptionPane {
 
         binaryButton.addActionListener(buttonListener);
         disassemblyButton.addActionListener(buttonListener);
-        idbButton.addActionListener(buttonListener);
     }
 
     public String displayAndGetResponse() {

@@ -55,6 +55,7 @@ public class FileCRUDPopup extends JOptionPane {
 
     public String displayAndGetResponse(String initialText) {
         textArea.setText(initialText);
+        currentText = initialText;
 
         JDialog dialog = createDialog(null, "Enter your text");
         dialog.setContentPane(this);
