@@ -24,7 +24,6 @@ import org.json.simple.JSONObject;
 
 import net.lingala.zip4j.ZipFile;
 
-import com.unknowncyber.magic.model.EnvelopedFile200;
 import com.unknowncyber.magic.model.EnvelopedFileGenomicsResponse200;
 import com.unknowncyber.magic.model.EnvelopedFileList200;
 import com.unknowncyber.magic.model.EnvelopedFileMatchResponseList200EnvelopedIdList200;
@@ -38,12 +37,26 @@ import com.unknowncyber.magic.model.EnvelopedTag200;
 import com.unknowncyber.magic.model.EnvelopedTagCreatedResponse200;
 import com.unknowncyber.magic.model.EnvelopedTagList200;
 
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.ResponseBody;  // TODO: currently unused
+
 /**
  * Serves to hold easy-use wrappers for Unknown Cyber API calls.
  */
 public class Api {
 
+	// TODO: grab environment variable for these, be mindful of whether v2 is included
+	private static String baseUrl = "http://api:8000/v2/";
+	private static String apiKey = "&key=adminkey";
+
+	// Globally usable link disabler to clean up calls and inherently include the mandatory
+	//   ? symbol needed for this and other parameters.
+	private static String noLinks = "?no_links=true";
+
   private static UnknownCyberFileProvider fileProvider;
+	private static OkHttpClient client = new OkHttpClient();
 
   private Api() {
 	throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
@@ -260,27 +273,34 @@ public class Api {
 
   /**
    * Checks if a file exists and is accessible to the user.
-   * - Takes a fileProvider to access the current program and other at-runtime data.
    * - Takes a hash string to query the API with.
    * TODO: return
    */
   public static void isFileAccessible(String hash) {
-    // TODO: This grabs the filename, in case we want to display it.  If not, just remove it from the readMask.
-    String readMask = "sha1,filename";
-    String expandMask = "";
-    String dynamicMask = "";
     try {
-			EnvelopedFile200 response = fileProvider.getFilesApi().getFile(hash, "json", false, false, "", true, false, readMask, expandMask, dynamicMask);
+			String readMask = "&read_mask=sha1";
+    	String expandMask = "&expand_mask=";
+    	String dynamicMask = "&dynamic_mask=";
+
+			String url = baseUrl + "files/" + hash + "/" + noLinks + readMask + expandMask + dynamicMask + apiKey;
+			Request request = new Request.Builder().url(url).build();
+			Response response = client.newCall(request).execute();
+
+			if (response.isSuccessful()) {
+				// TODO: high-level function to enable buttons that require file access (i.e. pulling notes/tags/matches)
+			} else {
+				// TODO: high-level function to disable buttons that require file access (i.e. pulling notes/tags/matches)
+			}
+			
 		} catch (Exception e) {
-			// This means the file cannot be accessed by the current user.
-			// Generally, the file either does not exist, or is private.
-      // We should probably indicate this to the user.
+			Msg.error("Unknown Cyber API", e);	
+			// This means an unexpected error occurred
+			// Access errors (403/404) returns as success:false and do not throw an error
 		}
   }
 
   /**
    * Wraps the getFileMatches endpoint.
-   *  - Takes a fileProvider to access the current program and other at-runtime data.
    *  - Takes a hash string to query the API with.
    * TODO: return
    */
@@ -300,7 +320,6 @@ public class Api {
 
   /**
    * Wraps the getFileGenomics endpoint.
-   *  - Takes a fileProvider to access the current program and other at-runtime data.
    *  - Takes a hash string to query the API with.
    */
   public static void getFileGenomics(String hash) {
@@ -317,7 +336,6 @@ public class Api {
 
   /**
    * Wraps the listFileNotes endpoint.
-   *  - Takes a fileProvider to access the current program and other at-runtime data.
    *  - Takes a hash string to query the API with.
    */
   public static void listFileNotes(String hash) {
@@ -330,7 +348,6 @@ public class Api {
 
   /** 
    * Wraps the createFileNote endpoint.
-   *  - Takes a fileProvider to access the current program and other at-runtime data.
    *  - Takes a hash string to reference the file.
    *  - Takes a note string that contains the text of the note.
    */
@@ -344,7 +361,6 @@ public class Api {
 
   /**
    * Wraps the updateFileNote endpoint.
-   *  - Takes a fileProvider to access the current program and other at-runtime data.
    *  - Takes a hash string to reference the file.
    *  - Takes a noteId string to reference the specific note.
    *  - Takes a note string that contains the updated text of the note.
@@ -361,7 +377,6 @@ public class Api {
 
   /**
    * Wraps the deleteFileNote endpoint.
-   *  - Takes a fileProvider to access the current program and other at-runtime data.
    *  - Takes a hash string to reference the file.
    *  - Takes a noteId string to reference the specific note.
    */
@@ -376,7 +391,6 @@ public class Api {
 
   /**
    * Wraps the listFileTags endpoint.
-   *  - Takes a fileProvider to access the current program and other at-runtime data.
    *  - Takes a hash string to query the API with.
    */
   public static void listFileTags(String hash) {
@@ -390,7 +404,6 @@ public class Api {
 
   /**
    * Wraps the createFileTag endpoint.
-   *  - Takes a fileProvider to access the current program and other at-runtime data.
    *  - Takes a hash string to reference the file.
    *  - Takes a name string to label the tag with.
    */
@@ -405,7 +418,6 @@ public class Api {
 
   /**
    * Wraps the removeFileTag endpoint.
-   *  - Takes a fileProvider to access the current program and other at-runtime data.
    *  - Takes a hash string to reference the file.
    *  - Takes a tagId string to reference the specific tag.
    */
@@ -420,7 +432,6 @@ public class Api {
 
 	/**
 	 * Wraps the listProcedureSimilarities endpoint.
-	 *  - Takes a fileProvider to access the current program and other at-runtime data.
    *  - Takes a hash string to reference the file.
 	 *  - Takes an address string to reference the procedure.
 	 */
@@ -439,7 +450,6 @@ public class Api {
 
 	/**
 	 * Wraps the listProcedureGenomicsNotes endpoint.
-	 *  - Takes a fileProvider to access the current program and other at-runtime data.
    *  - Takes a hash string to reference the file.
 	 *  - Takes an address string to reference the procedure.
 	 */
@@ -453,7 +463,6 @@ public class Api {
 
 	/**
 	 * Wraps the createProcedureGenomicsNote endpoint.
-	 *  - Takes a fileProvider to access the current program and other at-runtime data.
    *  - Takes a hash string to reference the file.
 	 *  - Takes an address string to reference the procedure.
 	 *  - Takes a note string that contains the text of the note.
@@ -468,7 +477,6 @@ public class Api {
 
 	/**
 	 * Wraps the updateProcedureGenomicsNote endpoint.
-	 *  - Takes a fileProvider to access the current program and other at-runtime data.
    *  - Takes a hash string to reference the file.
 	 *  - Takes an address string to reference the procedure.
 	 *  - Takes a noteId string that refernces the specific note.
@@ -485,7 +493,6 @@ public class Api {
 
 	/**
 	 * Wraps the deleteProcedureGenomicsNote endpoint.
-	 *  - Takes a fileProvider to access the current program and other at-runtime data.
    *  - Takes a hash string to reference the file.
 	 *  - Takes an address string to reference the procedure.
 	 *  - Takes a noteId string that refernces the specific note.
@@ -501,7 +508,6 @@ public class Api {
 
 	/**
 	 * Wraps the listProcedureGenomicsTags endpoint.
-	 *  - Takes a fileProvider to access the current program and other at-runtime data.
    *  - Takes a hash string to reference the file.
 	 *  - Takes an address string to reference the procedure.
 	 */
@@ -515,7 +521,6 @@ public class Api {
 
 	/**
 	 * Wraps the createProcedureGenomicsTag endpoint.
-	 *  - Takes a fileProvider to access the current program and other at-runtime data.
    *  - Takes a hash string to reference the file.
 	 *  - Takes an address string to reference the procedure.
 	 *  - Takes a name string to label the tag with.
@@ -530,7 +535,6 @@ public class Api {
 
 	/**
 	 * Wraps the deleteProcedureGenomicsTagById endpoint.
-	 *  - Takes a fileProvider to access the current program and other at-runtime data.
    *  - Takes a hash string to reference the file.
 	 *  - Takes an address string to reference the procedure.
 	 *  - Takes a tagId string to reference the specific tag.
@@ -546,7 +550,6 @@ public class Api {
 
 	/**
 	 * Wraps the listProcedureFiles endpoint.
-	 *  - Takes a fileProvider to access the current program and other at-runtime data.
 	 *  - Takes a procHash string to reference the specific procedure.
 	 */
 	public static void listProcedureFiles(String procHash) {
