@@ -58,10 +58,10 @@ public class CenterEditButton extends BaseButton {
         String address = "PLACEHOLDER ADDRESS";
 
         if (node instanceof NoteNode){
-            Object result = Api.updateProcedureGenomicsNote(binaryId, address, node.getId(), popupReturnedText);
-            if (200 <= result.getStatus() <=300) {
-                ((NoteNode)node).setNodeData(result);
-            }
+            // Object result = Api.updateProcedureGenomicsNote(binaryId, address, node.getId(), popupReturnedText);
+            // if (200 <= result.getStatus() <=300) {
+            //     ((NoteNode)node).setNodeData(result);
+            // }
         } else if (node instanceof ProcedureRootNode){
             // Object result = Api.updateProcedureName(binaryId, address, popupReturnedText);
             // if (200 <= result.getStatus() <=300) {
@@ -77,10 +77,10 @@ public class CenterEditButton extends BaseButton {
 
         // If the selected node is NoteNode or TagNode
         if (node instanceof NoteNode){
-            Object result = Api.updateFileNote(binaryId, node.getId(), popupReturnedText);;
-            if (200 <= response.getStatus() <=300) {
-                ((NoteNode)node).setNodeData(result);
-            }
+            // Object result = Api.updateFileNote(binaryId, node.getId(), popupReturnedText);;
+            // if (200 <= response.getStatus() <=300) {
+            //     ((NoteNode)node).setNodeData(result);
+            // }
         }
     }
 }

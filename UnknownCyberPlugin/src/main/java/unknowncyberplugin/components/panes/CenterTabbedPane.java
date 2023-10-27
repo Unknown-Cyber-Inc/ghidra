@@ -45,24 +45,12 @@ public class CenterTabbedPane extends JTabbedPane{
 
     public void addClosableTab(String tabName, BaseCenterTabPane tabPane){
         addTab(tabName, tabPane);
-        colorizeTabTitle(tabPane);
 
         // Place close button ('x') in the tab header
-        setTabComponentAt(getTabCount()-1, new CenterTabSubPanel(this, tabName));
+        setTabComponentAt(getTabCount()-1, new CenterTabSubPanel(this, tabPane, tabName));
         if (getTabCount() == 2 && defaultTabExists){
             remove(DEFAULT_TAB_INDEX);
             defaultTabExists = false;
-        }
-    }
-
-    public void colorizeTabTitle(BaseCenterTabPane tabPane){
-
-        if (tabPane instanceof CenterProcedureTabPane){
-            setForegroundAt((getTabCount()-1), Color.GREEN);
-        } else if (tabPane instanceof CenterDerivedProcedureTabPane){
-            setForegroundAt((getTabCount()-1), Color.BLUE);
-        } else if (tabPane instanceof CenterDerivedFileTabPane){
-            setForegroundAt((getTabCount()-1), Color.RED);
         }
     }
 
@@ -79,6 +67,6 @@ public class CenterTabbedPane extends JTabbedPane{
         if (getSelectedIndex() == -1){
             return null;
         }
-        return (BaseCenterTabPane) getTabComponentAt(getSelectedIndex());
+        return (BaseCenterTabPane) getComponentAt(getSelectedIndex());
     }
 }

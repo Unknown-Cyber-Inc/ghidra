@@ -77,29 +77,28 @@ public class CenterCreateButton extends BaseButton {
         } else if (parentNode instanceof TagsRootNode){
             TagNode newNode = createProcedureTagNode(binaryId, address);
             if (newNode != null){
-                node.add(newNode);
+                parentNode.add(newNode);
             }
         }
     }
 
     public NoteNode createProcedureNoteNode(String binaryId, String address){
-        NoteNode newNote;
-        Object response = Api.createProcedureGenomicsNote(binaryId, address, popupReturnedText;
-        if(200 <= response.getStatus() <=300){
-            // create new NoteNode from response
-            return newNote;
-        }
-
+        // NoteNode newNote;
+        // Object response = Api.createProcedureGenomicsNote(binaryId, address, popupReturnedText;
+        // if(200 <= response.getStatus() <=300){
+        //     // create new NoteNode from response
+        //     return newNote;
+        // }
         return null;
     }
 
     public TagNode createProcedureTagNode(String binaryId, String address){
-        TagNode newTag;
-        Object response = Api.createProcedureGenomicsTag(binaryId, address, popupReturnedText);
-        if(200 <= response.getStatus() <=300){
-            // create new TagNode from response
-            return newTag;
-        }
+        // TagNode newTag;
+        // Object response = Api.createProcedureGenomicsTag(binaryId, address, popupReturnedText);
+        // if(200 <= response.getStatus() <=300){
+        //     // create new TagNode from response
+        //     return newTag;
+        // }
         return null;
     }
 
@@ -120,22 +119,22 @@ public class CenterCreateButton extends BaseButton {
     }
 
     public NoteNode createFileNoteNode(String binaryId){
-        NoteNode newNote;
-        Object response = Api.createFileNote(binaryId, popupReturnedText);
-        if(200 <= response.getStatus() <=300){
-            // create new NoteNode from response
-            return newNote;
-        }
+        // NoteNode newNote;
+        // Object response = Api.createFileNote(binaryId, popupReturnedText);
+        // if(200 <= response.getStatus() <=300){
+        //     // create new NoteNode from response
+        //     return newNote;
+        // }
         return null;
     }
 
     public TagNode createFileTagNode(String binaryId){
-        TagNode newTag;
-        Object response = Api.createFileTag(binaryId, popupReturnedText);
-        if(200 <= response.getStatus() <=300){
-            // create new TagNode from response
-            return newTag;
-        }
+        // TagNode newTag;
+        // Object response = Api.createFileTag(binaryId, popupReturnedText);
+        // if(200 <= response.getStatus() <=300){
+        //     // create new TagNode from response
+        //     return newTag;
+        // }
         return null;
     }
 }

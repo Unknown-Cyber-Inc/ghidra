@@ -54,15 +54,15 @@ public class CenterDeleteButton extends BaseButton {
 
         // If the selected node is NoteNode or TagNode
         if (node instanceof NoteNode){
-            Object result = Api.deleteProcedureGenomicsNote(binaryId, address, node.getId());
-            if (200 <= result.getStatus() <=300) {
-                parentNode.remove(node);
-            }
+            // Object result = Api.deleteProcedureGenomicsNote(binaryId, address, node.getId());
+            // if (200 <= result.getStatus() <=300) {
+            //     parentNode.remove(node);
+            // }
         } else if (node instanceof TagNode){
-            Object result = Api.deleteProcedureGenomicsTagById(binaryId, address, node.getId());
-            if (200 <= result.getStatus() <=300) {
-                parentNode.remove(node);
-            }
+            // Object result = Api.deleteProcedureGenomicsTagById(binaryId, address, node.getId());
+            // if (200 <= result.getStatus() <=300) {
+            //     parentNode.remove(node);
+            // }
         }
     }
 
@@ -73,15 +73,15 @@ public class CenterDeleteButton extends BaseButton {
 
         // If the selected node is NoteNode or TagNode
         if (node instanceof NoteNode){
-            Object result = Api.deleteFileNote(binaryId, node.getId());
-            if (200 <= result.getStatus() <=300) {
-                parentNode.remove(node);
-            }
+            // Object result = Api.deleteFileNote(binaryId, node.getId());
+            // if (200 <= result.getStatus() <=300) {
+            //     parentNode.remove(node);
+            // }
         } else if (node instanceof TagNode){
-            Object result = Api.removeFileTag(binaryId, node.getId());
-            if (200 <= result.getStatus() <=300) {
-                parentNode.remove(node);
-            }
+            // Object result = Api.removeFileTag(binaryId, node.getId());
+            // if (200 <= result.getStatus() <=300) {
+            //     parentNode.remove(node);
+            // }
         }
     }
 

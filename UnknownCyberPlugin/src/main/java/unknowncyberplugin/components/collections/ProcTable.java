@@ -4,6 +4,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 import unknowncyberplugin.References;
+import unknowncyberplugin.components.panels.CenterPanel;
 import unknowncyberplugin.components.panes.CenterProcedureTabPane;
 
 import java.awt.Color;

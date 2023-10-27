@@ -10,8 +10,8 @@ public class DerivedFileRootNode extends BaseRootNode<Object>{
     public DerivedFileRootNode(Object nodeData, String binaryId){
         super(nodeData, binaryId);
 
-        notesRoot = new NotesRootNode();
-        tagsRoot = new TagsRootNode();
+        notesRoot = new NotesRootNode(binaryId);
+        tagsRoot = new TagsRootNode(binaryId);
         matchesRoot = new MatchesRootNode();
 
         add(notesRoot);

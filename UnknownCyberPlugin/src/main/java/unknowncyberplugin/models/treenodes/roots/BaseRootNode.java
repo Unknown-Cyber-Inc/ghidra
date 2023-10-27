@@ -20,7 +20,6 @@ public abstract class BaseRootNode<T> extends DefaultMutableTreeNode{
     protected BaseRootNode(T nodeData){
         super(nodeData);
         this.nodeDisplayName = nodeData.toString();
-        this.binaryId = getRootBinaryId();
     }
 
     @SuppressWarnings("unchecked")
@@ -56,13 +55,9 @@ public abstract class BaseRootNode<T> extends DefaultMutableTreeNode{
         return nodeParent.getBinaryId();
     }
 
-    public void addChildNode(MutableTreeNode child){
-        add(child);
-    }
-
     @Override
     public void add(MutableTreeNode child){
-        if (placeholderNode != null && placeholderNode.getParent() == this){
+        if (placeholderNode != null){
             removePlaceholderNode();
             placeholderNode = null;
         }
@@ -79,7 +74,7 @@ public abstract class BaseRootNode<T> extends DefaultMutableTreeNode{
     }
 
     public void removePlaceholderNode(){
-        super.remove(placeholderNode);
+        super.remove(0);
     }
 
     public void addPlaceholderNode(){

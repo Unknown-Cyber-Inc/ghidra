@@ -5,19 +5,10 @@ import unknowncyberplugin.models.treenodes.roots.SimilaritiesRootNode;
 
 public class CenterProcedureTabPane extends BaseCenterTabPane{
     private String procName;
-    private SimilaritiesRootNode similaritiesRoot;
 
     public CenterProcedureTabPane(String procName){
         super(procName, Api.getFileProvider().getHash("sha1"), "procedure");
         this.procName = procName;
-
-        similaritiesRoot = new SimilaritiesRootNode();
-
-        tree.addNode(rootNode, similaritiesRoot);
-    }
-
-    public SimilaritiesRootNode getSimilaritiesRootNode(){
-        return similaritiesRoot;
     }
 
     public void populateNotes(){

@@ -1,6 +1,8 @@
 package unknowncyberplugin.models.treenodes.roots;
 
 import unknowncyberplugin.models.treenodes.leaves.NoteNode;
+import unknowncyberplugin.models.treenodes.leaves.SimilarProcedureNode;
+import unknowncyberplugin.models.treenodes.leaves.TagNode;
 
 public class ProcedureRootNode extends BaseRootNode<Object>{
     private NotesRootNode notesRoot;
@@ -11,9 +13,12 @@ public class ProcedureRootNode extends BaseRootNode<Object>{
     public ProcedureRootNode(Object nodeData, String binaryId){
         super(nodeData, binaryId);
 
-        notesRoot = new NotesRootNode();
-        tagsRoot = new TagsRootNode();
+        notesRoot = new NotesRootNode(binaryId);
+        notesRoot.add(new NoteNode("TEST NOTE NODE"));
+        tagsRoot = new TagsRootNode(binaryId);
+        tagsRoot.add(new TagNode("TEST TAG NODE"));
         similaritiesRoot = new SimilaritiesRootNode();
+        similaritiesRoot.add(new SimilarProcedureNode("TEST SIMILAR PROC NODE"));
 
         add(notesRoot);
         add(tagsRoot);
