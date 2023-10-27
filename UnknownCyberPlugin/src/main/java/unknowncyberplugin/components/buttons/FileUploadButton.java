@@ -18,16 +18,15 @@ public class FileUploadButton extends BaseButton {
 		FileUploadPopup uploadPopup = new FileUploadPopup();
 		String uploadType = uploadPopup.displayAndGetResponse();
 
-		if (uploadType.equals("Binary")) {
-			Msg.info(this, "Binary upload button clicked");
-			Api.submitFile();
-		} else if (uploadType.equals("Disassembly")) {
-			Msg.info(this, "Disassembly upload button clicked");
-			Api.isFileAccessible("b87a947f3e85701fcdadd733e9b055a65a3b1308");
-			//Api.submitDisassembly();
-		} else if (uploadType.equals("GPR")) {
-			Msg.info(this, "GPR upload clicked");
-			// upload GPR
+		if (uploadType != null) {
+			if (uploadType.equals("Binary")) {
+				Msg.info(this, "Binary upload button clicked");
+				Api.submitFile();
+			} else if (uploadType.equals("Disassembly")) {
+				Msg.info(this, "Disassembly upload button clicked");
+				Api.isFileAccessible("b87a947f3e85701fcdadd733e9b055a65a3b1308");
+				//Api.submitDisassembly();
+			}
 		}
 	}
 }
