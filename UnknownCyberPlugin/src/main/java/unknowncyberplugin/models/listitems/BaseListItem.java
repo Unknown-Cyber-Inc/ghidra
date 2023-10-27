@@ -4,15 +4,17 @@ abstract class BaseListItem {
     protected String displayName;
     protected String userName;
     protected String timeStamp;
+    protected String itemId;
 
     protected BaseListItem(String displayName){
         this.displayName = displayName;
     }
 
-    protected BaseListItem(String displayName, String userName, String timeStamp){
+    protected BaseListItem(String displayName, String userName, String timeStamp, String itemId){
         this.displayName = displayName;
         this.userName = userName;
         this.timeStamp = timeStamp;
+        this.itemId = itemId;
     }
     
     public String getDisplayName(){
@@ -37,5 +39,14 @@ abstract class BaseListItem {
 
     public void setTimeStamp(String timeStamp) {
         this.timeStamp = timeStamp;
+    }
+
+    public String getId(){
+        return itemId;
+    }
+
+    @Override
+    public String toString(){
+        return displayName == null ? "No item name set" : displayName;
     }
 }

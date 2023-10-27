@@ -1,9 +1,15 @@
 package unknowncyberplugin.components.popups;
 
-import javax.swing.*;
-import ghidra.util.Msg;
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.WindowConstants;
 
-import unknowncyberplugin.components.buttons.*;
+import ghidra.util.Msg;
+import unknowncyberplugin.components.buttons.CancelButton;
+import unknowncyberplugin.components.buttons.ResetButton;
+import unknowncyberplugin.components.buttons.SaveButton;
 
 public class CRUDPopup extends JOptionPane {
     

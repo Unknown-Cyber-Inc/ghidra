@@ -1,10 +1,10 @@
 package unknowncyberplugin.components.panes;
 
+import javax.swing.JTabbedPane;
+
 import unknowncyberplugin.Api;
 import unknowncyberplugin.References;
 import unknowncyberplugin.components.panels.FileCRUDPanel;
-
-import javax.swing.*;
 
 public class FileTabbedPane extends JTabbedPane {
     
@@ -12,9 +12,12 @@ public class FileTabbedPane extends JTabbedPane {
         super();
 
         // create and add panes as tabs
-        BaseFileListPane<String> notesPane = new FileNotesPane("notes");
-		BaseFileListPane<String> tagsPane = new FileTagsPane("tags");
-		BaseFileListPane<String> matchesPane = new FileMatchesPane("matches");
+        BaseFileListPane notesPane = new FileNotesPane();
+        notesPane.addItem("TEST NOTE ITEM");
+		BaseFileListPane tagsPane = new FileTagsPane();
+        tagsPane.addItem("TEST TAG ITEM");
+		BaseFileListPane matchesPane = new FileMatchesPane();
+        matchesPane.addItem("TEST MATCH ITEM");
         addTab("Notes", notesPane);
         addTab("Tags", tagsPane);
         addTab("Matches", matchesPane);
@@ -27,7 +30,7 @@ public class FileTabbedPane extends JTabbedPane {
     private void fetchAndPopulateList(){
         FileCRUDPanel fcp = References.getFileCRUDPanel();
         String hash = Api.getFileProvider().getHash("sha1");
-        BaseFileListPane<?> tabComponent = getActiveTabComponent();
+        BaseFileListPane tabComponent = getActiveTabComponent();
 
         if (tabComponent instanceof FileNotesPane){
             // PROCESS RESPONSE TO GET DATA OUT IF NOT DONE IN REQUEST METHOD
@@ -53,8 +56,11 @@ public class FileTabbedPane extends JTabbedPane {
         tabComponent.populate(null);
     }
 
-    public BaseFileListPane<?> getActiveTabComponent() {
-        return (BaseFileListPane<?>) getComponentAt(getSelectedIndex());
+    public BaseFileListPane getActiveTabComponent() {
+        if (getSelectedIndex() == -1){
+            return null;
+        }
+        return (BaseFileListPane) getComponentAt(getSelectedIndex());
     }
 
 }

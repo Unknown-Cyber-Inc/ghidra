@@ -1,7 +1,11 @@
 package unknowncyberplugin.components.popups;
 
-import javax.swing.*;
-import java.awt.event.*;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
+
 import ghidra.util.Msg;
 
 public class FileUploadPopup extends JOptionPane {

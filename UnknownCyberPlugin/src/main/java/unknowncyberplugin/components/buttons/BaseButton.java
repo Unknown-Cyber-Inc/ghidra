@@ -1,5 +1,5 @@
 package unknowncyberplugin.components.buttons;
-import javax.swing.*;
+import javax.swing.JButton;
 
 public abstract class BaseButton extends JButton {
 

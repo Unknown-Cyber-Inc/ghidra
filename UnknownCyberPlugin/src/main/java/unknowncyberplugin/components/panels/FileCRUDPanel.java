@@ -1,12 +1,12 @@
 package unknowncyberplugin.components.panels;
 
-import javax.swing.*;
+import java.awt.FlowLayout;
+
+import javax.swing.JPanel;
 
 import unknowncyberplugin.components.buttons.FileCreateButton;
 import unknowncyberplugin.components.buttons.FileDeleteButton;
 import unknowncyberplugin.components.buttons.FileEditButton;
-
-import java.awt.FlowLayout;
 
 public class FileCRUDPanel extends JPanel{
     private FileCreateButton createButton;

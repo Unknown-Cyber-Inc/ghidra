@@ -2,7 +2,7 @@ package unknowncyberplugin.components.panels;
 
 import java.awt.FlowLayout;
 
-import javax.swing.*;
+import javax.swing.JPanel;
 
 import unknowncyberplugin.components.buttons.FileToggleButton;
 import unknowncyberplugin.components.buttons.FileUploadButton;

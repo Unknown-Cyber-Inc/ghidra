@@ -15,12 +15,11 @@
  */
 package unknowncyberplugin;
 
-import java.awt.*;
-import java.awt.event.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 
-import javax.swing.*;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -29,7 +28,7 @@ import com.unknowncyber.magic.api.FilesApi;
 import com.unknowncyber.magic.api.ProceduresApi;
 
 import docking.WindowPosition;
-import docking.action.*;
+import docking.action.DockingAction;
 import ghidra.framework.plugintool.ComponentProviderAdapter;
 import ghidra.framework.plugintool.PluginTool;
 import ghidra.program.model.listing.FunctionIterator;
@@ -42,8 +41,8 @@ import unknowncyberplugin.components.panels.MainPanel;
 
 
 public class UnknownCyberFileProvider extends ComponentProviderAdapter {
-	private final static String PREV_IMAGE = "/images/check_icon.jpg";
-	private final static HelpLocation HELP = new HelpLocation("SampleHelpTopic", "SampleHelpTopic_Anchor_Name");
+	private static final String PREV_IMAGE = "/images/check_icon.jpg";
+	private static final HelpLocation HELP = new HelpLocation("SampleHelpTopic", "SampleHelpTopic_Anchor_Name");
 	private DockingAction action;
 
 	// Set component references ahead of time so they can be accessed at a global level

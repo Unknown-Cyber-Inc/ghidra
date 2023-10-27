@@ -28,8 +28,9 @@ public class CenterCreateButton extends BaseButton {
     
     @Override
     protected void runClickedAction(){
-        CenterPanel cp = References.getCenterPanel();
         Msg.info(this, "Center create button clicked");
+        
+        CenterPanel cp = References.getCenterPanel();
         popupReturnedText = null;
 
         // bring up center popup
