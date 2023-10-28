@@ -17,11 +17,11 @@ public class FileTabbedPane extends JTabbedPane {
         super();
 
         BaseFileListPane notesPane = new FileNotesPane();
-        notesPane.addItem("TEST NOTE ITEM");
+        notesPane.addItem(new Note("TEST NOTE ITEM", null, null, null));
 		BaseFileListPane tagsPane = new FileTagsPane();
-        tagsPane.addItem("TEST TAG ITEM");
+        tagsPane.addItem(new Tag("TEST TAG ITEM", null, null, null));
 		BaseFileListPane matchesPane = new FileMatchesPane();
-        matchesPane.addItem("TEST MATCH ITEM");
+        matchesPane.addItem(new File("TEST MATCH ITEM", null, null));
         addTab("Notes", notesPane);
         addTab("Tags", tagsPane);
         addTab("Matches", matchesPane);

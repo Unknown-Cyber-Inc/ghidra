@@ -11,6 +11,8 @@ import unknowncyberplugin.components.panes.CenterDerivedFileTabPane;
 import unknowncyberplugin.components.panes.CenterDerivedProcedureTabPane;
 import unknowncyberplugin.components.panes.CenterProcedureTabPane;
 import unknowncyberplugin.components.popups.CenterCRUDPopup;
+import unknowncyberplugin.models.responsedata.Note;
+import unknowncyberplugin.models.responsedata.Procedure;
 import unknowncyberplugin.models.treenodes.leaves.NoteNode;
 import unknowncyberplugin.models.treenodes.leaves.TagNode;
 import unknowncyberplugin.models.treenodes.roots.DerivedFileRootNode;
@@ -55,17 +57,17 @@ public class CenterEditButton extends BaseButton {
         ProcedureRootNode rootNode = (ProcedureRootNode) tabPane.getRootNode();
         DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) node.getParent();
         String binaryId = rootNode.getBinaryId();
-        String address = "PLACEHOLDER ADDRESS";
+        String startEA = rootNode.getStartEA();
 
         if (node instanceof NoteNode){
-            // Object result = Api.updateProcedureGenomicsNote(binaryId, address, node.getId(), popupReturnedText);
-            // if (200 <= result.getStatus() <=300) {
-            //     ((NoteNode)node).setNodeData(result);
+            // Note updatedNote = Api.updateProcedureGenomicsNote(binaryId, startEA, ((NoteNode)node).getNodeData().getId(), popupReturnedText);
+            // if (updatedNote != null) {
+            //     ((NoteNode)node).setNodeData(updatedNote);
             // }
         } else if (node instanceof ProcedureRootNode){
-            // Object result = Api.updateProcedureName(binaryId, address, popupReturnedText);
-            // if (200 <= result.getStatus() <=300) {
-            //     (ProcedureRootNode) node.setNodeData(result);
+            // Procedure updatedProcedure = Api.updateProcedureName(binaryId, startEA, popupReturnedText);
+            // if (updatedProcedure != null) {
+            //     ((ProcedureRootNode)node).setNodeData(updatedProcedure);
             // }
         }
     }
@@ -76,10 +78,9 @@ public class CenterEditButton extends BaseButton {
         String binaryId = rootNode.getBinaryId();
 
         if (node instanceof NoteNode){
-            // Object result = Api.updateFileNote(binaryId, node.getId(), popupReturnedText);;
-            // if (200 <= response.getStatus() <=300) {
-            //     // create Note object from response data and place in method below
-            //     ((NoteNode)node).setNodeData(note);
+            // Note updatedNote = Api.updateFileNote(binaryId, ((NoteNode)node).getNodeData().getId(), popupReturnedText);;
+            // if (updatedNote != null) {
+            //     ((NoteNode)node).setNodeData(updatedNote);
             // }
         }
     }

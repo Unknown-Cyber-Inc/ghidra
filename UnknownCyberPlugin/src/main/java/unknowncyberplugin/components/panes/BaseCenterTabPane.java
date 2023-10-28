@@ -5,6 +5,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
 import unknowncyberplugin.components.collections.CenterTree;
+import unknowncyberplugin.models.responsedata.File;
 import unknowncyberplugin.models.treenodes.roots.DerivedFileRootNode;
 import unknowncyberplugin.models.treenodes.roots.ProcedureRootNode;
 
@@ -19,7 +20,7 @@ public abstract class BaseCenterTabPane extends JScrollPane{
         if (paneType.equalsIgnoreCase("procedure")){
             rootNode = new ProcedureRootNode(rootName, binaryId);
         } else if (paneType.equalsIgnoreCase("file")){
-            rootNode = new DerivedFileRootNode(rootName, rootName);
+            rootNode = new DerivedFileRootNode(new File(rootName, null, null), rootName);
         }
 
         tree = new CenterTree(new DefaultTreeModel(rootNode));

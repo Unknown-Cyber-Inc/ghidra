@@ -50,17 +50,17 @@ public class CenterDeleteButton extends BaseButton {
         ProcedureRootNode rootNode = (ProcedureRootNode) tabPane.getRootNode();
         DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) node.getParent();
         String binaryId = rootNode.getBinaryId();
-        String address = rootNode.getAddress();
+        String startEA = rootNode.getStartEA();
 
         // If the selected node is NoteNode or TagNode
         if (node instanceof NoteNode){
-            // Object result = Api.deleteProcedureGenomicsNote(binaryId, address, node.getId());
-            // if (200 <= result.getStatus() <= 300) {
+            // boolean successful = Api.deleteProcedureGenomicsNote(binaryId, startEA, ((NoteNode)node).getNodeData().getId());
+            // if (successful) {
             //     parentNode.remove(node);
             // }
         } else if (node instanceof TagNode){
-            // Object result = Api.deleteProcedureGenomicsTagById(binaryId, address, node.getId());
-            // if (200 <= result.getStatus() <= 300) {
+            // boolean successful = Api.deleteProcedureGenomicsTagById(binaryId, startEA, ((TagNode)node).getNodeData().getId());
+            // if (successful) {
             //     parentNode.remove(node);
             // }
         }
@@ -73,13 +73,13 @@ public class CenterDeleteButton extends BaseButton {
 
         // If the selected node is NoteNode or TagNode
         if (node instanceof NoteNode){
-            // Object result = Api.deleteFileNote(binaryId, node.getId());
-            // if (200 <= result.getStatus() <= 300) {
+            // boolean successful = Api.deleteFileNote(binaryId, ((NoteNode)node).getNodeData().getId());
+            // if (successful) {
             //     parentNode.remove(node);
             // }
         } else if (node instanceof TagNode){
-            // Object result = Api.removeFileTag(binaryId, node.getId());
-            // if (200 <= result.getStatus() <= 300) {
+            // boolean successful = Api.removeFileTag(binaryId, ((TagNode)node).getNodeData().getId());
+            // if (successful) {
             //     parentNode.remove(node);
             // }
         }
