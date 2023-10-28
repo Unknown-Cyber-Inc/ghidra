@@ -30,19 +30,19 @@ public class CenterCRUDPanel extends JPanel{
         updateButtons(false, false, false);
     }
 
-    public void notesNodeSelected(){
+    public void notesRootSelected(){
         updateButtons(true, false, false);
     }
 
-    public void noteItemSelected(){
+    public void noteSelected(){
         updateButtons(true, true, true);
     }
 
-    public void tagsNodeSelected(){
+    public void tagsRootSelected(){
         updateButtons(true, false, false);
     }
 
-    public void tagItemSelected(){
+    public void tagSelected(){
         updateButtons(true, false, true);
     }
 

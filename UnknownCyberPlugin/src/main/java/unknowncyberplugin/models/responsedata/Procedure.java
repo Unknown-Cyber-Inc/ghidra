@@ -4,6 +4,7 @@ public class Procedure {
     private int count;
     private String status;
     private String startEA;
+    private String baseAdjustedStartEA;
     private String procedureName;
 
     public Procedure(int count, String status, String startEA, String procedureName){
@@ -25,8 +26,20 @@ public class Procedure {
         return startEA;
     }
 
+    public String getBaseAdjustedStartEA(){
+        return baseAdjustedStartEA;
+    }
+
+    public void setAdjustedStartEA(String imageBase){
+        // Logic to adjust startEA with imageBase
+    }
+
     public String getProcedureName(){
         return procedureName;
     }
-    
+
+    @Override
+    public String toString(){
+        return procedureName == null ? startEA : startEA + " - " + procedureName;
+    }
 }

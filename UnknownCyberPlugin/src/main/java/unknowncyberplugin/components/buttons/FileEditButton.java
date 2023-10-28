@@ -9,7 +9,7 @@ import unknowncyberplugin.components.panes.BaseFileListPane;
 import unknowncyberplugin.components.panes.FileNotesPane;
 import unknowncyberplugin.components.panes.FileTagsPane;
 import unknowncyberplugin.components.popups.FileCRUDPopup;
-import unknowncyberplugin.models.listitems.NoteItem;
+import unknowncyberplugin.models.responsedata.Note;
 
 public class FileEditButton extends BaseButton {
     private String popupReturnedText;
@@ -31,15 +31,14 @@ public class FileEditButton extends BaseButton {
         popupReturnedText = popup.displayAndGetResponse(currentDisplayName);
 
         if (popupReturnedText != null){
-            processItem((NoteItem)fp.getSelectedListItem());
+            processItem((Note)fp.getSelectedListItem());
         }
     }
 
-    public void processItem(NoteItem selectedItem){
-        // Object response = Api.updateFileNote(binaryId, selectedItem.getId(), popupReturnedText);;
-        //     if (200 <= response.getStatus() <=300) {
-        //         // create Note object from response data and place in method below
-        //         selectedItem.setItemData(note);
+    public void processItem(Note selectedItem){
+        // Note updatedNote = Api.updateFileNote(binaryId, selectedItem.getId(), popupReturnedText);;
+        //     if (updatedNote != null) {
+        //         selectedItem.updateItemData(updatedNote);
         //     }
     }
 }

@@ -22,4 +22,9 @@ public class File {
     public String getFileName(){
         return fileName;
     }
+
+    @Override
+    public String toString(){
+        return sha1 == null ? "No sha1 set" : sha1;
+    }
 }

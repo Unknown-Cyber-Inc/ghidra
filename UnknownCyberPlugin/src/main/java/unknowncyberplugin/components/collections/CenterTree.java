@@ -56,13 +56,13 @@ public class CenterTree extends JTree {
         CenterCRUDPanel ccp = References.getCenterCRUDPanel();
 
         if (selected instanceof NotesRootNode){
-            ccp.notesNodeSelected();
+            ccp.notesRootSelected();
         } else if (selected instanceof NoteNode){
-            ccp.noteItemSelected();
+            ccp.noteSelected();
         } else if (selected instanceof TagsRootNode){
-            ccp.tagsNodeSelected();
+            ccp.tagsRootSelected();
         } else if (selected instanceof TagNode){
-            ccp.tagItemSelected();
+            ccp.tagSelected();
         } else if (selected instanceof ProcedureRootNode) {
             ccp.procedureRootSelected();
         } else {

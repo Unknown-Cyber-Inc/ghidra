@@ -13,7 +13,6 @@ public class FileTabbedPane extends JTabbedPane {
     public FileTabbedPane() {
         super();
 
-        // create and add panes as tabs
         BaseFileListPane notesPane = new FileNotesPane();
         notesPane.addItem("TEST NOTE ITEM");
 		BaseFileListPane tagsPane = new FileTagsPane();

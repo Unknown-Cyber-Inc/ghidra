@@ -65,9 +65,9 @@ public class FileList extends JList<Object> {
         FileCRUDPanel fcp = References.getFileCRUDPanel();
         BaseFileListPane pane = References.getFilePanel().getActiveTabComponent();
         if (pane instanceof FileNotesPane){
-            fcp.noteItemSelected();
+            fcp.noteSelected();
         } else if (pane instanceof FileTagsPane){
-            fcp.tagItemSelected();
+            fcp.tagSelected();
         } else {
             fcp.disableButtons();
         }

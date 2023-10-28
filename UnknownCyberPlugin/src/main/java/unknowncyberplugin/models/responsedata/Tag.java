@@ -28,4 +28,9 @@ public class Tag {
     public String getId(){
         return tagId;
     }
+
+    @Override
+    public String toString(){
+        return tagName == null ? "No tag name set" : tagName;
+    }
 }

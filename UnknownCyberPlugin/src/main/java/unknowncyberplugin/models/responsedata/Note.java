@@ -28,4 +28,16 @@ public class Note {
     public String getId(){
         return noteId;
     }
+
+    public void updateItemData(Note note){
+        this.noteText = note.getNoteText();
+        this.userName = note.getUserName();
+        this.timeStamp = note.getTimeStamp();
+        this.noteId = note.getId();
+    }
+
+    @Override
+    public String toString(){
+        return noteText == null ? "No note text set" : noteText;
+    }
 }
