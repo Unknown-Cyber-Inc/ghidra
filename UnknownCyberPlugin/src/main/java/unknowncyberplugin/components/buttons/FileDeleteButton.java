@@ -32,7 +32,7 @@ public class FileDeleteButton extends BaseButton {
         UnknownCyberFileProvider fileProvider = References.getFileProvider();
         DeleteConfirmationPopup delPopup = new DeleteConfirmationPopup();
 
-        binaryId = fileProvider.getHash("sha1");
+        binaryId = fileProvider.getOriginalSha1();
         int response = delPopup.displayAndGetResponse();
 
         if (response == 0){

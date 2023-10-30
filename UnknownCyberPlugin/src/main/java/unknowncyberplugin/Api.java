@@ -103,9 +103,9 @@ public class Api {
 			JSONObject fileData = new JSONObject();
 			fileData.put("image_base", fileProvider.getProgram().getImageBase());
 			fileData.put("md5", fileProvider.getProgram().getExecutableMD5());
-			fileData.put("sha1", fileProvider.getHash("sha1"));
+			fileData.put("sha1", fileProvider.getOriginalSha1());
 			fileData.put("sha256", fileProvider.getProgram().getExecutableSHA256());
-			fileData.put("sha512", fileProvider.getHash("sha512"));
+			fileData.put("sha512", fileProvider.getOriginalSha512());
 			fileData.put("unix_filetype", fileType);
 			fileData.put("version", Application.getApplicationVersion());
 
@@ -230,13 +230,13 @@ public class Api {
 			}
 
 			// Create zip file in temp directory, load in the file.json and procedure directory
-			zip = new ZipFile(Files.createTempFile(fileProvider.getHash("sha1") + "_", ".zip").toFile());
+			zip = new ZipFile(Files.createTempFile(fileProvider.getOriginalSha1() + "_", ".zip").toFile());
 			zip.addFile(fileJson.toFile());
 			zip.addFolder(procDirectory.toFile());
 
 			try {
 				// TODO: program.getExecutableFormat() does not return values that we use; it will need some form of mapping
-				EnvelopedFileUploadResponse200 response = fileProvider.getFilesApi().uploadDisassembly(zip.getFile(), fileType, fileProvider.getHash("sha1"), "json", false, false, "", true, false, false);
+				EnvelopedFileUploadResponse200 response = fileProvider.getFilesApi().uploadDisassembly(zip.getFile(), fileType, fileProvider.getOriginalSha1(), "json", false, false, "", true, false, false);
 			} catch (Exception e) {
         // TODO: again, verify this and the next fileProvider to make sure they work
 				Msg.error(fileProvider, e);

@@ -39,7 +39,7 @@ public class FileTabbedPane extends JTabbedPane {
 
     private void fetchAndPopulateList(){
         FileCRUDPanel fcp = References.getFileCRUDPanel();
-        String hash = References.getFileProvider().getHash("sha1");
+        String hash = References.getFileProvider().getOriginalSha1();
         BaseFileListPane tabComponent = getActiveTabComponent();
         Object[] items = null;
 

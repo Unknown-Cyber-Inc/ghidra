@@ -19,7 +19,7 @@ public class CenterProcedureTabPane extends BaseCenterTabPane{
     private String binaryId;
 
     public CenterProcedureTabPane(String startEa){
-        super(startEa, References.getFileProvider().getHash("sha1"), "procedure");
+        super(startEa, References.getFileProvider().getOriginalSha1(), "procedure");
         this.startEa = startEa;
         binaryId = ((ProcedureRootNode)getRootNode()).getBinaryId();
     }
