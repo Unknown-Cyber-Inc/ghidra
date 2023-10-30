@@ -23,7 +23,8 @@ public class CenterProcedureTabPane extends BaseCenterTabPane{
         binaryId = ((ProcedureRootNode)getRootNode()).getBinaryId();
     }
 
-    public void callExpandAction(Object subRootNode){
+    @Override
+    protected void callExpandAction(Object subRootNode){
         if (subRootNode instanceof NotesRootNode){
             // Note[] notes = Api.listProcedureGenomicsNotes(binaryId, startEa);
             // ((ProcedureRootNode)getRootNode()).populateNotes(notes);

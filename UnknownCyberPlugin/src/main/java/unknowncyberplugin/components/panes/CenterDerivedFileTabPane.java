@@ -22,7 +22,8 @@ public class CenterDerivedFileTabPane extends BaseCenterTabPane{
         tree.addNode(rootNode, matchesRoot);
     }
 
-    public void callExpandAction(Object subRootNode){
+    @Override
+    protected void callExpandAction(Object subRootNode){
         if (subRootNode instanceof NotesRootNode){
             // Note[] notes = Api.listFileNotes(fileName);
             // ((DerivedFileRootNode)getRootNode()).populateNotes(notes);
