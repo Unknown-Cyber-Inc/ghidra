@@ -9,6 +9,7 @@ import unknowncyberplugin.components.panels.ProcButtonsPanel;
 import unknowncyberplugin.components.panels.ProcTablePanel;
 import unknowncyberplugin.components.panes.FileNotesPane;
 import unknowncyberplugin.components.panes.FileTagsPane;
+import unknowncyberplugin.components.panes.ProcTablePane;
 import unknowncyberplugin.components.panes.FileMatchesPane;
 
 public class References {
@@ -20,6 +21,7 @@ public class References {
     private static CenterCRUDPanel centerCRUDPanel;
     private static ProcButtonsPanel procButtonsPanel;
     private static ProcTablePanel procTablePanel;
+    private static ProcTablePane procTablePane;
 
     // Pane references
     private static FileNotesPane fileNotesPane;
@@ -122,5 +124,13 @@ public class References {
 
     public static void setFileMatchesPane(FileMatchesPane fmp){
         fileMatchesPane = fmp;
+    }
+
+    public static ProcTablePane getProcTablePane(){
+        return procTablePane;
+    }
+
+    public static void setProcTablePane(ProcTablePane ptpane){
+        procTablePane = ptpane;
     }
 }

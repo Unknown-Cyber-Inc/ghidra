@@ -16,8 +16,8 @@ public class Procedure {
         this.binaryId = binaryId;
     }
 
-    public int getCount(){
-        return count;
+    public String getCount(){
+        return String.valueOf(count);
     }
 
     public String getStatus(){
