@@ -23,7 +23,7 @@ public class FileEditButton extends BaseButton {
     protected void runClickedAction(){
         FilePanel fp = References.getFilePanel();
         String currentDisplayName = fp.getSelectedListItem().toString();
-        UnknownCyberFileProvider fileProvider = Api.getFileProvider();
+        UnknownCyberFileProvider fileProvider = References.getFileProvider();
         FileCRUDPopup popup = new FileCRUDPopup();
 
         binaryId = fileProvider.getHash("sha1");

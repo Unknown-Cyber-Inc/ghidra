@@ -57,7 +57,7 @@ public class UnknownCyberPlugin extends ProgramPlugin {
 		fileProvider = new UnknownCyberFileProvider(tool, getName());
 		fileProvider.setProgram(currentProgram);
 
-		Api.setFileProvider(fileProvider);
+		References.setFileProvider(fileProvider);
 
 		References.enableFullPlugin(Api.isFileAccessible("05a470c6b40b43ca571b2b4292634bbc23c95128"));
 	}

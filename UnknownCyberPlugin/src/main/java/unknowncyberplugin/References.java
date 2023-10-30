@@ -7,12 +7,15 @@ import unknowncyberplugin.components.panels.FileCRUDPanel;
 import unknowncyberplugin.components.panels.FilePanel;
 import unknowncyberplugin.components.panels.ProcButtonsPanel;
 import unknowncyberplugin.components.panels.ProcTablePanel;
+import unknowncyberplugin.components.panes.FileMatchesPane;
 import unknowncyberplugin.components.panes.FileNotesPane;
 import unknowncyberplugin.components.panes.FileTagsPane;
 import unknowncyberplugin.components.panes.ProcTablePane;
-import unknowncyberplugin.components.panes.FileMatchesPane;
 
 public class References {
+    // UnknownCyberFileProvider reference
+    private static UnknownCyberFileProvider fileProvider;
+
     // Panel references
     private static FileButtonsPanel fileButtonsPanel;
     private static FilePanel filePanel;
@@ -40,6 +43,15 @@ public class References {
         centerPanel.setVisible(accessGranted);
         procButtonsPanel.setVisible(accessGranted);
         procTablePanel.setVisible(accessGranted);
+    }
+
+    // UnknownCyberFileProvider getters/setters
+    public static void setFileProvider(UnknownCyberFileProvider fp){
+        fileProvider = fp;
+    }
+
+    public static UnknownCyberFileProvider getFileProvider(){
+        return fileProvider;
     }
 
     // Panel getters/setters

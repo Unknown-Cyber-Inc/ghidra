@@ -28,7 +28,7 @@ public class FileCreateButton extends BaseButton {
     @Override
     protected void runClickedAction(){
         FilePanel fp = References.getFilePanel();
-        UnknownCyberFileProvider fileProvider = Api.getFileProvider();
+        UnknownCyberFileProvider fileProvider = References.getFileProvider();
         FileCRUDPopup popup = new FileCRUDPopup();
 
         binaryId = fileProvider.getHash("sha1");

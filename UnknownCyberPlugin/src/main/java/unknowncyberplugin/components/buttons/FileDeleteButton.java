@@ -29,7 +29,7 @@ public class FileDeleteButton extends BaseButton {
     @Override
     protected void runClickedAction(){
         FilePanel fp = References.getFilePanel();
-        UnknownCyberFileProvider fileProvider = Api.getFileProvider();
+        UnknownCyberFileProvider fileProvider = References.getFileProvider();
         DeleteConfirmationPopup delPopup = new DeleteConfirmationPopup();
 
         binaryId = fileProvider.getHash("sha1");

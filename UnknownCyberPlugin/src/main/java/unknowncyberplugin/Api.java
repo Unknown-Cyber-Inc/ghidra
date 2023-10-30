@@ -56,19 +56,11 @@ public class Api {
 	//   ? symbol needed for this and other parameters.
 	private static String noLinks = "?no_links=true";
 
-  private static UnknownCyberFileProvider fileProvider;
+  private static UnknownCyberFileProvider fileProvider = References.getFileProvider();
 	private static OkHttpClient client = new OkHttpClient();
 
   private Api() {
 	throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
-  }
-
-  public static void setFileProvider(UnknownCyberFileProvider fp){
-	fileProvider = fp;
-  }
-
-  public static UnknownCyberFileProvider getFileProvider(){
-	return fileProvider;
   }
 
   /**

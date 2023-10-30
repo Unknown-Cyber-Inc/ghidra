@@ -3,6 +3,7 @@ package unknowncyberplugin.components.panes;
 import javax.swing.tree.MutableTreeNode;
 
 import unknowncyberplugin.Api;
+import unknowncyberplugin.References;
 import unknowncyberplugin.models.responsedata.File;
 import unknowncyberplugin.models.responsedata.Note;
 import unknowncyberplugin.models.responsedata.Procedure;
@@ -18,7 +19,7 @@ public class CenterProcedureTabPane extends BaseCenterTabPane{
     private String binaryId;
 
     public CenterProcedureTabPane(String startEa){
-        super(startEa, Api.getFileProvider().getHash("sha1"), "procedure");
+        super(startEa, References.getFileProvider().getHash("sha1"), "procedure");
         this.startEa = startEa;
         binaryId = ((ProcedureRootNode)getRootNode()).getBinaryId();
     }
