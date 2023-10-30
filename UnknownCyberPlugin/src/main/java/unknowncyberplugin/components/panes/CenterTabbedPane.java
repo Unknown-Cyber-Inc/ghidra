@@ -22,6 +22,8 @@ public class CenterTabbedPane extends JTabbedPane{
     }
 
     private void generateDefaultTab(){
+        setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
+
         JPanel defaultPanel = new JPanel(new BorderLayout());
         defaultPanel.setBackground(Color.WHITE);
         
@@ -44,6 +46,7 @@ public class CenterTabbedPane extends JTabbedPane{
     }
 
     public void addClosableTab(String tabName, BaseCenterTabPane tabPane){
+        
         addTab(tabName, tabPane);
 
         // Place close button ('x') in the tab header

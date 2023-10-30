@@ -19,6 +19,10 @@ public class CenterTabSubPanel extends JPanel{
         super(new FlowLayout());
         setOpaque(false);
 
+        if (tabName.length() > 8){
+            tabName = tabName.substring(0, 8) + "...";
+        }
+
         JLabel label = new JLabel(tabName);
 
         if (tabPane instanceof CenterProcedureTabPane){
