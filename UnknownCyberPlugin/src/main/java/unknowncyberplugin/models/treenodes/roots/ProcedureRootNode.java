@@ -22,7 +22,7 @@ public class ProcedureRootNode extends BaseRootNode<Object>{
         tagsRoot = new TagsRootNode();
         tagsRoot.add(new TagNode(new Tag("TEST TAG NODE", null, null, null)));
         similaritiesRoot = new SimilaritiesRootNode();
-        FilesRootNode procHoldingFileRoot = new FilesRootNode(new File(binaryId, binaryId, binaryId));
+        FilesRootNode procHoldingFileRoot = new FilesRootNode(new File(binaryId, binaryId, binaryId), binaryId);
         similaritiesRoot.add(procHoldingFileRoot);
         SimilarProcedureNode similarProcNode = new SimilarProcedureNode(new Procedure(1, "badMal", "0xTEST", "TEST PROC", binaryId));
         procHoldingFileRoot.add(similarProcNode);

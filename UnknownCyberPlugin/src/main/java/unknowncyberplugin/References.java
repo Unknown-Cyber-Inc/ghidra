@@ -7,6 +7,7 @@ import unknowncyberplugin.components.panels.FileCRUDPanel;
 import unknowncyberplugin.components.panels.FilePanel;
 import unknowncyberplugin.components.panels.ProcButtonsPanel;
 import unknowncyberplugin.components.panels.ProcTablePanel;
+import unknowncyberplugin.components.panes.CenterTabbedPane;
 import unknowncyberplugin.components.panes.FileMatchesPane;
 import unknowncyberplugin.components.panes.FileNotesPane;
 import unknowncyberplugin.components.panes.FileTagsPane;
@@ -30,6 +31,7 @@ public class References {
     private static FileNotesPane fileNotesPane;
     private static FileTagsPane fileTagsPane;
     private static FileMatchesPane fileMatchesPane;
+    private static CenterTabbedPane centerTabbedPane;
 
     private References(){
         throw new UnsupportedOperationException(
@@ -144,5 +146,13 @@ public class References {
 
     public static void setProcTablePane(ProcTablePane ptpane){
         procTablePane = ptpane;
+    }
+
+    public static CenterTabbedPane getCenterTabbedPane(){
+        return centerTabbedPane;
+    }
+
+    public static void setCenterTabbedPane(CenterTabbedPane ctp){
+        centerTabbedPane = ctp;
     }
 }

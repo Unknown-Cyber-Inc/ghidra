@@ -48,7 +48,7 @@ public class CenterDerivedProcedureTabPane extends BaseCenterTabPane{
                 currentFileRootNode.add((MutableTreeNode)proc);
             } else {
                 File newFile = new File(proc.getBinaryId(), null, proc.getBinaryId());
-                currentFileRootNode = new FilesRootNode(newFile);
+                currentFileRootNode = new FilesRootNode(newFile, proc.getBinaryId());
 
                 currentFileRootNode.add((MutableTreeNode)proc);
                 simRootNode.add(currentFileRootNode);
