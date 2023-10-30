@@ -6,12 +6,14 @@ public class Procedure {
     private String startEA;
     private String baseAdjustedStartEA;
     private String procedureName;
+    private String binaryId;
 
-    public Procedure(int count, String status, String startEA, String procedureName){
+    public Procedure(int count, String status, String startEA, String procedureName, String binaryId){
         this.count = count;
         this.status = status;
         this.startEA = startEA;
         this.procedureName = procedureName;
+        this.binaryId = binaryId;
     }
 
     public int getCount(){
@@ -36,6 +38,10 @@ public class Procedure {
 
     public String getProcedureName(){
         return procedureName;
+    }
+
+    public String getBinaryId(){
+        return binaryId;
     }
 
     @Override

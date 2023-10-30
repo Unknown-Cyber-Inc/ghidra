@@ -1,43 +1,58 @@
 package unknowncyberplugin.components.panes;
 
+import javax.swing.tree.MutableTreeNode;
+
 import unknowncyberplugin.Api;
+import unknowncyberplugin.models.responsedata.Note;
+import unknowncyberplugin.models.responsedata.Procedure;
+import unknowncyberplugin.models.responsedata.Tag;
+import unknowncyberplugin.models.responsedata.File;
+import unknowncyberplugin.models.treenodes.roots.FilesRootNode;
+import unknowncyberplugin.models.treenodes.roots.NotesRootNode;
+import unknowncyberplugin.models.treenodes.roots.ProcedureRootNode;
 import unknowncyberplugin.models.treenodes.roots.SimilaritiesRootNode;
+import unknowncyberplugin.models.treenodes.roots.TagsRootNode;
 
 public class CenterDerivedProcedureTabPane extends BaseCenterTabPane{
-    private String procName;
-    private SimilaritiesRootNode similaritiesRoot;
+    private String startEa;
+    private String binaryId;
 
-    public CenterDerivedProcedureTabPane(String procName, String binaryId){
-        super(procName, binaryId, "procedure");
-        this.procName = procName;
-
-        similaritiesRoot = new SimilaritiesRootNode();
-
-        tree.addNode(rootNode, similaritiesRoot);
+    public CenterDerivedProcedureTabPane(String startEa, String binaryId){
+        super(startEa, binaryId, "procedure");
+        this.startEa = startEa;
+        this.binaryId = binaryId;
     }
 
-    public SimilaritiesRootNode getSimilaritiesRootNode(){
-        return similaritiesRoot;
+    public void callExpandAction(Object subRootNode){
+        
+        if (subRootNode instanceof NotesRootNode){
+            // Note[] notes = Api.listProcedureGenomicsNotes(binaryId, startEa);
+            // ((ProcedureRootNode)getRootNode()).populateNotes(notes);
+        } else if (subRootNode instanceof TagsRootNode){
+            // Tag[] tags = Api.listProcedureGenomicsTags(binaryId, startEa);
+            // ((ProcedureRootNode)getRootNode()).populateTags(tags);
+        } else if (subRootNode instanceof SimilaritiesRootNode){
+            // Procedure[] response = Api.listProcedureSimilarities(binaryId, startEa);
+            // parseSimilarProcedures(response);
+        }
     }
 
-    public void populateNotes(){
-        // populate notesNode with notes
-        // Api.listProcedureGenomicsNotes
-    }
+    public void parseSimilarProcedures(Procedure[] procs){
+        String currentBinaryId = null;
+        FilesRootNode currentFileRootNode = null;
+        SimilaritiesRootNode simRootNode = ((ProcedureRootNode)getRootNode()).getSimilaritiesRootNode();
+        
+        for (Procedure proc : procs){
+            if (currentBinaryId.equals(proc.getBinaryId())){
+                currentFileRootNode.add((MutableTreeNode)proc);
+            } else {
+                File newFile = new File(proc.getBinaryId(), null, proc.getBinaryId());
+                currentFileRootNode = new FilesRootNode(newFile);
 
-    public void populateTags(){
-        // populate tagsNode with tags
-        // Api.listProcedureGenomicsTags
-    }
-
-    public void populateContainingFiles(){
-        // populate filesNode with containing files
-        // Api.listProcedureFiles
-    }
-
-    public void populateSimilarities(){
-        // populate similaritiesNode with procedure similarities
-        // Api.listProcedureSimilarities
+                currentFileRootNode.add((MutableTreeNode)proc);
+                simRootNode.add(currentFileRootNode);
+            }
+        }
     }
     
 }

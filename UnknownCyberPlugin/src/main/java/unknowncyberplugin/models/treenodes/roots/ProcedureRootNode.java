@@ -2,6 +2,7 @@ package unknowncyberplugin.models.treenodes.roots;
 
 import unknowncyberplugin.models.responsedata.File;
 import unknowncyberplugin.models.responsedata.Note;
+import unknowncyberplugin.models.responsedata.Procedure;
 import unknowncyberplugin.models.responsedata.Tag;
 import unknowncyberplugin.models.treenodes.leaves.NoteNode;
 import unknowncyberplugin.models.treenodes.leaves.SimilarProcedureNode;
@@ -21,7 +22,10 @@ public class ProcedureRootNode extends BaseRootNode<Object>{
         tagsRoot = new TagsRootNode();
         tagsRoot.add(new TagNode(new Tag("TEST TAG NODE", null, null, null)));
         similaritiesRoot = new SimilaritiesRootNode();
-        similaritiesRoot.add(new SimilarProcedureNode(new File("TEST SIMILAR PROC NODE", null, null)));
+        FilesRootNode procHoldingFileRoot = new FilesRootNode(new File(binaryId, binaryId, binaryId));
+        similaritiesRoot.add(procHoldingFileRoot);
+        SimilarProcedureNode similarProcNode = new SimilarProcedureNode(new Procedure(1, "badMal", "0xTEST", "TEST PROC", binaryId));
+        procHoldingFileRoot.add(similarProcNode);
 
         add(notesRoot);
         add(tagsRoot);
@@ -54,12 +58,6 @@ public class ProcedureRootNode extends BaseRootNode<Object>{
 
     public SimilaritiesRootNode getSimilaritiesRootNode(){
         return similaritiesRoot;
-    }
-
-    public void populateSimilarities(File[] similarities){
-        for (File sim : similarities){
-            tagsRoot.add(new SimilarProcedureNode(sim));
-        }
     }
     
 }

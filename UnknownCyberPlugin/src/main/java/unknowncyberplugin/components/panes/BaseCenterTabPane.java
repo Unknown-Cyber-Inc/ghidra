@@ -1,8 +1,12 @@
 package unknowncyberplugin.components.panes;
 
 import javax.swing.JScrollPane;
+import javax.swing.event.TreeExpansionEvent;
+import javax.swing.event.TreeWillExpandListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.ExpandVetoException;
+import javax.swing.tree.TreePath;
 
 import unknowncyberplugin.components.collections.CenterTree;
 import unknowncyberplugin.models.responsedata.File;
@@ -24,8 +28,25 @@ public abstract class BaseCenterTabPane extends JScrollPane{
         }
 
         tree = new CenterTree(new DefaultTreeModel(rootNode));
+
+        tree.addTreeWillExpandListener(new TreeWillExpandListener() {
+            @Override
+            public void treeWillExpand(TreeExpansionEvent ev) throws ExpandVetoException {
+                TreePath path = ev.getPath();
+                Object subRootNode = path.getLastPathComponent();
+                callExpandAction(subRootNode);
+            }
+
+            @Override
+            public void treeWillCollapse(TreeExpansionEvent event) throws ExpandVetoException {
+                // This must be overriden. As we have no needed action here, it is left empty.
+            }
+        });
+
         setViewportView(tree);
     }
+
+    abstract void callExpandAction(Object subRootNode);
 
     public CenterTree getTree(){
         return tree;

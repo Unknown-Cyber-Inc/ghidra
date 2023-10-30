@@ -26,6 +26,7 @@ import net.lingala.zip4j.ZipFile;
 
 import com.unknowncyber.magic.model.EnvelopedFileGenomicsResponse200;
 import com.unknowncyber.magic.model.EnvelopedFileList200;
+import com.unknowncyber.magic.model.EnvelopedFile200;
 import com.unknowncyber.magic.model.EnvelopedFileMatchResponseList200EnvelopedIdList200;
 import com.unknowncyber.magic.model.EnvelopedFileUploadResponse200;
 import com.unknowncyber.magic.model.EnvelopedFileUploadResponseList200;
@@ -276,27 +277,19 @@ public class Api {
    * - Takes a hash string to query the API with.
    * TODO: return
    */
-  public static void isFileAccessible(String hash) {
+  public static boolean isFileAccessible(String hash) {
+	String readMask = "";
+    String expandMask = "";
+    String dynamicMask = "";
     try {
-			String readMask = "&read_mask=sha1";
-    	String expandMask = "&expand_mask=";
-    	String dynamicMask = "&dynamic_mask=";
-
-			String url = baseUrl + "files/" + hash + "/" + noLinks + readMask + expandMask + dynamicMask + apiKey;
-			Request request = new Request.Builder().url(url).build();
-			Response response = client.newCall(request).execute();
-
-			if (response.isSuccessful()) {
-				// TODO: high-level function to enable buttons that require file access (i.e. pulling notes/tags/matches)
-			} else {
-				// TODO: high-level function to disable buttons that require file access (i.e. pulling notes/tags/matches)
-			}
-			
+		  EnvelopedFile200 response = fileProvider.getFilesApi().getFile(hash, "json", false, false, "", true, false, readMask, expandMask, dynamicMask);
 		} catch (Exception e) {
-			Msg.error("Unknown Cyber API", e);	
+			Msg.error("Unknown Cyber API", e);
+			return false;
 			// This means an unexpected error occurred
 			// Access errors (403/404) returns as success:false and do not throw an error
 		}
+		return true;
   }
 
   /**
