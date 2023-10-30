@@ -1,8 +1,10 @@
 package unknowncyberplugin.models.treenodes.leaves;
 
-public class MatchNode extends BaseLeafNode<Object>{
+import unknowncyberplugin.models.responsedata.File;
 
-    public MatchNode(Object nodeData){
+public class MatchNode extends BaseLeafNode<File>{
+
+    public MatchNode(File nodeData){
         super(nodeData);
     }
     

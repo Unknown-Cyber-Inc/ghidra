@@ -136,6 +136,14 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 		return fIterator;
 	}
 
+	public String getOriginalSha1(){
+		return originalSha1;
+	}
+
+	public String getOriginalSha512(){
+		return originalSha512;
+	}
+
 	// This was used as part of the original code to create the menu bar popup action
 	// Keeping for now as an example
 	/*

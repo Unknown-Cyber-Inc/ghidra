@@ -26,6 +26,7 @@ import net.lingala.zip4j.ZipFile;
 
 import com.unknowncyber.magic.model.EnvelopedFileGenomicsResponse200;
 import com.unknowncyber.magic.model.EnvelopedFileList200;
+import com.unknowncyber.magic.model.EnvelopedFile200;
 import com.unknowncyber.magic.model.EnvelopedFileMatchResponseList200EnvelopedIdList200;
 import com.unknowncyber.magic.model.EnvelopedFileUploadResponse200;
 import com.unknowncyber.magic.model.EnvelopedFileUploadResponseList200;
@@ -55,19 +56,11 @@ public class Api {
 	//   ? symbol needed for this and other parameters.
 	private static String noLinks = "?no_links=true";
 
-  private static UnknownCyberFileProvider fileProvider;
+  private static UnknownCyberFileProvider fileProvider = References.getFileProvider();
 	private static OkHttpClient client = new OkHttpClient();
 
   private Api() {
 	throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
-  }
-
-  public static void setFileProvider(UnknownCyberFileProvider fp){
-	fileProvider = fp;
-  }
-
-  public static UnknownCyberFileProvider getFileProvider(){
-	return fileProvider;
   }
 
   /**
@@ -110,9 +103,9 @@ public class Api {
 			JSONObject fileData = new JSONObject();
 			fileData.put("image_base", fileProvider.getProgram().getImageBase());
 			fileData.put("md5", fileProvider.getProgram().getExecutableMD5());
-			fileData.put("sha1", fileProvider.getHash("sha1"));
+			fileData.put("sha1", fileProvider.getOriginalSha1());
 			fileData.put("sha256", fileProvider.getProgram().getExecutableSHA256());
-			fileData.put("sha512", fileProvider.getHash("sha512"));
+			fileData.put("sha512", fileProvider.getOriginalSha512());
 			fileData.put("unix_filetype", fileType);
 			fileData.put("version", Application.getApplicationVersion());
 
@@ -237,13 +230,13 @@ public class Api {
 			}
 
 			// Create zip file in temp directory, load in the file.json and procedure directory
-			zip = new ZipFile(Files.createTempFile(fileProvider.getHash("sha1") + "_", ".zip").toFile());
+			zip = new ZipFile(Files.createTempFile(fileProvider.getOriginalSha1() + "_", ".zip").toFile());
 			zip.addFile(fileJson.toFile());
 			zip.addFolder(procDirectory.toFile());
 
 			try {
 				// TODO: program.getExecutableFormat() does not return values that we use; it will need some form of mapping
-				EnvelopedFileUploadResponse200 response = fileProvider.getFilesApi().uploadDisassembly(zip.getFile(), fileType, fileProvider.getHash("sha1"), "json", false, false, "", true, false, false);
+				EnvelopedFileUploadResponse200 response = fileProvider.getFilesApi().uploadDisassembly(zip.getFile(), fileType, fileProvider.getOriginalSha1(), "json", false, false, "", true, false, false);
 			} catch (Exception e) {
         // TODO: again, verify this and the next fileProvider to make sure they work
 				Msg.error(fileProvider, e);
@@ -276,27 +269,19 @@ public class Api {
    * - Takes a hash string to query the API with.
    * TODO: return
    */
-  public static void isFileAccessible(String hash) {
+  public static boolean isFileAccessible(String hash) {
+	String readMask = "";
+    String expandMask = "";
+    String dynamicMask = "";
     try {
-			String readMask = "&read_mask=sha1";
-    	String expandMask = "&expand_mask=";
-    	String dynamicMask = "&dynamic_mask=";
-
-			String url = baseUrl + "files/" + hash + "/" + noLinks + readMask + expandMask + dynamicMask + apiKey;
-			Request request = new Request.Builder().url(url).build();
-			Response response = client.newCall(request).execute();
-
-			if (response.isSuccessful()) {
-				// TODO: high-level function to enable buttons that require file access (i.e. pulling notes/tags/matches)
-			} else {
-				// TODO: high-level function to disable buttons that require file access (i.e. pulling notes/tags/matches)
-			}
-			
+		  EnvelopedFile200 response = fileProvider.getFilesApi().getFile(hash, "json", false, false, "", true, false, readMask, expandMask, dynamicMask);
 		} catch (Exception e) {
-			Msg.error("Unknown Cyber API", e);	
+			Msg.error("Unknown Cyber API", e);
+			return false;
 			// This means an unexpected error occurred
 			// Access errors (403/404) returns as success:false and do not throw an error
 		}
+		return true;
   }
 
   /**

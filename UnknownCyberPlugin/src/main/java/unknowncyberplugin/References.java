@@ -7,8 +7,17 @@ import unknowncyberplugin.components.panels.FileCRUDPanel;
 import unknowncyberplugin.components.panels.FilePanel;
 import unknowncyberplugin.components.panels.ProcButtonsPanel;
 import unknowncyberplugin.components.panels.ProcTablePanel;
+import unknowncyberplugin.components.panes.CenterTabbedPane;
+import unknowncyberplugin.components.panes.FileMatchesPane;
+import unknowncyberplugin.components.panes.FileNotesPane;
+import unknowncyberplugin.components.panes.FileTagsPane;
+import unknowncyberplugin.components.panes.ProcTablePane;
 
 public class References {
+    // UnknownCyberFileProvider reference
+    private static UnknownCyberFileProvider fileProvider;
+
+    // Panel references
     private static FileButtonsPanel fileButtonsPanel;
     private static FilePanel filePanel;
     private static FileCRUDPanel fileCRUDPanel;
@@ -16,6 +25,13 @@ public class References {
     private static CenterCRUDPanel centerCRUDPanel;
     private static ProcButtonsPanel procButtonsPanel;
     private static ProcTablePanel procTablePanel;
+    private static ProcTablePane procTablePane;
+
+    // Pane references
+    private static FileNotesPane fileNotesPane;
+    private static FileTagsPane fileTagsPane;
+    private static FileMatchesPane fileMatchesPane;
+    private static CenterTabbedPane centerTabbedPane;
 
     private References(){
         throw new UnsupportedOperationException(
@@ -30,6 +46,17 @@ public class References {
         procButtonsPanel.setVisible(accessGranted);
         procTablePanel.setVisible(accessGranted);
     }
+
+    // UnknownCyberFileProvider getters/setters
+    public static void setFileProvider(UnknownCyberFileProvider fp){
+        fileProvider = fp;
+    }
+
+    public static UnknownCyberFileProvider getFileProvider(){
+        return fileProvider;
+    }
+
+    // Panel getters/setters
 
     public static FileButtonsPanel getFileButtonsPanel(){
         return fileButtonsPanel;
@@ -85,5 +112,47 @@ public class References {
 
     public static void setProcTablePanel(ProcTablePanel ptp){
         procTablePanel = ptp; 
+    }
+
+    // Pane getters/setters
+
+    public static FileNotesPane getFileNotesPane(){
+        return fileNotesPane;
+    }
+
+    public static void setFileNotesPane(FileNotesPane fnp){
+        fileNotesPane = fnp;
+    }
+
+    public static FileTagsPane getFileTagsPane(){
+        return fileTagsPane;
+    }
+
+    public static void setFileTagsPane(FileTagsPane ftp){
+        fileTagsPane = ftp;
+    }
+
+    public static FileMatchesPane getFileMatchesPane(){
+        return fileMatchesPane;
+    }
+
+    public static void setFileMatchesPane(FileMatchesPane fmp){
+        fileMatchesPane = fmp;
+    }
+
+    public static ProcTablePane getProcTablePane(){
+        return procTablePane;
+    }
+
+    public static void setProcTablePane(ProcTablePane ptpane){
+        procTablePane = ptpane;
+    }
+
+    public static CenterTabbedPane getCenterTabbedPane(){
+        return centerTabbedPane;
+    }
+
+    public static void setCenterTabbedPane(CenterTabbedPane ctp){
+        centerTabbedPane = ctp;
     }
 }

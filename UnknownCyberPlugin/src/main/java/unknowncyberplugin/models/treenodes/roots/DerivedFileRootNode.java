@@ -1,17 +1,22 @@
 package unknowncyberplugin.models.treenodes.roots;
 
+import unknowncyberplugin.models.responsedata.File;
+import unknowncyberplugin.models.responsedata.Note;
+import unknowncyberplugin.models.responsedata.Tag;
+import unknowncyberplugin.models.treenodes.leaves.MatchNode;
 import unknowncyberplugin.models.treenodes.leaves.NoteNode;
+import unknowncyberplugin.models.treenodes.leaves.TagNode;
 
 public class DerivedFileRootNode extends BaseRootNode<Object>{
     private NotesRootNode notesRoot;
     private TagsRootNode tagsRoot;
     private MatchesRootNode matchesRoot;
 
-    public DerivedFileRootNode(Object nodeData, String binaryId){
+    public DerivedFileRootNode(File nodeData, String binaryId){
         super(nodeData, binaryId);
 
-        notesRoot = new NotesRootNode(binaryId);
-        tagsRoot = new TagsRootNode(binaryId);
+        notesRoot = new NotesRootNode();
+        tagsRoot = new TagsRootNode();
         matchesRoot = new MatchesRootNode();
 
         add(notesRoot);
@@ -23,8 +28,8 @@ public class DerivedFileRootNode extends BaseRootNode<Object>{
         return notesRoot;
     }
 
-    public void populateNotes(Object[] notes){
-        for (Object note : notes){
+    public void populateNotes(Note[] notes){
+        for (Note note : notes){
             notesRoot.add(new NoteNode(note));
         }
     }
@@ -33,9 +38,9 @@ public class DerivedFileRootNode extends BaseRootNode<Object>{
         return tagsRoot;
     }
 
-    public void populateTags(Object[] tags){
-        for (Object tag : tags){
-            tagsRoot.add(new NoteNode(tag));
+    public void populateTags(Tag[] tags){
+        for (Tag tag : tags){
+            tagsRoot.add(new TagNode(tag));
         }
     }
 
@@ -43,9 +48,9 @@ public class DerivedFileRootNode extends BaseRootNode<Object>{
         return matchesRoot;
     }
 
-    public void populateMatches(Object[] matches){
-        for (Object match : matches){
-            matchesRoot.add(new NoteNode(match));
+    public void populateMatches(File[] matches){
+        for (File match : matches){
+            matchesRoot.add(new MatchNode(match));
         }
     }
     

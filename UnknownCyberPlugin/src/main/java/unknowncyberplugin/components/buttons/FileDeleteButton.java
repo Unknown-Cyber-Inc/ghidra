@@ -16,8 +16,8 @@ import unknowncyberplugin.components.panes.FileNotesPane;
 import unknowncyberplugin.components.panes.FileTabbedPane;
 import unknowncyberplugin.components.panes.FileTagsPane;
 import unknowncyberplugin.components.popups.DeleteConfirmationPopup;
-import unknowncyberplugin.models.listitems.NoteItem;
-import unknowncyberplugin.models.listitems.TagItem;
+import unknowncyberplugin.models.responsedata.Note;
+import unknowncyberplugin.models.responsedata.Tag;
 
 public class FileDeleteButton extends BaseButton {
     private String binaryId;
@@ -29,10 +29,10 @@ public class FileDeleteButton extends BaseButton {
     @Override
     protected void runClickedAction(){
         FilePanel fp = References.getFilePanel();
-        UnknownCyberFileProvider fileProvider = Api.getFileProvider();
+        UnknownCyberFileProvider fileProvider = References.getFileProvider();
         DeleteConfirmationPopup delPopup = new DeleteConfirmationPopup();
 
-        binaryId = fileProvider.getHash("sha1");
+        binaryId = fileProvider.getOriginalSha1();
         int response = delPopup.displayAndGetResponse();
 
         if (response == 0){
@@ -42,13 +42,13 @@ public class FileDeleteButton extends BaseButton {
 
     public void processItem(BaseFileListPane tabPane, Object selectedItem){
         if (tabPane instanceof FileNotesPane){
-            // Object result = Api.deleteFileNote(binaryId, selectedItem.getId());
-            // if (200 <= result.getStatus() <= 300) {
+            // boolean successful = Api.deleteFileNote(binaryId, ((Note)selectedItem).getId());
+            // if (successful) {
             //     tabPane.getList().removeItem(selectedItem);
             // }
         } else if (tabPane instanceof FileTagsPane) {
-            // Object result = Api.removeFileTag(binaryId, selectedItem.getId());
-            // if (200 <= result.getStatus() <= 300) {
+            // boolean successful = Api.removeFileTag(binaryId, ((Tag)selectedItem).getId());
+            // if (successful) {
             //     tabPane.getList().removeItem(selectedItem);
             // }
         }

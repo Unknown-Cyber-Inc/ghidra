@@ -17,7 +17,7 @@ public class ProcTable extends JTable {
     // May replace DefaultTableModel with custom model to avoid copying response data
     // into an array of arrays.
     private DefaultTableModel tableModel;
-    private static final String[] COLUMN_NAMES = {"Address", "Occurrence #", "Type", "Notes", "Tags"};
+    private static final String[] COLUMN_NAMES = {"Address", "Name", "Occurrence #", "Type", "Notes", "Tags"};
 
     public ProcTable(Object[][] rowData){
         super(rowData, COLUMN_NAMES);

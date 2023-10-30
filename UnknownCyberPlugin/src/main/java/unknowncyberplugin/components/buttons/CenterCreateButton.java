@@ -11,6 +11,8 @@ import unknowncyberplugin.components.panes.CenterDerivedFileTabPane;
 import unknowncyberplugin.components.panes.CenterDerivedProcedureTabPane;
 import unknowncyberplugin.components.panes.CenterProcedureTabPane;
 import unknowncyberplugin.components.popups.CenterCRUDPopup;
+import unknowncyberplugin.models.responsedata.Note;
+import unknowncyberplugin.models.responsedata.Tag;
 import unknowncyberplugin.models.treenodes.leaves.NoteNode;
 import unknowncyberplugin.models.treenodes.leaves.PlaceholderNode;
 import unknowncyberplugin.models.treenodes.leaves.TagNode;
@@ -56,51 +58,33 @@ public class CenterCreateButton extends BaseButton {
         ProcedureRootNode rootNode = (ProcedureRootNode) tabPane.getRootNode();
         DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) node.getParent();
         String binaryId = rootNode.getBinaryId();
-        String address = "PLACEHOLDER ADDRESS";
+        String startEA = rootNode.getStartEA();
 
         // If the selected node is NotesRootNode or TagsRootNode
         if (node instanceof NotesRootNode){
-            NoteNode newNode = createProcedureNoteNode(binaryId, address);
-            if (newNode != null){
-                node.add(newNode);
-            }
+            createProcedureNoteNode(binaryId, startEA, node);
         } else if (node instanceof TagsRootNode){
-            TagNode newNode = createProcedureTagNode(binaryId, address);
-            if (newNode != null){
-                node.add(newNode);
-            }
+            createProcedureTagNode(binaryId, startEA, node);
         // If the selected node is a NoteNode or a TagNode
         } else if (parentNode instanceof NotesRootNode){
-            NoteNode newNode = createProcedureNoteNode(binaryId, address);
-            if (newNode != null){
-                parentNode.add(newNode);
-            }
+            createProcedureNoteNode(binaryId, startEA, parentNode);
         } else if (parentNode instanceof TagsRootNode){
-            TagNode newNode = createProcedureTagNode(binaryId, address);
-            if (newNode != null){
-                parentNode.add(newNode);
-            }
+            createProcedureTagNode(binaryId, startEA, parentNode);
         }
     }
 
-    public NoteNode createProcedureNoteNode(String binaryId, String address){
-        // NoteNode newNote;
-        // Object response = Api.createProcedureGenomicsNote(binaryId, address, popupReturnedText;
-        // if(200 <= response.getStatus() <=300){
-        //     // create new NoteNode from response
-        //     return newNote;
+    public void createProcedureNoteNode(String binaryId, String startEA, DefaultMutableTreeNode rootNode){
+        // Note newNote = Api.createProcedureGenomicsNote(binaryId, startEA, popupReturnedText);
+        // if(newNote != null){
+        //     rootNode.add(new NoteNode(newNote));
         // }
-        return null;
     }
 
-    public TagNode createProcedureTagNode(String binaryId, String address){
-        // TagNode newTag;
-        // Object response = Api.createProcedureGenomicsTag(binaryId, address, popupReturnedText);
-        // if(200 <= response.getStatus() <=300){
-        //     // create new TagNode from response
-        //     return newTag;
+    public void createProcedureTagNode(String binaryId, String startEA, DefaultMutableTreeNode rootNode){
+        // Tag newTag = Api.createProcedureGenomicsTag(binaryId, startEA, popupReturnedText);
+        // if(newTag != null){
+        //     rootNode.add(new TagNode(newTag));
         // }
-        return null;
     }
 
     public void processDerivedFileTreeNode(BaseCenterTabPane tabPane, DefaultMutableTreeNode node){
@@ -109,33 +93,27 @@ public class CenterCreateButton extends BaseButton {
         String binaryId = rootNode.getBinaryId();
 
         if (node instanceof NotesRootNode){
-            node.add(createFileNoteNode(binaryId));
+            createFileNoteNode(binaryId, node);
         } else if (node instanceof TagsRootNode){
-            node.add(createFileTagNode(binaryId));
+            createFileTagNode(binaryId, node);
         } else if (parentNode instanceof NotesRootNode){
-            parentNode.add(createFileNoteNode(binaryId));
+            createFileNoteNode(binaryId, parentNode);
         } else if (parentNode instanceof TagsRootNode){
-            parentNode.add(createFileTagNode(binaryId));
+            createFileTagNode(binaryId, parentNode);
         }
     }
 
-    public NoteNode createFileNoteNode(String binaryId){
-        // NoteNode newNote;
-        // Object response = Api.createFileNote(binaryId, popupReturnedText);
-        // if(200 <= response.getStatus() <=300){
-        //     // create new NoteNode from response
-        //     return newNote;
+    public void createFileNoteNode(String binaryId, DefaultMutableTreeNode rootNode){
+        // Note newNote = Api.createFileNote(binaryId, popupReturnedText);
+        // if(newNote != null){
+        //     rootNode.add(new NoteNode(newNote));
         // }
-        return null;
     }
 
-    public TagNode createFileTagNode(String binaryId){
-        // TagNode newTag;
-        // Object response = Api.createFileTag(binaryId, popupReturnedText);
-        // if(200 <= response.getStatus() <=300){
-        //     // create new TagNode from response
-        //     return newTag;
+    public void createFileTagNode(String binaryId, DefaultMutableTreeNode rootNode){
+        // Tag newTag = Api.createFileTag(binaryId, popupReturnedText);
+        // if(newTag != null){
+        //     rootNode.add(new TagNode(newTag));
         // }
-        return null;
     }
 }

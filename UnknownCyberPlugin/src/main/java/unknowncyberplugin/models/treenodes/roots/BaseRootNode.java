@@ -44,6 +44,10 @@ public abstract class BaseRootNode<T> extends DefaultMutableTreeNode{
         return binaryId;
     }
 
+    public void setBinaryId(String binaryId){
+        this.binaryId = binaryId; 
+    }
+
     @SuppressWarnings("unchecked")
     public String getRootBinaryId(){
         BaseRootNode<T> nodeParent = (BaseRootNode<T>) getParent();
@@ -56,12 +60,20 @@ public abstract class BaseRootNode<T> extends DefaultMutableTreeNode{
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void add(MutableTreeNode child){
+        super.add(child);
+
+        if (child instanceof BaseRootNode){
+            ((BaseRootNode<T>)child).setBinaryId(
+                ((BaseRootNode<T>)child).getRootBinaryId()
+            );
+        }
+
         if (placeholderNode != null){
             removePlaceholderNode();
             placeholderNode = null;
         }
-        super.add(child);
     }
 
     @Override

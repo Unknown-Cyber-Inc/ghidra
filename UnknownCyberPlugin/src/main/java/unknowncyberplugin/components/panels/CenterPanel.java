@@ -18,6 +18,7 @@ public class CenterPanel extends JPanel{
         centerTabs = new CenterTabbedPane();
 
         References.setCenterCRUDPanel(centerCRUDPanel);
+        References.setCenterTabbedPane(centerTabs);
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         add(centerTabs);

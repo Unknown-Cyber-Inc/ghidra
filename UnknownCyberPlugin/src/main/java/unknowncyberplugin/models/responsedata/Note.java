@@ -1,20 +1,20 @@
 package unknowncyberplugin.models.responsedata;
 
 public class Note {
-    private String content;
+    private String noteText;
     private String userName;
     private String timeStamp;
     private String noteId;
 
-    public Note(String content, String userName, String timeStamp, String noteId){
-        this.content = content;
+    public Note(String noteText, String noteId, String userName, String timeStamp){
+        this.noteText = noteText;
         this.userName = userName;
         this.timeStamp = timeStamp;
         this.noteId = noteId;
     }
 
-    public String getContent(){
-        return content;
+    public String getNoteText(){
+        return noteText;
     }
 
     public String getUserName(){
@@ -27,5 +27,17 @@ public class Note {
 
     public String getId(){
         return noteId;
+    }
+
+    public void updateItemData(Note note){
+        this.noteText = note.getNoteText();
+        this.userName = note.getUserName();
+        this.timeStamp = note.getTimeStamp();
+        this.noteId = note.getId();
+    }
+
+    @Override
+    public String toString(){
+        return noteText == null ? "No note text set" : noteText;
     }
 }
