@@ -42,15 +42,15 @@ public class FileDeleteButton extends BaseButton {
 
     public void processItem(BaseFileListPane tabPane, Object selectedItem){
         if (tabPane instanceof FileNotesPane){
-            // boolean successful = Api.deleteFileNote(binaryId, ((Note)selectedItem).getId());
-            // if (successful) {
-            //     tabPane.getList().removeItem(selectedItem);
-            // }
+            boolean successful = Api.deleteFileNote(binaryId, ((Note)selectedItem).getId());
+            if (successful) {
+                tabPane.getList().removeItem(selectedItem);
+            }
         } else if (tabPane instanceof FileTagsPane) {
-            // boolean successful = Api.removeFileTag(binaryId, ((Tag)selectedItem).getId());
-            // if (successful) {
-            //     tabPane.getList().removeItem(selectedItem);
-            // }
+            boolean successful = Api.removeFileTag(binaryId, ((Tag)selectedItem).getId());
+            if (successful) {
+                tabPane.getList().removeItem(selectedItem);
+            }
         }
     }
 }

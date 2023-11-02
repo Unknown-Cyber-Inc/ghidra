@@ -78,6 +78,7 @@ public class CenterEditButton extends BaseButton {
         String binaryId = rootNode.getBinaryId();
 
         if (node instanceof NoteNode){
+            // This code does not work, there is no return value for updateFileNote's API call
             // Note updatedNote = Api.updateFileNote(binaryId, ((NoteNode)node).getNodeData().getId(), popupReturnedText);;
             // if (updatedNote != null) {
             //     ((NoteNode)node).setNodeData(updatedNote);

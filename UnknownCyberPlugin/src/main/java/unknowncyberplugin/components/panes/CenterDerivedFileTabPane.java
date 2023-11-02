@@ -25,8 +25,8 @@ public class CenterDerivedFileTabPane extends BaseCenterTabPane{
     @Override
     protected void callExpandAction(Object subRootNode){
         if (subRootNode instanceof NotesRootNode){
-            // Note[] notes = Api.listFileNotes(fileName);
-            // ((DerivedFileRootNode)getRootNode()).populateNotes(notes);
+            Note[] notes = Api.listFileNotes(fileName);
+            ((DerivedFileRootNode)getRootNode()).populateNotes(notes);
         } else if (subRootNode instanceof TagsRootNode){
             // Tag[] tags = Api.listFileTags(fileName);
             // ((DerivedFileRootNode)getRootNode()).populateTags(tags);

@@ -49,16 +49,16 @@ public class FileCreateButton extends BaseButton {
     }
 
     public void processNewFileNote(){
-        // Note newNote = Api.createFileNote(binaryId, popupReturnedText);
-        // if(newNote != null){
-        //     References.getFileNotesPane().addItem(newNote);
-        // }
+        Note newNote = Api.createFileNote(binaryId, popupReturnedText);
+        if(newNote != null){
+            References.getFileNotesPane().addItem(newNote);
+        }
     }
 
     public void processNewFileTag(){
-        // Tag newTag = Api.createFileTag(binaryId, popupReturnedText);
-        // if(newTag != null){
-        //     References.getFileTagsPane().addItem(newTag);
-        // }
+        Tag newTag = Api.createFileTag(binaryId, popupReturnedText);
+        if(newTag != null){
+            References.getFileTagsPane().addItem(newTag);
+        }
     }
 }

@@ -49,7 +49,6 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 	// as opposed to being passed into functions as a local reference.
 	private ApiClient apiClient;
 	private FilesApi filesApi;
-	private ProceduresApi procApi;
 
 	// GUI's main panel which holds all other panels
 	private JPanel mainPanel;
@@ -112,7 +111,6 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 		// createActions();
 		apiClient = new ApiClient();
 		filesApi = new FilesApi(apiClient);
-		procApi = new ProceduresApi(apiClient);
 		// procsApi = new ProcsApi(apiClient);
 	}
 
@@ -126,10 +124,6 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 
 	public FilesApi getFilesApi() {
 		return filesApi;
-	}
-
-	public ProceduresApi getProcApi() {
-		return procApi;
 	}
 
 	public FunctionIterator getFunctionIterator(){

@@ -27,14 +27,14 @@ public class CenterDerivedProcedureTabPane extends BaseCenterTabPane{
     protected void callExpandAction(Object subRootNode){
         
         if (subRootNode instanceof NotesRootNode){
-            // Note[] notes = Api.listProcedureGenomicsNotes(binaryId, startEa);
-            // ((ProcedureRootNode)getRootNode()).populateNotes(notes);
+            Note[] notes = Api.listProcedureGenomicsNotes(binaryId, startEa);
+            ((ProcedureRootNode)getRootNode()).populateNotes(notes);
         } else if (subRootNode instanceof TagsRootNode){
             // Tag[] tags = Api.listProcedureGenomicsTags(binaryId, startEa);
             // ((ProcedureRootNode)getRootNode()).populateTags(tags);
         } else if (subRootNode instanceof SimilaritiesRootNode){
-            // Procedure[] response = Api.listProcedureSimilarities(binaryId, startEa);
-            // parseSimilarProcedures(response);
+            Procedure[] response = Api.listProcedureSimilarities(binaryId, startEa);
+            parseSimilarProcedures(response);
         }
     }
 

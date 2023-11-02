@@ -1,7 +1,5 @@
 package unknowncyberplugin.components.buttons;
 
-import ghidra.util.Msg;
-
 import unknowncyberplugin.Api;
 import unknowncyberplugin.References;
 import unknowncyberplugin.models.responsedata.Procedure;
@@ -16,10 +14,10 @@ public class ProcRetrievalButton extends BaseButton {
     protected void runClickedAction(){
         String binaryId = References.getFileProvider().getOriginalSha1();
 
-        // Procedure[] procs = Api.getFileGenomics(binaryId);
-        // String[][] procList = procsToStrings(procs);
+        Procedure[] procs = Api.getFileGenomics(binaryId);
+        String[][] procList = procsToStrings(procs);
 
-        // References.getProcTablePane().populate(procList);
+        References.getProcTablePane().populate(procList);
     }
 
     private String[][] procsToStrings(Procedure[] procs){

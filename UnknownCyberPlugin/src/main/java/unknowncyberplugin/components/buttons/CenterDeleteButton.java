@@ -54,15 +54,15 @@ public class CenterDeleteButton extends BaseButton {
 
         // If the selected node is NoteNode or TagNode
         if (node instanceof NoteNode){
-            // boolean successful = Api.deleteProcedureGenomicsNote(binaryId, startEA, ((NoteNode)node).getNodeData().getId());
-            // if (successful) {
-            //     parentNode.remove(node);
-            // }
+            boolean successful = Api.deleteProcedureGenomicsNote(binaryId, startEA, ((NoteNode)node).getNodeData().getId());
+            if (successful) {
+                parentNode.remove(node);
+            }
         } else if (node instanceof TagNode){
-            // boolean successful = Api.deleteProcedureGenomicsTagById(binaryId, startEA, ((TagNode)node).getNodeData().getId());
-            // if (successful) {
-            //     parentNode.remove(node);
-            // }
+            boolean successful = Api.deleteProcedureGenomicsTagById(binaryId, startEA, ((TagNode)node).getNodeData().getId());
+            if (successful) {
+                parentNode.remove(node);
+            }
         }
     }
 
@@ -73,15 +73,15 @@ public class CenterDeleteButton extends BaseButton {
 
         // If the selected node is NoteNode or TagNode
         if (node instanceof NoteNode){
-            // boolean successful = Api.deleteFileNote(binaryId, ((NoteNode)node).getNodeData().getId());
-            // if (successful) {
-            //     parentNode.remove(node);
-            // }
+            boolean successful = Api.deleteFileNote(binaryId, ((NoteNode)node).getNodeData().getId());
+            if (successful) {
+                parentNode.remove(node);
+            }
         } else if (node instanceof TagNode){
-            // boolean successful = Api.removeFileTag(binaryId, ((TagNode)node).getNodeData().getId());
-            // if (successful) {
-            //     parentNode.remove(node);
-            // }
+            boolean successful = Api.removeFileTag(binaryId, ((TagNode)node).getNodeData().getId());
+            if (successful) {
+                parentNode.remove(node);
+            }
         }
     }
 

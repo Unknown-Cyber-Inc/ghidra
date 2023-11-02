@@ -74,17 +74,17 @@ public class CenterCreateButton extends BaseButton {
     }
 
     public void createProcedureNoteNode(String binaryId, String startEA, DefaultMutableTreeNode rootNode){
-        // Note newNote = Api.createProcedureGenomicsNote(binaryId, startEA, popupReturnedText);
-        // if(newNote != null){
-        //     rootNode.add(new NoteNode(newNote));
-        // }
+        Note newNote = Api.createProcedureGenomicsNote(binaryId, startEA, popupReturnedText);
+        if(newNote != null){
+            rootNode.add(new NoteNode(newNote));
+        }
     }
 
     public void createProcedureTagNode(String binaryId, String startEA, DefaultMutableTreeNode rootNode){
-        // Tag newTag = Api.createProcedureGenomicsTag(binaryId, startEA, popupReturnedText);
-        // if(newTag != null){
-        //     rootNode.add(new TagNode(newTag));
-        // }
+        Tag newTag = Api.createProcedureGenomicsTag(binaryId, startEA, popupReturnedText);
+        if(newTag != null){
+            rootNode.add(new TagNode(newTag));
+        }
     }
 
     public void processDerivedFileTreeNode(BaseCenterTabPane tabPane, DefaultMutableTreeNode node){
@@ -104,16 +104,16 @@ public class CenterCreateButton extends BaseButton {
     }
 
     public void createFileNoteNode(String binaryId, DefaultMutableTreeNode rootNode){
-        // Note newNote = Api.createFileNote(binaryId, popupReturnedText);
-        // if(newNote != null){
-        //     rootNode.add(new NoteNode(newNote));
-        // }
+        Note newNote = Api.createFileNote(binaryId, popupReturnedText);
+        if(newNote != null){
+            rootNode.add(new NoteNode(newNote));
+        }
     }
 
     public void createFileTagNode(String binaryId, DefaultMutableTreeNode rootNode){
-        // Tag newTag = Api.createFileTag(binaryId, popupReturnedText);
-        // if(newTag != null){
-        //     rootNode.add(new TagNode(newTag));
-        // }
+        Tag newTag = Api.createFileTag(binaryId, popupReturnedText);
+        if(newTag != null){
+            rootNode.add(new TagNode(newTag));
+        }
     }
 }
