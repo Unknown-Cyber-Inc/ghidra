@@ -74,6 +74,14 @@ public class Api {
 	throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
   }
 
+	// Global storage for an exception to hold it while un-nesting via NestedException
+	private static Exception stashedException;
+
+	// Dummy exception to allow us to detect and specifically handle an exception within nested try/catch blocks
+	private class NestedException extends Exception {
+		private NestedException() {}
+	}
+
   /**
    * Wraps the original file upload endpoint.
    *  - Takes a fileProvider to access the current program and other at-runtime data.
@@ -118,157 +126,244 @@ public class Api {
 			fileData.put("unix_filetype", fileType);
 			fileData.put("version", "Ghidra-" + Application.getApplicationVersion());
 
-			// Create and write to the file's JSON file
-			fileJson = Files.createTempFile("", ".json");
-			Files.write(fileJson, fileData.toJSONString().getBytes());
+			try {
+				// Create and write to the file's JSON file
+				fileJson = Files.createTempFile("", ".json");
+				Files.write(fileJson, fileData.toJSONString().getBytes());
 
-			// Create the procedure's subdirectory
-			procDirectory = Files.createTempDirectory("");
+				// Create the procedure's subdirectory
+				procDirectory = Files.createTempDirectory("");
+			} catch (Exception e) {
+				// File error occurs, specify issue and escalate to highest try/catch block
+				Msg.error(fileProvider, "Error occurred while creating temp disassembly files.");
+				stashedException = e;
+				throw new NestedException();
+			}
 
-			// Iterate over all functions in a program
-			for (Function f : fileProvider.getFunctionIterator()) {
-				// Set top-level blocks array
-				JSONArray blockArray = new JSONArray();
+			try {
+				// Iterate over all functions in a program
+				for (Function f : fileProvider.getFunctionIterator()) {
+					// Set top-level blocks array
+					JSONArray blockArray = new JSONArray();
 
-				// Set top-level cfg object
-				JSONObject cfgObject = new JSONObject();
+					// Set top-level cfg object
+					JSONObject cfgObject = new JSONObject();
 
-				// Set top-level api_calls array
-				JSONArray apiCallArray = new JSONArray();
+					// Set top-level api_calls array
+					JSONArray apiCallArray = new JSONArray();
 
-				// Iterate over blocks
-				CodeBlockIterator blockIterator = blockModel.getCodeBlocksContaining(f.getBody(), TaskMonitor.DUMMY);
-				while (blockIterator.hasNext()) {
-					CodeBlock currentBlock = blockIterator.next();
+					// Iterate over blocks
+					try {
+						CodeBlockIterator blockIterator = blockModel.getCodeBlocksContaining(f.getBody(), TaskMonitor.DUMMY);
+						while (blockIterator.hasNext()) {
+							CodeBlock currentBlock = blockIterator.next();
 
-					// Set line array that exists per block
-					JSONArray lineArray = new JSONArray();
+							// Set line array that exists per block
+							JSONArray lineArray = new JSONArray();
 
-					// Iterate over lines
-					InstructionIterator lineIterator = fileProvider.getProgram().getListing().getInstructions(currentBlock, true);
-					while (lineIterator.hasNext()) {
-						Instruction currentLine = lineIterator.next();
+							// Iterate over lines
+							try {
+								InstructionIterator lineIterator = fileProvider.getProgram().getListing().getInstructions(currentBlock, true);
+								while (lineIterator.hasNext()) {
+									Instruction currentLine = lineIterator.next();
 
-						// Calculate byteString
-						String byteString = "";
-						byte[] byteArray = currentLine.getBytes();
-						for (byte myByte : byteArray) {
-							byteString = byteString + " " + String.format("%02x", myByte & 0xff);
-						}
-						byteString = byteString.trim();
+									// Calculate byteString
+									String byteString = "";
+									byte[] byteArray = currentLine.getBytes();
+									for (byte myByte : byteArray) {
+										byteString = byteString + " " + String.format("%02x", myByte & 0xff);
+									}
+									byteString = byteString.trim();
 
-						// Generate operand JSONArray
-						// Simultaneously, handle api_call behavior since that requires operand-level granularity
-						JSONArray operandArray = new JSONArray();
+									// Generate operand JSONArray
+									// Simultaneously, handle api_call behavior since that requires operand-level granularity
+									JSONArray operandArray = new JSONArray();
 
-						String apiCallName = null;
-						Boolean isCall = false;
+									String apiCallName = null;
+									Boolean isCall = false;
 
-						int operandCount = currentLine.getNumOperands();
-						for (int i = 0; i < operandCount; i++) {
-							if (currentLine.getExternalReference(i) != null) {
-								apiCallName = currentLine.getExternalReference(i).getLabel();
-								isCall = true;
-								apiCallArray.add(currentLine.getExternalReference(i).getLabel());
+									// Iterate over operands
+									try {
+										for (int i = 0; i < currentLine.getNumOperands(); i++) {
+											if (currentLine.getExternalReference(i) != null) {
+												apiCallName = currentLine.getExternalReference(i).getLabel();
+												isCall = true;
+												apiCallArray.add(currentLine.getExternalReference(i).getLabel());
+											}
+											operandArray.add(currentLine.getDefaultOperandRepresentation(i).toLowerCase());
+										}
+									} catch (Exception e) {
+										// Unexpected error occurrs while looping operands, specify location and escalate
+										Msg.error(fileProvider, "Error occurred while traversing an instruction's operands.");
+										stashedException = e;
+										throw new NestedException();
+									}
+
+									// Create each JSON line object
+									JSONObject lineJson = new JSONObject();
+									lineJson.put("startEA", Helpers.formatEA(currentLine.getMinAddress()));
+									lineJson.put("endEA", Helpers.formatEA(currentLine.getMaxAddress()));
+									// TODO: figure out type
+									lineJson.put("type", "code");
+									lineJson.put("bytes", byteString);
+									lineJson.put("mnem", currentLine.getMnemonicString().toLowerCase());
+									// TODO: operands come out of ghidra with 0x-format hexes; we prefer h-format hexes
+									//   except sometimes, because jumps tend to be off.  For now, I'll leave operands as
+									//   they natively appear; it will be easier to adjust the backend to account for 0x-
+									//   and h-format hexes, than try to brute force acceptable decision logic here
+									lineJson.put("operands", operandArray);
+									lineJson.put("prolog_format", Prolog.formatInstruction(currentLine.getMnemonicString(), operandArray));
+									lineJson.put("api_call_name", apiCallName);
+									lineJson.put("is_call", isCall);
+
+									lineArray.add(lineJson);
+								}
+							} catch (Exception e) {
+								// Unexpected error occurrs while looping instructions, specify location and escalate
+								Msg.error(fileProvider, "Error occurred while traversing a block's instructions.");
+								stashedException = e;
+								throw new NestedException();
 							}
-							operandArray.add(currentLine.getDefaultOperandRepresentation(i).toLowerCase());
+
+							// Create each JSON block object
+							JSONObject blockJson = new JSONObject();
+							blockJson.put("startEA", Helpers.formatEA(currentBlock.getMinAddress()));
+							blockJson.put("endEA", Helpers.formatEA(currentBlock.getMaxAddress()));
+
+							// Populate the JSON block's lines field with the line array
+							blockJson.put("lines", lineArray);
+
+							// Add the newly created JSON block object to the array
+							blockArray.add(blockJson);
+
+							// Do cfg stuff for this block
+							JSONArray blockDestinations = new JSONArray();
+							CodeBlockReferenceIterator destinationIterator = currentBlock.getDestinations(TaskMonitor.DUMMY);
+
+							// TODO: these values are mosly in hex, but prepend 0040 instead of 0x
+							//   likely to do with a need to normalize for image base or something
+							// Ghidra addresses do not use 0x-format; cleanAddress cleans all non-hex digits.
+							//   Ergo, we must prepend "0x" to a cleaned hex to make it 0x-formatted
+							try {
+								while (destinationIterator.hasNext()) {
+									blockDestinations.add("0x" + Helpers.cleanAddress(destinationIterator.next().getDestinationAddress().toString()));
+								}
+								cfgObject.put("0x" + Helpers.cleanAddress(currentBlock.getMinAddress().toString()), blockDestinations);
+							} catch (Exception e) {
+								// Unexpected error occurrs while generating cfg, specify location and escalate
+								Msg.error(fileProvider, "Error occurred while generating a block's control flow graph.");
+								stashedException = e;
+								throw new NestedException();
+							}
 						}
-
-						// Create each JSON line object
-						JSONObject lineJson = new JSONObject();
-						lineJson.put("startEA", Helpers.formatEA(currentLine.getMinAddress()));
-						lineJson.put("endEA", Helpers.formatEA(currentLine.getMaxAddress()));
-						// TODO: figure out type
-						lineJson.put("type", "code");
-						lineJson.put("bytes", byteString);
-						lineJson.put("mnem", currentLine.getMnemonicString().toLowerCase());
-						// TODO: operands come out of ghidra with 0x-format hexes; we prefer h-format hexes
-						//   except sometimes, because jumps tend to be off.  For now, I'll leave operands as
-						//   they natively appear; it will be easier to adjust the backend to account for 0x-
-						//   and h-format hexes, than try to brute force acceptable decision logic here
-						lineJson.put("operands", operandArray);
-						lineJson.put("prolog_format", Prolog.formatInstruction(currentLine.getMnemonicString(), operandArray));
-						lineJson.put("api_call_name", apiCallName);
-						lineJson.put("is_call", isCall);
-
-						lineArray.add(lineJson);
+					} catch (NestedException e) {
+						// Exception's most granular location has already been reported
+						// Escalate this to next highest try/catch block
+						throw stashedException;
+					} catch (Exception e) {
+						// Unexpected error occurrs while looping blocks, specify location and escalate
+						Msg.error(fileProvider, "Error occurred while traversing a function's blocks.");
+						stashedException = e;
+						throw new NestedException();
 					}
 
-					// Create each JSON block object
-					JSONObject blockJson = new JSONObject();
-					blockJson.put("startEA", Helpers.formatEA(currentBlock.getMinAddress()));
-					blockJson.put("endEA", Helpers.formatEA(currentBlock.getMaxAddress()));
+					// Create and populate the overall JSON object for this procedure
+					JSONObject procData = new JSONObject();
+					procData.put("blocks", blockArray);
+					procData.put("is_library", (f.isExternal() ? 128 : 0));
+					procData.put("is_thunk", (f.isThunk() ? 128 : 0));
+					procData.put("startEA", Helpers.formatEA(f.getBody().getMinAddress()));
+					procData.put("endEA", Helpers.formatEA(f.getBody().getMaxAddress()));
+					procData.put("procedure_name", f.getName());
+					procData.put("segment_name", fileProvider.getProgram().getMemory().getBlock(f.getBody().getMinAddress()).getName());
+					// TODO: Strings are the likely-string values held in referenced memory addresses
+					procData.put("strings", new String[0]);
+					procData.put("api_calls", apiCallArray);
+					procData.put("cfg", cfgObject);
 
-					// Populate the JSON block's lines field with the line array
-					blockJson.put("lines", lineArray);
-
-					// Add the newly created JSON block object to the array
-					blockArray.add(blockJson);
-
-					// Do cfg stuff for this block
-					JSONArray blockDestinations = new JSONArray();
-					CodeBlockReferenceIterator destinationIterator = currentBlock.getDestinations(TaskMonitor.DUMMY);
-
-					// TODO: these values are mosly in hex, but prepend 0040 instead of 0x
-					//   likely to do with a need to normalize for image base or something
-					// Ghidra addresses do not use 0x-format; cleanAddress cleans all non-hex digits.
-					//   Ergo, we must prepend "0x" to a cleaned hex to make it 0x-formatted
-					while (destinationIterator.hasNext()) {
-						blockDestinations.add("0x" + Helpers.cleanAddress(destinationIterator.next().getDestinationAddress().toString()));
+					// Create and write to the temporary file containing this procedure's JSON data
+					try {
+						Path procJson = Files.createTempFile(procDirectory, f.getBody().getMinAddress().toString() + "_", ".json");
+						Files.write(procJson, procData.toJSONString().getBytes());
+					} catch (Exception e) {
+						// Unexpected error occurrs while writing procedure file, specify location and escalate
+						Msg.error(fileProvider, "Error occurred while writing a procedure's data to temp file.");
+						stashedException = e;
+						throw new NestedException();
 					}
-					cfgObject.put("0x" + Helpers.cleanAddress(currentBlock.getMinAddress().toString()), blockDestinations);
 				}
-
-				// Create and populate the overall JSON object for this procedure
-				JSONObject procData = new JSONObject();
-				procData.put("blocks", blockArray);
-				procData.put("is_library", (f.isExternal() ? 128 : 0));
-				procData.put("is_thunk", (f.isThunk() ? 128 : 0));
-				procData.put("startEA", Helpers.formatEA(f.getBody().getMinAddress()));
-				procData.put("endEA", Helpers.formatEA(f.getBody().getMaxAddress()));
-				procData.put("procedure_name", f.getName());
-				procData.put("segment_name", fileProvider.getProgram().getMemory().getBlock(f.getBody().getMinAddress()).getName());
-				// TODO: Strings are the likely-string values held in referenced memory addresses
-				procData.put("strings", new String[0]);
-				procData.put("api_calls", apiCallArray);
-				procData.put("cfg", cfgObject);
-
-				// Create and write to the temporary file containing this procedure's JSON data
-				Path procJson = Files.createTempFile(procDirectory, f.getBody().getMinAddress().toString() + "_", ".json");
-				Files.write(procJson, procData.toJSONString().getBytes());
+			} catch (NestedException e) {
+				// Exception's most granular location has already been reported
+				// Escalate this to the highest try/catch block
+				throw stashedException;
+			} catch (Exception e) {
+				// Unexpected error occurrs while looping functions, specify location and escalate
+				Msg.error(fileProvider, "Error occurred while traversing program functions.");
+				stashedException = e;
+				throw new NestedException();
 			}
 
 			// Create zip file in temp directory, load in the file.json and procedure directory
-			zip = new ZipFile(Files.createTempFile(fileProvider.getOriginalSha1() + "_", ".zip").toFile());
-			zip.addFile(fileJson.toFile());
-			zip.addFolder(procDirectory.toFile());
+			try {
+				zip = new ZipFile(Files.createTempFile(fileProvider.getOriginalSha1() + "_", ".zip").toFile());
+				zip.addFile(fileJson.toFile());
+				zip.addFolder(procDirectory.toFile());
+			} catch (Exception e) {
+				// Unexpected error occurrs while zipping data, specify location and escalate
+				Msg.error(fileProvider, "Error occurred while generating temporary zip file for disassembly upload.");
+				stashedException = e;
+				throw new NestedException();
+			}
 
 			try {
 				// TODO: program.getExecutableFormat() does not return values that we use; it will need some form of mapping
 				EnvelopedFileUploadResponse200 response = fileProvider.getFilesApi().uploadDisassembly(zip.getFile(), fileType, fileProvider.getOriginalSha1(), "json", false, false, "", true, false, false);
 			} catch (Exception e) {
-        // TODO: again, verify this and the next fileProvider to make sure they work
-				Msg.error(fileProvider, e);
+				// Unexpected error occurrs during disassembly upload, specify location and escalate
+				Msg.error(fileProvider, "Error occurred during disassembly upload.");
+				stashedException = e;
+				throw new NestedException();
 			}
-		// TODO: Granularize try/catch behavior so we can have more intelligent error handling
+		} catch (NestedException e) {
+			// Unexpected, nested error in disassembly upload; report the stashed exception
+			Msg.error(fileProvider, stashedException);
 		} catch (Exception e) {
+			// Unexpected error in disassembly upload
 			Msg.error(fileProvider, e);
 		} finally {
-			// Clean up
-			if (fileJson != null) {
-				if (fileJson.toFile().exists()) {
-					fileJson.toFile().delete();
+			// Clean up any dangling files
+			// Wrapped separately to ensure each one is tried
+			try {
+				if (fileJson != null) {
+					if (fileJson.toFile().exists()) {
+						fileJson.toFile().delete();
+					}
 				}
+			} catch (Exception e) {
+				Msg.error(fileProvider, "Error occurred when attempting to delete temporary File JSON.");
+				Msg.error(fileProvider, e);
 			}
-			if (procDirectory != null) {
-				if (procDirectory.toFile().exists()) {
-					procDirectory.toFile().delete();
+
+			try {
+				if (procDirectory != null) {
+					if (procDirectory.toFile().exists()) {
+						procDirectory.toFile().delete();
+					}
 				}
+			} catch (Exception e) {
+				Msg.error(fileProvider, "Error occurred when attempting to delete temporary Procedure Directory.");
+				Msg.error(fileProvider, e);
 			}
-			if (zip != null) {
-				if (zip.getFile().exists()) {
-					zip.getFile().delete();
+
+			try {
+				if (zip != null) {
+					if (zip.getFile().exists()) {
+						zip.getFile().delete();
+					}
 				}
+			} catch (Exception e) {
+				Msg.error(fileProvider, "Error occurred when attempting to delete temporary Disassembly ZIP.");
+				Msg.error(fileProvider, e);
 			}
 		}
 	}
