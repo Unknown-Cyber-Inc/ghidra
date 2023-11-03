@@ -38,6 +38,7 @@ import com.unknowncyber.magic.model.EnvelopedProcedureList200;
 import com.unknowncyber.magic.model.EnvelopedTag200;
 import com.unknowncyber.magic.model.EnvelopedTagCreatedResponse200;
 import com.unknowncyber.magic.model.EnvelopedTagList200;
+import com.unknowncyber.magic.model.EnvelopedTagResponseList200;
 import com.unknowncyber.magic.model.ExtendedProcedureResponse;
 import com.unknowncyber.magic.model.Note;
 import com.unknowncyber.magic.model.Procedure;
@@ -90,7 +91,7 @@ public class Api {
 		File myFile = new File(fileProvider.getProgram().getExecutablePath());
 		List<File> files = Arrays.asList(myFile);
 		try {
-			EnvelopedFileUploadResponseList200 response = fileProvider.getFilesApi().uploadFile(files, "", Arrays.asList(), Arrays.asList(), "json", false, false, "", true, false, false, false, false, false, false);
+			EnvelopedFileUploadResponseList200 response = fileProvider.getFilesApi().uploadFile(files, "", Arrays.asList(), Arrays.asList(), "json", false, false, "", true, false, false, false, false, false, false, false);
 		} catch (Exception e) {
 			Msg.error(fileProvider, e);
 		}
@@ -512,7 +513,7 @@ public class Api {
 		//busted, returns null
     try {
       String expandMask = "tags";
-      EnvelopedTagList200 response = fileProvider.getFilesApi().listFileTags(hash, "json", false, false, "", true, false, expandMask);
+      EnvelopedTagResponseList200 response = fileProvider.getFilesApi().listFileTags(hash, "json", false, false, "", true, false, expandMask);
 			//Msg.info("Tag List", response);
     } catch (Exception e) {
       Msg.error(fileProvider, e);
@@ -531,7 +532,7 @@ public class Api {
 		// endpoint does not return username when creating tag
     try {
       // Color is set to null to use default color
-      EnvelopedTagCreatedResponse200 response = fileProvider.getFilesApi().createFileTag(hash, name, null, "json", false, false, "", true, false);
+      EnvelopedTagCreatedResponse200 response = fileProvider.getFilesApi().createFileTag(hash, name, null, "json", false, false, "", true, false, false);
 			TagCreatedResponse newTag = response.getResource();
 
 			// Endpoint does not return a username
@@ -674,7 +675,7 @@ public class Api {
 	public static void listProcedureGenomicsTags(String hash, String address) {
 		//busted, returns null
 		try {
-			EnvelopedTagList200 response = fileProvider.getFilesApi().listProcedureGenomicsTags(hash, address, "json", false, false, "", true, false);
+			EnvelopedTagResponseList200 response = fileProvider.getFilesApi().listProcedureGenomicsTags(hash, address, "json", false, false, "", true, false);
 			//Msg.info("List proc tags", response);
 		} catch (Exception e) {
 			Msg.error(fileProvider, e);
@@ -690,9 +691,9 @@ public class Api {
 	 */
 	public static unknowncyberplugin.models.responsedata.Tag createProcedureGenomicsTag(String hash, String address, String name) {
 		try {
-			EnvelopedTag200 response = fileProvider.getFilesApi().createProcedureGenomicsTag(name, hash, address, "json", false, false, "", true, false);
+			EnvelopedTagCreatedResponse200 response = fileProvider.getFilesApi().createProcedureGenomicsTag(name, hash, address, "json", false, false, "", true, false, false);
 			
-			Tag tag = response.getResource();
+			TagCreatedResponse tag = response.getResource();
 
 			return new unknowncyberplugin.models.responsedata.Tag(tag.getName(), tag.getUsername(), tag.getCreateTime(), tag.getId());
 		} catch (Exception e) {

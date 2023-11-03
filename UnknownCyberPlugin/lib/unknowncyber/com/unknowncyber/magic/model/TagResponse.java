@@ -17,205 +17,161 @@ import java.util.Arrays;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import com.unknowncyber.magic.model.ErrorObject;
-import com.unknowncyber.magic.model.FileSearchResponse;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.Date;
 import java.io.Serializable;
 /**
- * EnvelopedFileSearchResponseList200
+ * TagResponse
  */
 
 
-public class EnvelopedFileSearchResponseList200 implements Serializable{
+public class TagResponse implements Serializable{
   private static final long serialVersionUID = 1L;
-  @JsonProperty("success")
-  private Boolean success = true;
+  @JsonProperty("is_public")
+  private Boolean isPublic = false;
 
-  @JsonProperty("status")
-  private Integer status = 200;
+  @JsonProperty("color")
+  private String color = "#329db6";
 
-  @JsonProperty("message")
-  private String message = "OK";
+  @JsonProperty("name")
+  private String name = "myTag";
 
-  @JsonProperty("errors")
-  private List<ErrorObject> errors = new ArrayList<ErrorObject>();
+  @JsonProperty("id")
+  private String id = "643f129e9dda8351b3252ec8";
 
-  @JsonProperty("links")
-  private Map<String, String> links = null;
+  @JsonProperty("_self")
+  private String _self = "https://api.magic.unknowncyber.com/v2/tags/643f129e9dda8351b3252ec8";
 
-  @JsonProperty("current_page_count")
-  private Integer currentPageCount = null;
+  @JsonProperty("username")
+  private String username = "user@email.com";
 
-  @JsonProperty("total_size")
-  private Integer totalSize = null;
+  @JsonProperty("create_time")
+  private Date createTime = null;
 
-  @JsonProperty("resources")
-  private List<FileSearchResponse> resources = new ArrayList<FileSearchResponse>();
-
-  public EnvelopedFileSearchResponseList200 success(Boolean success) {
-    this.success = success;
+  public TagResponse isPublic(Boolean isPublic) {
+    this.isPublic = isPublic;
     return this;
   }
 
    /**
-   * Get success
-   * @return success
+   * Get isPublic
+   * @return isPublic
   **/
   @Schema(description = "")
-  public Boolean isSuccess() {
-    return success;
+  public Boolean isIsPublic() {
+    return isPublic;
   }
 
-  public void setSuccess(Boolean success) {
-    this.success = success;
+  public void setIsPublic(Boolean isPublic) {
+    this.isPublic = isPublic;
   }
 
-  public EnvelopedFileSearchResponseList200 status(Integer status) {
-    this.status = status;
+  public TagResponse color(String color) {
+    this.color = color;
     return this;
   }
 
    /**
-   * Get status
-   * @return status
+   * Get color
+   * @return color
   **/
   @Schema(description = "")
-  public Integer getStatus() {
-    return status;
+  public String getColor() {
+    return color;
   }
 
-  public void setStatus(Integer status) {
-    this.status = status;
+  public void setColor(String color) {
+    this.color = color;
   }
 
-  public EnvelopedFileSearchResponseList200 message(String message) {
-    this.message = message;
+  public TagResponse name(String name) {
+    this.name = name;
     return this;
   }
 
    /**
-   * Get message
-   * @return message
+   * Get name
+   * @return name
   **/
   @Schema(description = "")
-  public String getMessage() {
-    return message;
+  public String getName() {
+    return name;
   }
 
-  public void setMessage(String message) {
-    this.message = message;
+  public void setName(String name) {
+    this.name = name;
   }
 
-  public EnvelopedFileSearchResponseList200 errors(List<ErrorObject> errors) {
-    this.errors = errors;
-    return this;
-  }
-
-  public EnvelopedFileSearchResponseList200 addErrorsItem(ErrorObject errorsItem) {
-    this.errors.add(errorsItem);
+  public TagResponse id(String id) {
+    this.id = id;
     return this;
   }
 
    /**
-   * Get errors
-   * @return errors
-  **/
-  @Schema(required = true, description = "")
-  public List<ErrorObject> getErrors() {
-    return errors;
-  }
-
-  public void setErrors(List<ErrorObject> errors) {
-    this.errors = errors;
-  }
-
-  public EnvelopedFileSearchResponseList200 links(Map<String, String> links) {
-    this.links = links;
-    return this;
-  }
-
-  public EnvelopedFileSearchResponseList200 putLinksItem(String key, String linksItem) {
-    if (this.links == null) {
-      this.links = new HashMap<String, String>();
-    }
-    this.links.put(key, linksItem);
-    return this;
-  }
-
-   /**
-   * Get links
-   * @return links
+   * Get id
+   * @return id
   **/
   @Schema(description = "")
-  public Map<String, String> getLinks() {
-    return links;
+  public String getId() {
+    return id;
   }
 
-  public void setLinks(Map<String, String> links) {
-    this.links = links;
+  public void setId(String id) {
+    this.id = id;
   }
 
-  public EnvelopedFileSearchResponseList200 currentPageCount(Integer currentPageCount) {
-    this.currentPageCount = currentPageCount;
+  public TagResponse _self(String _self) {
+    this._self = _self;
     return this;
   }
 
    /**
-   * Get currentPageCount
-   * @return currentPageCount
+   * Get _self
+   * @return _self
   **/
   @Schema(description = "")
-  public Integer getCurrentPageCount() {
-    return currentPageCount;
+  public String getSelf() {
+    return _self;
   }
 
-  public void setCurrentPageCount(Integer currentPageCount) {
-    this.currentPageCount = currentPageCount;
+  public void setSelf(String _self) {
+    this._self = _self;
   }
 
-  public EnvelopedFileSearchResponseList200 totalSize(Integer totalSize) {
-    this.totalSize = totalSize;
+  public TagResponse username(String username) {
+    this.username = username;
     return this;
   }
 
    /**
-   * Get totalSize
-   * @return totalSize
+   * Get username
+   * @return username
   **/
   @Schema(description = "")
-  public Integer getTotalSize() {
-    return totalSize;
+  public String getUsername() {
+    return username;
   }
 
-  public void setTotalSize(Integer totalSize) {
-    this.totalSize = totalSize;
+  public void setUsername(String username) {
+    this.username = username;
   }
 
-  public EnvelopedFileSearchResponseList200 resources(List<FileSearchResponse> resources) {
-    this.resources = resources;
-    return this;
-  }
-
-  public EnvelopedFileSearchResponseList200 addResourcesItem(FileSearchResponse resourcesItem) {
-    this.resources.add(resourcesItem);
+  public TagResponse createTime(Date createTime) {
+    this.createTime = createTime;
     return this;
   }
 
    /**
-   * Get resources
-   * @return resources
+   * Get createTime
+   * @return createTime
   **/
-  @Schema(required = true, description = "")
-  public List<FileSearchResponse> getResources() {
-    return resources;
+  @Schema(description = "")
+  public Date getCreateTime() {
+    return createTime;
   }
 
-  public void setResources(List<FileSearchResponse> resources) {
-    this.resources = resources;
+  public void setCreateTime(Date createTime) {
+    this.createTime = createTime;
   }
 
 
@@ -227,36 +183,34 @@ public class EnvelopedFileSearchResponseList200 implements Serializable{
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    EnvelopedFileSearchResponseList200 envelopedFileSearchResponseList200 = (EnvelopedFileSearchResponseList200) o;
-    return Objects.equals(this.success, envelopedFileSearchResponseList200.success) &&
-        Objects.equals(this.status, envelopedFileSearchResponseList200.status) &&
-        Objects.equals(this.message, envelopedFileSearchResponseList200.message) &&
-        Objects.equals(this.errors, envelopedFileSearchResponseList200.errors) &&
-        Objects.equals(this.links, envelopedFileSearchResponseList200.links) &&
-        Objects.equals(this.currentPageCount, envelopedFileSearchResponseList200.currentPageCount) &&
-        Objects.equals(this.totalSize, envelopedFileSearchResponseList200.totalSize) &&
-        Objects.equals(this.resources, envelopedFileSearchResponseList200.resources);
+    TagResponse tagResponse = (TagResponse) o;
+    return Objects.equals(this.isPublic, tagResponse.isPublic) &&
+        Objects.equals(this.color, tagResponse.color) &&
+        Objects.equals(this.name, tagResponse.name) &&
+        Objects.equals(this.id, tagResponse.id) &&
+        Objects.equals(this._self, tagResponse._self) &&
+        Objects.equals(this.username, tagResponse.username) &&
+        Objects.equals(this.createTime, tagResponse.createTime);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(success, status, message, errors, links, currentPageCount, totalSize, resources);
+    return Objects.hash(isPublic, color, name, id, _self, username, createTime);
   }
 
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class EnvelopedFileSearchResponseList200 {\n");
+    sb.append("class TagResponse {\n");
     
-    sb.append("    success: ").append(toIndentedString(success)).append("\n");
-    sb.append("    status: ").append(toIndentedString(status)).append("\n");
-    sb.append("    message: ").append(toIndentedString(message)).append("\n");
-    sb.append("    errors: ").append(toIndentedString(errors)).append("\n");
-    sb.append("    links: ").append(toIndentedString(links)).append("\n");
-    sb.append("    currentPageCount: ").append(toIndentedString(currentPageCount)).append("\n");
-    sb.append("    totalSize: ").append(toIndentedString(totalSize)).append("\n");
-    sb.append("    resources: ").append(toIndentedString(resources)).append("\n");
+    sb.append("    isPublic: ").append(toIndentedString(isPublic)).append("\n");
+    sb.append("    color: ").append(toIndentedString(color)).append("\n");
+    sb.append("    name: ").append(toIndentedString(name)).append("\n");
+    sb.append("    id: ").append(toIndentedString(id)).append("\n");
+    sb.append("    _self: ").append(toIndentedString(_self)).append("\n");
+    sb.append("    username: ").append(toIndentedString(username)).append("\n");
+    sb.append("    createTime: ").append(toIndentedString(createTime)).append("\n");
     sb.append("}");
     return sb.toString();
   }

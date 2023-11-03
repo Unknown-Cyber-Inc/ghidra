@@ -46,6 +46,12 @@ public class EnvelopedIdList200 implements Serializable, EnvelopedFileList200Env
   @JsonProperty("links")
   private Map<String, String> links = null;
 
+  @JsonProperty("current_page_count")
+  private Integer currentPageCount = null;
+
+  @JsonProperty("total_size")
+  private Integer totalSize = null;
+
   @JsonProperty("resources")
   private List<String> resources = new ArrayList<String>();
 
@@ -152,6 +158,42 @@ public class EnvelopedIdList200 implements Serializable, EnvelopedFileList200Env
     this.links = links;
   }
 
+  public EnvelopedIdList200 currentPageCount(Integer currentPageCount) {
+    this.currentPageCount = currentPageCount;
+    return this;
+  }
+
+   /**
+   * Get currentPageCount
+   * @return currentPageCount
+  **/
+  @Schema(description = "")
+  public Integer getCurrentPageCount() {
+    return currentPageCount;
+  }
+
+  public void setCurrentPageCount(Integer currentPageCount) {
+    this.currentPageCount = currentPageCount;
+  }
+
+  public EnvelopedIdList200 totalSize(Integer totalSize) {
+    this.totalSize = totalSize;
+    return this;
+  }
+
+   /**
+   * Get totalSize
+   * @return totalSize
+  **/
+  @Schema(description = "")
+  public Integer getTotalSize() {
+    return totalSize;
+  }
+
+  public void setTotalSize(Integer totalSize) {
+    this.totalSize = totalSize;
+  }
+
   public EnvelopedIdList200 resources(List<String> resources) {
     this.resources = resources;
     return this;
@@ -190,12 +232,14 @@ public class EnvelopedIdList200 implements Serializable, EnvelopedFileList200Env
         Objects.equals(this.message, envelopedIdList200.message) &&
         Objects.equals(this.errors, envelopedIdList200.errors) &&
         Objects.equals(this.links, envelopedIdList200.links) &&
+        Objects.equals(this.currentPageCount, envelopedIdList200.currentPageCount) &&
+        Objects.equals(this.totalSize, envelopedIdList200.totalSize) &&
         Objects.equals(this.resources, envelopedIdList200.resources);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(success, status, message, errors, links, resources);
+    return Objects.hash(success, status, message, errors, links, currentPageCount, totalSize, resources);
   }
 
 
@@ -209,6 +253,8 @@ public class EnvelopedIdList200 implements Serializable, EnvelopedFileList200Env
     sb.append("    message: ").append(toIndentedString(message)).append("\n");
     sb.append("    errors: ").append(toIndentedString(errors)).append("\n");
     sb.append("    links: ").append(toIndentedString(links)).append("\n");
+    sb.append("    currentPageCount: ").append(toIndentedString(currentPageCount)).append("\n");
+    sb.append("    totalSize: ").append(toIndentedString(totalSize)).append("\n");
     sb.append("    resources: ").append(toIndentedString(resources)).append("\n");
     sb.append("}");
     return sb.toString();

@@ -61,6 +61,9 @@ public class FileChild implements Serializable{
   @JsonProperty("filenames")
   private List<String> filenames = null;
 
+  @JsonProperty("filename")
+  private String filename = null;
+
   @JsonProperty("create_time")
   private Date createTime = null;
 
@@ -310,6 +313,15 @@ public class FileChild implements Serializable{
 
   public void setFilenames(List<String> filenames) {
     this.filenames = filenames;
+  }
+
+   /**
+   * self referral field
+   * @return filename
+  **/
+  @Schema(description = "self referral field")
+  public String getFilename() {
+    return filename;
   }
 
   public FileChild createTime(Date createTime) {
@@ -686,6 +698,7 @@ public class FileChild implements Serializable{
         Objects.equals(this.filetype, fileChild.filetype) &&
         Objects.equals(this.objectClass, fileChild.objectClass) &&
         Objects.equals(this.filenames, fileChild.filenames) &&
+        Objects.equals(this.filename, fileChild.filename) &&
         Objects.equals(this.createTime, fileChild.createTime) &&
         Objects.equals(this.matchCount, fileChild.matchCount) &&
         Objects.equals(this.uploadTime, fileChild.uploadTime) &&
@@ -726,7 +739,7 @@ public class FileChild implements Serializable{
 
   @Override
   public int hashCode() {
-    return Objects.hash(_public, sha1, md5, sha256, sha512, filetype, objectClass, filenames, createTime, matchCount, uploadTime, uploadTimes, children, parents, owned, notes, tags, status, pipeline, campaign, matches, avNames, scannerCount, detectionCount, evasiveness, scanDate, tokenList, threat, labels, unmapped, category, categories, family, families, avscan, indicators, reputation, yara, procedures, procedureGroup, unpackedProcedures, genomics, unpackedGenomics, similarities);
+    return Objects.hash(_public, sha1, md5, sha256, sha512, filetype, objectClass, filenames, filename, createTime, matchCount, uploadTime, uploadTimes, children, parents, owned, notes, tags, status, pipeline, campaign, matches, avNames, scannerCount, detectionCount, evasiveness, scanDate, tokenList, threat, labels, unmapped, category, categories, family, families, avscan, indicators, reputation, yara, procedures, procedureGroup, unpackedProcedures, genomics, unpackedGenomics, similarities);
   }
 
 
@@ -743,6 +756,7 @@ public class FileChild implements Serializable{
     sb.append("    filetype: ").append(toIndentedString(filetype)).append("\n");
     sb.append("    objectClass: ").append(toIndentedString(objectClass)).append("\n");
     sb.append("    filenames: ").append(toIndentedString(filenames)).append("\n");
+    sb.append("    filename: ").append(toIndentedString(filename)).append("\n");
     sb.append("    createTime: ").append(toIndentedString(createTime)).append("\n");
     sb.append("    matchCount: ").append(toIndentedString(matchCount)).append("\n");
     sb.append("    uploadTime: ").append(toIndentedString(uploadTime)).append("\n");

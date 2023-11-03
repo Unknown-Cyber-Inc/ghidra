@@ -47,6 +47,12 @@ public class EnvelopedFileMatchResponseList200 implements Serializable, Envelope
   @JsonProperty("links")
   private Map<String, String> links = null;
 
+  @JsonProperty("current_page_count")
+  private Integer currentPageCount = null;
+
+  @JsonProperty("total_size")
+  private Integer totalSize = null;
+
   @JsonProperty("resources")
   private List<FileMatchResponse> resources = new ArrayList<FileMatchResponse>();
 
@@ -153,6 +159,42 @@ public class EnvelopedFileMatchResponseList200 implements Serializable, Envelope
     this.links = links;
   }
 
+  public EnvelopedFileMatchResponseList200 currentPageCount(Integer currentPageCount) {
+    this.currentPageCount = currentPageCount;
+    return this;
+  }
+
+   /**
+   * Get currentPageCount
+   * @return currentPageCount
+  **/
+  @Schema(description = "")
+  public Integer getCurrentPageCount() {
+    return currentPageCount;
+  }
+
+  public void setCurrentPageCount(Integer currentPageCount) {
+    this.currentPageCount = currentPageCount;
+  }
+
+  public EnvelopedFileMatchResponseList200 totalSize(Integer totalSize) {
+    this.totalSize = totalSize;
+    return this;
+  }
+
+   /**
+   * Get totalSize
+   * @return totalSize
+  **/
+  @Schema(description = "")
+  public Integer getTotalSize() {
+    return totalSize;
+  }
+
+  public void setTotalSize(Integer totalSize) {
+    this.totalSize = totalSize;
+  }
+
   public EnvelopedFileMatchResponseList200 resources(List<FileMatchResponse> resources) {
     this.resources = resources;
     return this;
@@ -191,12 +233,14 @@ public class EnvelopedFileMatchResponseList200 implements Serializable, Envelope
         Objects.equals(this.message, envelopedFileMatchResponseList200.message) &&
         Objects.equals(this.errors, envelopedFileMatchResponseList200.errors) &&
         Objects.equals(this.links, envelopedFileMatchResponseList200.links) &&
+        Objects.equals(this.currentPageCount, envelopedFileMatchResponseList200.currentPageCount) &&
+        Objects.equals(this.totalSize, envelopedFileMatchResponseList200.totalSize) &&
         Objects.equals(this.resources, envelopedFileMatchResponseList200.resources);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(success, status, message, errors, links, resources);
+    return Objects.hash(success, status, message, errors, links, currentPageCount, totalSize, resources);
   }
 
 
@@ -210,6 +254,8 @@ public class EnvelopedFileMatchResponseList200 implements Serializable, Envelope
     sb.append("    message: ").append(toIndentedString(message)).append("\n");
     sb.append("    errors: ").append(toIndentedString(errors)).append("\n");
     sb.append("    links: ").append(toIndentedString(links)).append("\n");
+    sb.append("    currentPageCount: ").append(toIndentedString(currentPageCount)).append("\n");
+    sb.append("    totalSize: ").append(toIndentedString(totalSize)).append("\n");
     sb.append("    resources: ").append(toIndentedString(resources)).append("\n");
     sb.append("}");
     return sb.toString();

@@ -18,7 +18,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.util.Date;
 import java.io.Serializable;
 /**
  * TagCreatedResponse
@@ -27,6 +26,12 @@ import java.io.Serializable;
 
 public class TagCreatedResponse implements Serializable{
   private static final long serialVersionUID = 1L;
+  @JsonProperty("color")
+  private String color = "#329db6";
+
+  @JsonProperty("create_time")
+  private String createTime = null;
+
   @JsonProperty("name")
   private String name = "myTag";
 
@@ -36,8 +41,44 @@ public class TagCreatedResponse implements Serializable{
   @JsonProperty("_self")
   private String _self = "https://api.magic.unknowncyber.com/v2/tags/643f129e9dda8351b3252ec8";
 
-  @JsonProperty("create_time")
-  private Date createTime = null;
+  @JsonProperty("username")
+  private String username = "user@email.com";
+
+  public TagCreatedResponse color(String color) {
+    this.color = color;
+    return this;
+  }
+
+   /**
+   * Get color
+   * @return color
+  **/
+  @Schema(description = "")
+  public String getColor() {
+    return color;
+  }
+
+  public void setColor(String color) {
+    this.color = color;
+  }
+
+  public TagCreatedResponse createTime(String createTime) {
+    this.createTime = createTime;
+    return this;
+  }
+
+   /**
+   * Get createTime
+   * @return createTime
+  **/
+  @Schema(description = "")
+  public String getCreateTime() {
+    return createTime;
+  }
+
+  public void setCreateTime(String createTime) {
+    this.createTime = createTime;
+  }
 
   public TagCreatedResponse name(String name) {
     this.name = name;
@@ -93,22 +134,22 @@ public class TagCreatedResponse implements Serializable{
     this._self = _self;
   }
 
-  public TagCreatedResponse createTime(Date createTime) {
-    this.createTime = createTime;
+  public TagCreatedResponse username(String username) {
+    this.username = username;
     return this;
   }
 
    /**
-   * Get createTime
-   * @return createTime
+   * Get username
+   * @return username
   **/
   @Schema(description = "")
-  public Date getCreateTime() {
-    return createTime;
+  public String getUsername() {
+    return username;
   }
 
-  public void setCreateTime(Date createTime) {
-    this.createTime = createTime;
+  public void setUsername(String username) {
+    this.username = username;
   }
 
 
@@ -121,15 +162,17 @@ public class TagCreatedResponse implements Serializable{
       return false;
     }
     TagCreatedResponse tagCreatedResponse = (TagCreatedResponse) o;
-    return Objects.equals(this.name, tagCreatedResponse.name) &&
+    return Objects.equals(this.color, tagCreatedResponse.color) &&
+        Objects.equals(this.createTime, tagCreatedResponse.createTime) &&
+        Objects.equals(this.name, tagCreatedResponse.name) &&
         Objects.equals(this.id, tagCreatedResponse.id) &&
         Objects.equals(this._self, tagCreatedResponse._self) &&
-        Objects.equals(this.createTime, tagCreatedResponse.createTime);
+        Objects.equals(this.username, tagCreatedResponse.username);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(name, id, _self, createTime);
+    return Objects.hash(color, createTime, name, id, _self, username);
   }
 
 
@@ -138,10 +181,12 @@ public class TagCreatedResponse implements Serializable{
     StringBuilder sb = new StringBuilder();
     sb.append("class TagCreatedResponse {\n");
     
+    sb.append("    color: ").append(toIndentedString(color)).append("\n");
+    sb.append("    createTime: ").append(toIndentedString(createTime)).append("\n");
     sb.append("    name: ").append(toIndentedString(name)).append("\n");
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    _self: ").append(toIndentedString(_self)).append("\n");
-    sb.append("    createTime: ").append(toIndentedString(createTime)).append("\n");
+    sb.append("    username: ").append(toIndentedString(username)).append("\n");
     sb.append("}");
     return sb.toString();
   }

@@ -57,6 +57,12 @@ public class User implements Serializable{
   @JsonProperty("membership_enddate")
   private Date membershipEnddate = null;
 
+  @JsonProperty("remaining_uploads")
+  private Integer remainingUploads = null;
+
+  @JsonProperty("remaining_rules")
+  private Integer remainingRules = null;
+
   @JsonProperty("_self")
   private String _self = null;
 
@@ -198,6 +204,42 @@ public class User implements Serializable{
     return membershipEnddate;
   }
 
+  public User remainingUploads(Integer remainingUploads) {
+    this.remainingUploads = remainingUploads;
+    return this;
+  }
+
+   /**
+   * (Optional)
+   * @return remainingUploads
+  **/
+  @Schema(description = "(Optional)")
+  public Integer getRemainingUploads() {
+    return remainingUploads;
+  }
+
+  public void setRemainingUploads(Integer remainingUploads) {
+    this.remainingUploads = remainingUploads;
+  }
+
+  public User remainingRules(Integer remainingRules) {
+    this.remainingRules = remainingRules;
+    return this;
+  }
+
+   /**
+   * (Optional)
+   * @return remainingRules
+  **/
+  @Schema(description = "(Optional)")
+  public Integer getRemainingRules() {
+    return remainingRules;
+  }
+
+  public void setRemainingRules(Integer remainingRules) {
+    this.remainingRules = remainingRules;
+  }
+
    /**
    * Get _self
    * @return _self
@@ -236,13 +278,15 @@ public class User implements Serializable{
         Objects.equals(this.membershipLevel, user.membershipLevel) &&
         Objects.equals(this.membershipName, user.membershipName) &&
         Objects.equals(this.membershipEnddate, user.membershipEnddate) &&
+        Objects.equals(this.remainingUploads, user.remainingUploads) &&
+        Objects.equals(this.remainingRules, user.remainingRules) &&
         Objects.equals(this._self, user._self) &&
         Objects.equals(this._membership, user._membership);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, email, username, firstName, lastName, name, isPublic, membershipLevel, membershipName, membershipEnddate, _self, _membership);
+    return Objects.hash(id, email, username, firstName, lastName, name, isPublic, membershipLevel, membershipName, membershipEnddate, remainingUploads, remainingRules, _self, _membership);
   }
 
 
@@ -261,6 +305,8 @@ public class User implements Serializable{
     sb.append("    membershipLevel: ").append(toIndentedString(membershipLevel)).append("\n");
     sb.append("    membershipName: ").append(toIndentedString(membershipName)).append("\n");
     sb.append("    membershipEnddate: ").append(toIndentedString(membershipEnddate)).append("\n");
+    sb.append("    remainingUploads: ").append(toIndentedString(remainingUploads)).append("\n");
+    sb.append("    remainingRules: ").append(toIndentedString(remainingRules)).append("\n");
     sb.append("    _self: ").append(toIndentedString(_self)).append("\n");
     sb.append("    _membership: ").append(toIndentedString(_membership)).append("\n");
     sb.append("}");

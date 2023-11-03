@@ -18,7 +18,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.unknowncyber.magic.model.ErrorObject;
-import com.unknowncyber.magic.model.FileSearchResponse;
+import com.unknowncyber.magic.model.TagResponse;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,11 +26,11 @@ import java.util.List;
 import java.util.Map;
 import java.io.Serializable;
 /**
- * EnvelopedFileSearchResponseList200
+ * EnvelopedTagResponseList200
  */
 
 
-public class EnvelopedFileSearchResponseList200 implements Serializable{
+public class EnvelopedTagResponseList200 implements Serializable{
   private static final long serialVersionUID = 1L;
   @JsonProperty("success")
   private Boolean success = true;
@@ -47,16 +47,10 @@ public class EnvelopedFileSearchResponseList200 implements Serializable{
   @JsonProperty("links")
   private Map<String, String> links = null;
 
-  @JsonProperty("current_page_count")
-  private Integer currentPageCount = null;
-
-  @JsonProperty("total_size")
-  private Integer totalSize = null;
-
   @JsonProperty("resources")
-  private List<FileSearchResponse> resources = new ArrayList<FileSearchResponse>();
+  private List<TagResponse> resources = new ArrayList<TagResponse>();
 
-  public EnvelopedFileSearchResponseList200 success(Boolean success) {
+  public EnvelopedTagResponseList200 success(Boolean success) {
     this.success = success;
     return this;
   }
@@ -74,7 +68,7 @@ public class EnvelopedFileSearchResponseList200 implements Serializable{
     this.success = success;
   }
 
-  public EnvelopedFileSearchResponseList200 status(Integer status) {
+  public EnvelopedTagResponseList200 status(Integer status) {
     this.status = status;
     return this;
   }
@@ -92,7 +86,7 @@ public class EnvelopedFileSearchResponseList200 implements Serializable{
     this.status = status;
   }
 
-  public EnvelopedFileSearchResponseList200 message(String message) {
+  public EnvelopedTagResponseList200 message(String message) {
     this.message = message;
     return this;
   }
@@ -110,12 +104,12 @@ public class EnvelopedFileSearchResponseList200 implements Serializable{
     this.message = message;
   }
 
-  public EnvelopedFileSearchResponseList200 errors(List<ErrorObject> errors) {
+  public EnvelopedTagResponseList200 errors(List<ErrorObject> errors) {
     this.errors = errors;
     return this;
   }
 
-  public EnvelopedFileSearchResponseList200 addErrorsItem(ErrorObject errorsItem) {
+  public EnvelopedTagResponseList200 addErrorsItem(ErrorObject errorsItem) {
     this.errors.add(errorsItem);
     return this;
   }
@@ -133,12 +127,12 @@ public class EnvelopedFileSearchResponseList200 implements Serializable{
     this.errors = errors;
   }
 
-  public EnvelopedFileSearchResponseList200 links(Map<String, String> links) {
+  public EnvelopedTagResponseList200 links(Map<String, String> links) {
     this.links = links;
     return this;
   }
 
-  public EnvelopedFileSearchResponseList200 putLinksItem(String key, String linksItem) {
+  public EnvelopedTagResponseList200 putLinksItem(String key, String linksItem) {
     if (this.links == null) {
       this.links = new HashMap<String, String>();
     }
@@ -159,48 +153,12 @@ public class EnvelopedFileSearchResponseList200 implements Serializable{
     this.links = links;
   }
 
-  public EnvelopedFileSearchResponseList200 currentPageCount(Integer currentPageCount) {
-    this.currentPageCount = currentPageCount;
-    return this;
-  }
-
-   /**
-   * Get currentPageCount
-   * @return currentPageCount
-  **/
-  @Schema(description = "")
-  public Integer getCurrentPageCount() {
-    return currentPageCount;
-  }
-
-  public void setCurrentPageCount(Integer currentPageCount) {
-    this.currentPageCount = currentPageCount;
-  }
-
-  public EnvelopedFileSearchResponseList200 totalSize(Integer totalSize) {
-    this.totalSize = totalSize;
-    return this;
-  }
-
-   /**
-   * Get totalSize
-   * @return totalSize
-  **/
-  @Schema(description = "")
-  public Integer getTotalSize() {
-    return totalSize;
-  }
-
-  public void setTotalSize(Integer totalSize) {
-    this.totalSize = totalSize;
-  }
-
-  public EnvelopedFileSearchResponseList200 resources(List<FileSearchResponse> resources) {
+  public EnvelopedTagResponseList200 resources(List<TagResponse> resources) {
     this.resources = resources;
     return this;
   }
 
-  public EnvelopedFileSearchResponseList200 addResourcesItem(FileSearchResponse resourcesItem) {
+  public EnvelopedTagResponseList200 addResourcesItem(TagResponse resourcesItem) {
     this.resources.add(resourcesItem);
     return this;
   }
@@ -210,11 +168,11 @@ public class EnvelopedFileSearchResponseList200 implements Serializable{
    * @return resources
   **/
   @Schema(required = true, description = "")
-  public List<FileSearchResponse> getResources() {
+  public List<TagResponse> getResources() {
     return resources;
   }
 
-  public void setResources(List<FileSearchResponse> resources) {
+  public void setResources(List<TagResponse> resources) {
     this.resources = resources;
   }
 
@@ -227,35 +185,31 @@ public class EnvelopedFileSearchResponseList200 implements Serializable{
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    EnvelopedFileSearchResponseList200 envelopedFileSearchResponseList200 = (EnvelopedFileSearchResponseList200) o;
-    return Objects.equals(this.success, envelopedFileSearchResponseList200.success) &&
-        Objects.equals(this.status, envelopedFileSearchResponseList200.status) &&
-        Objects.equals(this.message, envelopedFileSearchResponseList200.message) &&
-        Objects.equals(this.errors, envelopedFileSearchResponseList200.errors) &&
-        Objects.equals(this.links, envelopedFileSearchResponseList200.links) &&
-        Objects.equals(this.currentPageCount, envelopedFileSearchResponseList200.currentPageCount) &&
-        Objects.equals(this.totalSize, envelopedFileSearchResponseList200.totalSize) &&
-        Objects.equals(this.resources, envelopedFileSearchResponseList200.resources);
+    EnvelopedTagResponseList200 envelopedTagResponseList200 = (EnvelopedTagResponseList200) o;
+    return Objects.equals(this.success, envelopedTagResponseList200.success) &&
+        Objects.equals(this.status, envelopedTagResponseList200.status) &&
+        Objects.equals(this.message, envelopedTagResponseList200.message) &&
+        Objects.equals(this.errors, envelopedTagResponseList200.errors) &&
+        Objects.equals(this.links, envelopedTagResponseList200.links) &&
+        Objects.equals(this.resources, envelopedTagResponseList200.resources);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(success, status, message, errors, links, currentPageCount, totalSize, resources);
+    return Objects.hash(success, status, message, errors, links, resources);
   }
 
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class EnvelopedFileSearchResponseList200 {\n");
+    sb.append("class EnvelopedTagResponseList200 {\n");
     
     sb.append("    success: ").append(toIndentedString(success)).append("\n");
     sb.append("    status: ").append(toIndentedString(status)).append("\n");
     sb.append("    message: ").append(toIndentedString(message)).append("\n");
     sb.append("    errors: ").append(toIndentedString(errors)).append("\n");
     sb.append("    links: ").append(toIndentedString(links)).append("\n");
-    sb.append("    currentPageCount: ").append(toIndentedString(currentPageCount)).append("\n");
-    sb.append("    totalSize: ").append(toIndentedString(totalSize)).append("\n");
     sb.append("    resources: ").append(toIndentedString(resources)).append("\n");
     sb.append("}");
     return sb.toString();

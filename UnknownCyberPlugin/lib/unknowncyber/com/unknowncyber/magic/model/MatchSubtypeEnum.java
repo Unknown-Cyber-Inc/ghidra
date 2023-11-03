@@ -14,262 +14,44 @@ package com.unknowncyber.magic.model;
 
 import java.util.Objects;
 import java.util.Arrays;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+import java.io.Serializable;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import com.unknowncyber.magic.model.ErrorObject;
-import com.unknowncyber.magic.model.FileSearchResponse;
-import io.swagger.v3.oas.annotations.media.Schema;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.io.Serializable;
+
 /**
- * EnvelopedFileSearchResponseList200
+ * * &#x60;matches_original&#x60; - matches_original * &#x60;matches_payload&#x60; - matches_payload * &#x60;matches_weak_down&#x60; - matches_weak_down * &#x60;matches_weak_up&#x60; - matches_weak_up * &#x60;matches_self&#x60; - matches_self
  */
+public enum MatchSubtypeEnum {
+  ORIGINAL("matches_original"),
+  PAYLOAD("matches_payload"),
+  WEAK_DOWN("matches_weak_down"),
+  WEAK_UP("matches_weak_up"),
+  SELF("matches_self");
 
+  private String value;
 
-public class EnvelopedFileSearchResponseList200 implements Serializable{
-  private static final long serialVersionUID = 1L;
-  @JsonProperty("success")
-  private Boolean success = true;
-
-  @JsonProperty("status")
-  private Integer status = 200;
-
-  @JsonProperty("message")
-  private String message = "OK";
-
-  @JsonProperty("errors")
-  private List<ErrorObject> errors = new ArrayList<ErrorObject>();
-
-  @JsonProperty("links")
-  private Map<String, String> links = null;
-
-  @JsonProperty("current_page_count")
-  private Integer currentPageCount = null;
-
-  @JsonProperty("total_size")
-  private Integer totalSize = null;
-
-  @JsonProperty("resources")
-  private List<FileSearchResponse> resources = new ArrayList<FileSearchResponse>();
-
-  public EnvelopedFileSearchResponseList200 success(Boolean success) {
-    this.success = success;
-    return this;
+  MatchSubtypeEnum(String value) {
+    this.value = value;
   }
 
-   /**
-   * Get success
-   * @return success
-  **/
-  @Schema(description = "")
-  public Boolean isSuccess() {
-    return success;
+  @JsonValue
+  public String getValue() {
+    return value;
   }
-
-  public void setSuccess(Boolean success) {
-    this.success = success;
-  }
-
-  public EnvelopedFileSearchResponseList200 status(Integer status) {
-    this.status = status;
-    return this;
-  }
-
-   /**
-   * Get status
-   * @return status
-  **/
-  @Schema(description = "")
-  public Integer getStatus() {
-    return status;
-  }
-
-  public void setStatus(Integer status) {
-    this.status = status;
-  }
-
-  public EnvelopedFileSearchResponseList200 message(String message) {
-    this.message = message;
-    return this;
-  }
-
-   /**
-   * Get message
-   * @return message
-  **/
-  @Schema(description = "")
-  public String getMessage() {
-    return message;
-  }
-
-  public void setMessage(String message) {
-    this.message = message;
-  }
-
-  public EnvelopedFileSearchResponseList200 errors(List<ErrorObject> errors) {
-    this.errors = errors;
-    return this;
-  }
-
-  public EnvelopedFileSearchResponseList200 addErrorsItem(ErrorObject errorsItem) {
-    this.errors.add(errorsItem);
-    return this;
-  }
-
-   /**
-   * Get errors
-   * @return errors
-  **/
-  @Schema(required = true, description = "")
-  public List<ErrorObject> getErrors() {
-    return errors;
-  }
-
-  public void setErrors(List<ErrorObject> errors) {
-    this.errors = errors;
-  }
-
-  public EnvelopedFileSearchResponseList200 links(Map<String, String> links) {
-    this.links = links;
-    return this;
-  }
-
-  public EnvelopedFileSearchResponseList200 putLinksItem(String key, String linksItem) {
-    if (this.links == null) {
-      this.links = new HashMap<String, String>();
-    }
-    this.links.put(key, linksItem);
-    return this;
-  }
-
-   /**
-   * Get links
-   * @return links
-  **/
-  @Schema(description = "")
-  public Map<String, String> getLinks() {
-    return links;
-  }
-
-  public void setLinks(Map<String, String> links) {
-    this.links = links;
-  }
-
-  public EnvelopedFileSearchResponseList200 currentPageCount(Integer currentPageCount) {
-    this.currentPageCount = currentPageCount;
-    return this;
-  }
-
-   /**
-   * Get currentPageCount
-   * @return currentPageCount
-  **/
-  @Schema(description = "")
-  public Integer getCurrentPageCount() {
-    return currentPageCount;
-  }
-
-  public void setCurrentPageCount(Integer currentPageCount) {
-    this.currentPageCount = currentPageCount;
-  }
-
-  public EnvelopedFileSearchResponseList200 totalSize(Integer totalSize) {
-    this.totalSize = totalSize;
-    return this;
-  }
-
-   /**
-   * Get totalSize
-   * @return totalSize
-  **/
-  @Schema(description = "")
-  public Integer getTotalSize() {
-    return totalSize;
-  }
-
-  public void setTotalSize(Integer totalSize) {
-    this.totalSize = totalSize;
-  }
-
-  public EnvelopedFileSearchResponseList200 resources(List<FileSearchResponse> resources) {
-    this.resources = resources;
-    return this;
-  }
-
-  public EnvelopedFileSearchResponseList200 addResourcesItem(FileSearchResponse resourcesItem) {
-    this.resources.add(resourcesItem);
-    return this;
-  }
-
-   /**
-   * Get resources
-   * @return resources
-  **/
-  @Schema(required = true, description = "")
-  public List<FileSearchResponse> getResources() {
-    return resources;
-  }
-
-  public void setResources(List<FileSearchResponse> resources) {
-    this.resources = resources;
-  }
-
-
-  @Override
-  public boolean equals(java.lang.Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    EnvelopedFileSearchResponseList200 envelopedFileSearchResponseList200 = (EnvelopedFileSearchResponseList200) o;
-    return Objects.equals(this.success, envelopedFileSearchResponseList200.success) &&
-        Objects.equals(this.status, envelopedFileSearchResponseList200.status) &&
-        Objects.equals(this.message, envelopedFileSearchResponseList200.message) &&
-        Objects.equals(this.errors, envelopedFileSearchResponseList200.errors) &&
-        Objects.equals(this.links, envelopedFileSearchResponseList200.links) &&
-        Objects.equals(this.currentPageCount, envelopedFileSearchResponseList200.currentPageCount) &&
-        Objects.equals(this.totalSize, envelopedFileSearchResponseList200.totalSize) &&
-        Objects.equals(this.resources, envelopedFileSearchResponseList200.resources);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(success, status, message, errors, links, currentPageCount, totalSize, resources);
-  }
-
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class EnvelopedFileSearchResponseList200 {\n");
-    
-    sb.append("    success: ").append(toIndentedString(success)).append("\n");
-    sb.append("    status: ").append(toIndentedString(status)).append("\n");
-    sb.append("    message: ").append(toIndentedString(message)).append("\n");
-    sb.append("    errors: ").append(toIndentedString(errors)).append("\n");
-    sb.append("    links: ").append(toIndentedString(links)).append("\n");
-    sb.append("    currentPageCount: ").append(toIndentedString(currentPageCount)).append("\n");
-    sb.append("    totalSize: ").append(toIndentedString(totalSize)).append("\n");
-    sb.append("    resources: ").append(toIndentedString(resources)).append("\n");
-    sb.append("}");
-    return sb.toString();
+    return String.valueOf(value);
   }
 
-  /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
-   */
-  private String toIndentedString(java.lang.Object o) {
-    if (o == null) {
-      return "null";
+  @JsonCreator
+  public static MatchSubtypeEnum fromValue(String input) {
+    for (MatchSubtypeEnum b : MatchSubtypeEnum.values()) {
+      if (b.value.equals(input)) {
+        return b;
+      }
     }
-    return o.toString().replace("\n", "\n    ");
+    return null;
   }
-
 }

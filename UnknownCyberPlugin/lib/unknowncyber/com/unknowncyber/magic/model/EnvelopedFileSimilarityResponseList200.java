@@ -47,6 +47,12 @@ public class EnvelopedFileSimilarityResponseList200 implements Serializable{
   @JsonProperty("links")
   private Map<String, String> links = null;
 
+  @JsonProperty("current_page_count")
+  private Integer currentPageCount = null;
+
+  @JsonProperty("total_size")
+  private Integer totalSize = null;
+
   @JsonProperty("resources")
   private List<FileSimilarityResponse> resources = new ArrayList<FileSimilarityResponse>();
 
@@ -153,6 +159,42 @@ public class EnvelopedFileSimilarityResponseList200 implements Serializable{
     this.links = links;
   }
 
+  public EnvelopedFileSimilarityResponseList200 currentPageCount(Integer currentPageCount) {
+    this.currentPageCount = currentPageCount;
+    return this;
+  }
+
+   /**
+   * Get currentPageCount
+   * @return currentPageCount
+  **/
+  @Schema(description = "")
+  public Integer getCurrentPageCount() {
+    return currentPageCount;
+  }
+
+  public void setCurrentPageCount(Integer currentPageCount) {
+    this.currentPageCount = currentPageCount;
+  }
+
+  public EnvelopedFileSimilarityResponseList200 totalSize(Integer totalSize) {
+    this.totalSize = totalSize;
+    return this;
+  }
+
+   /**
+   * Get totalSize
+   * @return totalSize
+  **/
+  @Schema(description = "")
+  public Integer getTotalSize() {
+    return totalSize;
+  }
+
+  public void setTotalSize(Integer totalSize) {
+    this.totalSize = totalSize;
+  }
+
   public EnvelopedFileSimilarityResponseList200 resources(List<FileSimilarityResponse> resources) {
     this.resources = resources;
     return this;
@@ -191,12 +233,14 @@ public class EnvelopedFileSimilarityResponseList200 implements Serializable{
         Objects.equals(this.message, envelopedFileSimilarityResponseList200.message) &&
         Objects.equals(this.errors, envelopedFileSimilarityResponseList200.errors) &&
         Objects.equals(this.links, envelopedFileSimilarityResponseList200.links) &&
+        Objects.equals(this.currentPageCount, envelopedFileSimilarityResponseList200.currentPageCount) &&
+        Objects.equals(this.totalSize, envelopedFileSimilarityResponseList200.totalSize) &&
         Objects.equals(this.resources, envelopedFileSimilarityResponseList200.resources);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(success, status, message, errors, links, resources);
+    return Objects.hash(success, status, message, errors, links, currentPageCount, totalSize, resources);
   }
 
 
@@ -210,6 +254,8 @@ public class EnvelopedFileSimilarityResponseList200 implements Serializable{
     sb.append("    message: ").append(toIndentedString(message)).append("\n");
     sb.append("    errors: ").append(toIndentedString(errors)).append("\n");
     sb.append("    links: ").append(toIndentedString(links)).append("\n");
+    sb.append("    currentPageCount: ").append(toIndentedString(currentPageCount)).append("\n");
+    sb.append("    totalSize: ").append(toIndentedString(totalSize)).append("\n");
     sb.append("    resources: ").append(toIndentedString(resources)).append("\n");
     sb.append("}");
     return sb.toString();

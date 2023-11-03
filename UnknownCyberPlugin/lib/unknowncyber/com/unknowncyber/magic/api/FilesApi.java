@@ -41,7 +41,7 @@ import com.unknowncyber.magic.model.EnvelopedProcedureResponse200;
 import com.unknowncyber.magic.model.EnvelopedTag200;
 import com.unknowncyber.magic.model.EnvelopedTagCreatedResponse200;
 import com.unknowncyber.magic.model.EnvelopedTagCreatedResponse201;
-import com.unknowncyber.magic.model.EnvelopedTagList200;
+import com.unknowncyber.magic.model.EnvelopedTagResponseList200;
 import com.unknowncyber.magic.model.EnvelopedYara200;
 import java.io.File;
 import com.unknowncyber.magic.model.ForbiddenResponse;
@@ -597,10 +597,11 @@ public class FilesApi {
    * @param filename If download is True, this sets the name of the file. (Content-Disposition:\&quot;attachment; filename&#x3D;&#x60;filename&#x60;\&quot;) (optional)
    * @param noLinks Removes the &#x27;links&#x27; key (optional)
    * @param uri Use resource uri&#x27;s in place of string ids (optional)
+   * @param dryrun If True, don&#x27;t cause any side effects.(Useful to check that an endpoint will work as constructed) (optional)
    * @return EnvelopedTagCreatedResponse200
    * @throws ApiException if fails to make API call
    */
-  public EnvelopedTagCreatedResponse200 createFileTag(String binaryId, String name, String color, String format, Boolean explain, Boolean download, String filename, Boolean noLinks, Boolean uri) throws ApiException {
+  public EnvelopedTagCreatedResponse200 createFileTag(String binaryId, String name, String color, String format, Boolean explain, Boolean download, String filename, Boolean noLinks, Boolean uri, Boolean dryrun) throws ApiException {
     Object localVarPostBody = null;
     // verify the required parameter 'binaryId' is set
     if (binaryId == null) {
@@ -621,6 +622,7 @@ public class FilesApi {
     localVarQueryParams.addAll(apiClient.parameterToPairs("", "filename", filename));
     localVarQueryParams.addAll(apiClient.parameterToPairs("", "no_links", noLinks));
     localVarQueryParams.addAll(apiClient.parameterToPairs("", "uri", uri));
+    localVarQueryParams.addAll(apiClient.parameterToPairs("", "dryrun", dryrun));
 
     if (name != null)
       localVarFormParams.put("name", name);
@@ -816,10 +818,11 @@ public class FilesApi {
    * @param filename If download is True, this sets the name of the file. (Content-Disposition:\&quot;attachment; filename&#x3D;&#x60;filename&#x60;\&quot;) (optional)
    * @param noLinks Removes the &#x27;links&#x27; key (optional)
    * @param uri Use resource uri&#x27;s in place of string ids (optional)
-   * @return EnvelopedTag200
+   * @param dryrun If True, don&#x27;t cause any side effects.(Useful to check that an endpoint will work as constructed) (optional)
+   * @return EnvelopedTagCreatedResponse200
    * @throws ApiException if fails to make API call
    */
-  public EnvelopedTag200 createProcedureGenomicsTag(String name, String binaryId, String rva, String format, Boolean explain, Boolean download, String filename, Boolean noLinks, Boolean uri) throws ApiException {
+  public EnvelopedTagCreatedResponse200 createProcedureGenomicsTag(String name, String binaryId, String rva, String format, Boolean explain, Boolean download, String filename, Boolean noLinks, Boolean uri, Boolean dryrun) throws ApiException {
     Object localVarPostBody = null;
     // verify the required parameter 'name' is set
     if (name == null) {
@@ -849,6 +852,7 @@ public class FilesApi {
     localVarQueryParams.addAll(apiClient.parameterToPairs("", "filename", filename));
     localVarQueryParams.addAll(apiClient.parameterToPairs("", "no_links", noLinks));
     localVarQueryParams.addAll(apiClient.parameterToPairs("", "uri", uri));
+    localVarQueryParams.addAll(apiClient.parameterToPairs("", "dryrun", dryrun));
 
     if (name != null)
       localVarFormParams.put("name", name);
@@ -865,7 +869,7 @@ public class FilesApi {
 
     String[] localVarAuthNames = new String[] { "Api Key Header Authentication", "Api Key Query Authentication", "Basic Authentication", "JWT Access Token Authentication" };
 
-    GenericType<EnvelopedTag200> localVarReturnType = new GenericType<EnvelopedTag200>() {};
+    GenericType<EnvelopedTagCreatedResponse200> localVarReturnType = new GenericType<EnvelopedTagCreatedResponse200>() {};
     return apiClient.invokeAPI(localVarPath, "POST", localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAccept, localVarContentType, localVarAuthNames, localVarReturnType);
   }
   /**
@@ -2272,10 +2276,10 @@ public class FilesApi {
    * @param noLinks Removes the &#x27;links&#x27; key (optional)
    * @param uri Use resource uri&#x27;s in place of string ids (optional)
    * @param expandMask Comma separated string containing a list of relation keys to &#x60;expand&#x60; and show the entire object inline.   REGEX: &#x60;^(([\\w]+,?)*|\\*)$&#x60; (optional)
-   * @return EnvelopedTagList200
+   * @return EnvelopedTagResponseList200
    * @throws ApiException if fails to make API call
    */
-  public EnvelopedTagList200 listFileTags(String binaryId, String format, Boolean explain, Boolean download, String filename, Boolean noLinks, Boolean uri, String expandMask) throws ApiException {
+  public EnvelopedTagResponseList200 listFileTags(String binaryId, String format, Boolean explain, Boolean download, String filename, Boolean noLinks, Boolean uri, String expandMask) throws ApiException {
     Object localVarPostBody = null;
     // verify the required parameter 'binaryId' is set
     if (binaryId == null) {
@@ -2311,7 +2315,7 @@ public class FilesApi {
 
     String[] localVarAuthNames = new String[] { "Api Key Header Authentication", "Api Key Query Authentication", "Basic Authentication", "JWT Access Token Authentication" };
 
-    GenericType<EnvelopedTagList200> localVarReturnType = new GenericType<EnvelopedTagList200>() {};
+    GenericType<EnvelopedTagResponseList200> localVarReturnType = new GenericType<EnvelopedTagResponseList200>() {};
     return apiClient.invokeAPI(localVarPath, "GET", localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAccept, localVarContentType, localVarAuthNames, localVarReturnType);
   }
   /**
@@ -2498,10 +2502,10 @@ public class FilesApi {
    * @param filename If download is True, this sets the name of the file. (Content-Disposition:\&quot;attachment; filename&#x3D;&#x60;filename&#x60;\&quot;) (optional)
    * @param noLinks Removes the &#x27;links&#x27; key (optional)
    * @param uri Use resource uri&#x27;s in place of string ids (optional)
-   * @return EnvelopedTagList200
+   * @return EnvelopedTagResponseList200
    * @throws ApiException if fails to make API call
    */
-  public EnvelopedTagList200 listProcedureGenomicsTags(String binaryId, String rva, String format, Boolean explain, Boolean download, String filename, Boolean noLinks, Boolean uri) throws ApiException {
+  public EnvelopedTagResponseList200 listProcedureGenomicsTags(String binaryId, String rva, String format, Boolean explain, Boolean download, String filename, Boolean noLinks, Boolean uri) throws ApiException {
     Object localVarPostBody = null;
     // verify the required parameter 'binaryId' is set
     if (binaryId == null) {
@@ -2541,7 +2545,7 @@ public class FilesApi {
 
     String[] localVarAuthNames = new String[] { "Api Key Header Authentication", "Api Key Query Authentication", "Basic Authentication", "JWT Access Token Authentication" };
 
-    GenericType<EnvelopedTagList200> localVarReturnType = new GenericType<EnvelopedTagList200>() {};
+    GenericType<EnvelopedTagResponseList200> localVarReturnType = new GenericType<EnvelopedTagResponseList200>() {};
     return apiClient.invokeAPI(localVarPath, "GET", localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAccept, localVarContentType, localVarAuthNames, localVarReturnType);
   }
   /**
@@ -2854,9 +2858,10 @@ public class FilesApi {
    * @param noLinks Removes the &#x27;links&#x27; key (optional)
    * @param uri Use resource uri&#x27;s in place of string ids (optional)
    * @param updateMask REQUIRED for &#x60;PATCH&#x60; methods. Comma separated string containing a list of keys to update based on the request body.  REGEX: &#x60;^(([\\w]+,?)*|\\*)$&#x60; (optional)
+   * @return EnvelopedNote200
    * @throws ApiException if fails to make API call
    */
-  public void updateFileNote(String binaryId, String noteId, String note, Boolean _public, String format, Boolean explain, Boolean download, String filename, Boolean noLinks, Boolean uri, String updateMask) throws ApiException {
+  public EnvelopedNote200 updateFileNote(String binaryId, String noteId, String note, Boolean _public, String format, Boolean explain, Boolean download, String filename, Boolean noLinks, Boolean uri, String updateMask) throws ApiException {
     Object localVarPostBody = null;
     // verify the required parameter 'binaryId' is set
     if (binaryId == null) {
@@ -2890,7 +2895,7 @@ public class FilesApi {
       localVarFormParams.put("public", _public);
 
     final String[] localVarAccepts = {
-      
+      "application/json", "application/xml", "text/csv", "application/taxii+json"
     };
     final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
 
@@ -2901,7 +2906,8 @@ public class FilesApi {
 
     String[] localVarAuthNames = new String[] { "Api Key Header Authentication", "Api Key Query Authentication", "Basic Authentication", "JWT Access Token Authentication" };
 
-    apiClient.invokeAPI(localVarPath, "PATCH", localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAccept, localVarContentType, localVarAuthNames, null);
+    GenericType<EnvelopedNote200> localVarReturnType = new GenericType<EnvelopedNote200>() {};
+    return apiClient.invokeAPI(localVarPath, "PATCH", localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAccept, localVarContentType, localVarAuthNames, localVarReturnType);
   }
   /**
    * Edits a procedure&#x27;s genomics
@@ -3249,10 +3255,11 @@ public class FilesApi {
    * @param recursive If true, all archives found in the upload will be stripped and thrown (optional)
    * @param retainWrapper If true with extract, then the archive will not be thrown away (optional, default to true)
    * @param skipUnpack If true, Unknown Cyber&#x27;s default unpacker stage will be skipped (optional)
+   * @param b64 If true, treat the incoming filedata as a base64 encoded string (optional)
    * @return EnvelopedFileUploadResponseList200
    * @throws ApiException if fails to make API call
    */
-  public EnvelopedFileUploadResponseList200 uploadFile(List<File> filedata, String password, List<String> tags, List<String> notes, String format, Boolean explain, Boolean download, String filename, Boolean noLinks, Boolean uri, Boolean dryrun, Boolean extract, Boolean recursive, Boolean retainWrapper, Boolean skipUnpack) throws ApiException {
+  public EnvelopedFileUploadResponseList200 uploadFile(List<File> filedata, String password, List<String> tags, List<String> notes, String format, Boolean explain, Boolean download, String filename, Boolean noLinks, Boolean uri, Boolean dryrun, Boolean extract, Boolean recursive, Boolean retainWrapper, Boolean skipUnpack, Boolean b64) throws ApiException {
     Object localVarPostBody = null;
     // verify the required parameter 'filedata' is set
     if (filedata == null) {
@@ -3289,6 +3296,7 @@ public class FilesApi {
     localVarQueryParams.addAll(apiClient.parameterToPairs("", "recursive", recursive));
     localVarQueryParams.addAll(apiClient.parameterToPairs("", "retain_wrapper", retainWrapper));
     localVarQueryParams.addAll(apiClient.parameterToPairs("", "skip_unpack", skipUnpack));
+    localVarQueryParams.addAll(apiClient.parameterToPairs("", "b64", b64));
 
     if (filedata != null)
       localVarFormParams.put("filedata", filedata);

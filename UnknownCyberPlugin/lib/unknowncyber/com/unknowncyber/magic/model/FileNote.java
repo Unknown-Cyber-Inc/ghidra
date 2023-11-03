@@ -18,265 +18,78 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import java.io.Serializable;
 /**
- * IndicatorResponse
+ * FileNote
  */
 
 
-public class IndicatorResponse implements Serializable{
+public class FileNote implements Serializable, FileNoteIdList {
   private static final long serialVersionUID = 1L;
-  @JsonProperty("tags")
-  private List<String> tags = null;
+  @JsonProperty("id")
+  private String id = null;
 
-  @JsonProperty("notes")
-  private List<String> notes = null;
+  @JsonProperty("note")
+  private String note = null;
 
-  @JsonProperty("value")
-  private String value = "255.255.255.255";
+  @JsonProperty("public")
+  private Boolean _public = null;
 
-  @JsonProperty("ioc_type")
-  private String iocType = "ip";
+  @JsonProperty("create_time")
+  private String createTime = null;
 
-  @JsonProperty("file_children")
-  private List<String> fileChildren = null;
-
-  @JsonProperty("related_iocs")
-  private List<String> relatedIocs = null;
-
-  @JsonProperty("parents")
-  private List<String> parents = null;
-
-  @JsonProperty("malicious")
-  private Boolean malicious = false;
-
-  @JsonProperty("upload_date")
-  private Date uploadDate = null;
-
-  @JsonProperty("last_seen")
-  private Date lastSeen = null;
-
-  public IndicatorResponse tags(List<String> tags) {
-    this.tags = tags;
-    return this;
+   /**
+   * Get id
+   * @return id
+  **/
+  @Schema(description = "")
+  public String getId() {
+    return id;
   }
 
-  public IndicatorResponse addTagsItem(String tagsItem) {
-    if (this.tags == null) {
-      this.tags = new ArrayList<String>();
-    }
-    this.tags.add(tagsItem);
+  public FileNote note(String note) {
+    this.note = note;
     return this;
   }
 
    /**
-   * Get tags
-   * @return tags
+   * Get note
+   * @return note
   **/
-  @Schema(description = "")
-  public List<String> getTags() {
-    return tags;
+  @Schema(required = true, description = "")
+  public String getNote() {
+    return note;
   }
 
-  public void setTags(List<String> tags) {
-    this.tags = tags;
+  public void setNote(String note) {
+    this.note = note;
   }
 
-  public IndicatorResponse notes(List<String> notes) {
-    this.notes = notes;
-    return this;
-  }
-
-  public IndicatorResponse addNotesItem(String notesItem) {
-    if (this.notes == null) {
-      this.notes = new ArrayList<String>();
-    }
-    this.notes.add(notesItem);
+  public FileNote _public(Boolean _public) {
+    this._public = _public;
     return this;
   }
 
    /**
-   * Get notes
-   * @return notes
+   * Get _public
+   * @return _public
   **/
   @Schema(description = "")
-  public List<String> getNotes() {
-    return notes;
+  public Boolean isPublic() {
+    return _public;
   }
 
-  public void setNotes(List<String> notes) {
-    this.notes = notes;
-  }
-
-  public IndicatorResponse value(String value) {
-    this.value = value;
-    return this;
+  public void setPublic(Boolean _public) {
+    this._public = _public;
   }
 
    /**
-   * Get value
-   * @return value
+   * self referral field
+   * @return createTime
   **/
-  @Schema(description = "")
-  public String getValue() {
-    return value;
-  }
-
-  public void setValue(String value) {
-    this.value = value;
-  }
-
-  public IndicatorResponse iocType(String iocType) {
-    this.iocType = iocType;
-    return this;
-  }
-
-   /**
-   * Get iocType
-   * @return iocType
-  **/
-  @Schema(description = "")
-  public String getIocType() {
-    return iocType;
-  }
-
-  public void setIocType(String iocType) {
-    this.iocType = iocType;
-  }
-
-  public IndicatorResponse fileChildren(List<String> fileChildren) {
-    this.fileChildren = fileChildren;
-    return this;
-  }
-
-  public IndicatorResponse addFileChildrenItem(String fileChildrenItem) {
-    if (this.fileChildren == null) {
-      this.fileChildren = new ArrayList<String>();
-    }
-    this.fileChildren.add(fileChildrenItem);
-    return this;
-  }
-
-   /**
-   * Get fileChildren
-   * @return fileChildren
-  **/
-  @Schema(description = "")
-  public List<String> getFileChildren() {
-    return fileChildren;
-  }
-
-  public void setFileChildren(List<String> fileChildren) {
-    this.fileChildren = fileChildren;
-  }
-
-  public IndicatorResponse relatedIocs(List<String> relatedIocs) {
-    this.relatedIocs = relatedIocs;
-    return this;
-  }
-
-  public IndicatorResponse addRelatedIocsItem(String relatedIocsItem) {
-    if (this.relatedIocs == null) {
-      this.relatedIocs = new ArrayList<String>();
-    }
-    this.relatedIocs.add(relatedIocsItem);
-    return this;
-  }
-
-   /**
-   * Get relatedIocs
-   * @return relatedIocs
-  **/
-  @Schema(description = "")
-  public List<String> getRelatedIocs() {
-    return relatedIocs;
-  }
-
-  public void setRelatedIocs(List<String> relatedIocs) {
-    this.relatedIocs = relatedIocs;
-  }
-
-  public IndicatorResponse parents(List<String> parents) {
-    this.parents = parents;
-    return this;
-  }
-
-  public IndicatorResponse addParentsItem(String parentsItem) {
-    if (this.parents == null) {
-      this.parents = new ArrayList<String>();
-    }
-    this.parents.add(parentsItem);
-    return this;
-  }
-
-   /**
-   * Get parents
-   * @return parents
-  **/
-  @Schema(description = "")
-  public List<String> getParents() {
-    return parents;
-  }
-
-  public void setParents(List<String> parents) {
-    this.parents = parents;
-  }
-
-  public IndicatorResponse malicious(Boolean malicious) {
-    this.malicious = malicious;
-    return this;
-  }
-
-   /**
-   * Get malicious
-   * @return malicious
-  **/
-  @Schema(description = "")
-  public Boolean isMalicious() {
-    return malicious;
-  }
-
-  public void setMalicious(Boolean malicious) {
-    this.malicious = malicious;
-  }
-
-  public IndicatorResponse uploadDate(Date uploadDate) {
-    this.uploadDate = uploadDate;
-    return this;
-  }
-
-   /**
-   * Get uploadDate
-   * @return uploadDate
-  **/
-  @Schema(description = "")
-  public Date getUploadDate() {
-    return uploadDate;
-  }
-
-  public void setUploadDate(Date uploadDate) {
-    this.uploadDate = uploadDate;
-  }
-
-  public IndicatorResponse lastSeen(Date lastSeen) {
-    this.lastSeen = lastSeen;
-    return this;
-  }
-
-   /**
-   * Get lastSeen
-   * @return lastSeen
-  **/
-  @Schema(description = "")
-  public Date getLastSeen() {
-    return lastSeen;
-  }
-
-  public void setLastSeen(Date lastSeen) {
-    this.lastSeen = lastSeen;
+  @Schema(description = "self referral field")
+  public String getCreateTime() {
+    return createTime;
   }
 
 
@@ -288,40 +101,28 @@ public class IndicatorResponse implements Serializable{
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    IndicatorResponse indicatorResponse = (IndicatorResponse) o;
-    return Objects.equals(this.tags, indicatorResponse.tags) &&
-        Objects.equals(this.notes, indicatorResponse.notes) &&
-        Objects.equals(this.value, indicatorResponse.value) &&
-        Objects.equals(this.iocType, indicatorResponse.iocType) &&
-        Objects.equals(this.fileChildren, indicatorResponse.fileChildren) &&
-        Objects.equals(this.relatedIocs, indicatorResponse.relatedIocs) &&
-        Objects.equals(this.parents, indicatorResponse.parents) &&
-        Objects.equals(this.malicious, indicatorResponse.malicious) &&
-        Objects.equals(this.uploadDate, indicatorResponse.uploadDate) &&
-        Objects.equals(this.lastSeen, indicatorResponse.lastSeen);
+    FileNote fileNote = (FileNote) o;
+    return Objects.equals(this.id, fileNote.id) &&
+        Objects.equals(this.note, fileNote.note) &&
+        Objects.equals(this._public, fileNote._public) &&
+        Objects.equals(this.createTime, fileNote.createTime);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(tags, notes, value, iocType, fileChildren, relatedIocs, parents, malicious, uploadDate, lastSeen);
+    return Objects.hash(id, note, _public, createTime);
   }
 
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class IndicatorResponse {\n");
+    sb.append("class FileNote {\n");
     
-    sb.append("    tags: ").append(toIndentedString(tags)).append("\n");
-    sb.append("    notes: ").append(toIndentedString(notes)).append("\n");
-    sb.append("    value: ").append(toIndentedString(value)).append("\n");
-    sb.append("    iocType: ").append(toIndentedString(iocType)).append("\n");
-    sb.append("    fileChildren: ").append(toIndentedString(fileChildren)).append("\n");
-    sb.append("    relatedIocs: ").append(toIndentedString(relatedIocs)).append("\n");
-    sb.append("    parents: ").append(toIndentedString(parents)).append("\n");
-    sb.append("    malicious: ").append(toIndentedString(malicious)).append("\n");
-    sb.append("    uploadDate: ").append(toIndentedString(uploadDate)).append("\n");
-    sb.append("    lastSeen: ").append(toIndentedString(lastSeen)).append("\n");
+    sb.append("    id: ").append(toIndentedString(id)).append("\n");
+    sb.append("    note: ").append(toIndentedString(note)).append("\n");
+    sb.append("    _public: ").append(toIndentedString(_public)).append("\n");
+    sb.append("    createTime: ").append(toIndentedString(createTime)).append("\n");
     sb.append("}");
     return sb.toString();
   }
