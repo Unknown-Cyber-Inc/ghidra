@@ -18,7 +18,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.util.Date;
 import java.io.Serializable;
 /**
  * TagResponse
@@ -33,6 +32,9 @@ public class TagResponse implements Serializable{
   @JsonProperty("color")
   private String color = "#329db6";
 
+  @JsonProperty("create_time")
+  private String createTime = null;
+
   @JsonProperty("name")
   private String name = "myTag";
 
@@ -44,9 +46,6 @@ public class TagResponse implements Serializable{
 
   @JsonProperty("username")
   private String username = "user@email.com";
-
-  @JsonProperty("create_time")
-  private Date createTime = null;
 
   public TagResponse isPublic(Boolean isPublic) {
     this.isPublic = isPublic;
@@ -82,6 +81,24 @@ public class TagResponse implements Serializable{
 
   public void setColor(String color) {
     this.color = color;
+  }
+
+  public TagResponse createTime(String createTime) {
+    this.createTime = createTime;
+    return this;
+  }
+
+   /**
+   * Get createTime
+   * @return createTime
+  **/
+  @Schema(description = "")
+  public String getCreateTime() {
+    return createTime;
+  }
+
+  public void setCreateTime(String createTime) {
+    this.createTime = createTime;
   }
 
   public TagResponse name(String name) {
@@ -156,24 +173,6 @@ public class TagResponse implements Serializable{
     this.username = username;
   }
 
-  public TagResponse createTime(Date createTime) {
-    this.createTime = createTime;
-    return this;
-  }
-
-   /**
-   * Get createTime
-   * @return createTime
-  **/
-  @Schema(description = "")
-  public Date getCreateTime() {
-    return createTime;
-  }
-
-  public void setCreateTime(Date createTime) {
-    this.createTime = createTime;
-  }
-
 
   @Override
   public boolean equals(java.lang.Object o) {
@@ -186,16 +185,16 @@ public class TagResponse implements Serializable{
     TagResponse tagResponse = (TagResponse) o;
     return Objects.equals(this.isPublic, tagResponse.isPublic) &&
         Objects.equals(this.color, tagResponse.color) &&
+        Objects.equals(this.createTime, tagResponse.createTime) &&
         Objects.equals(this.name, tagResponse.name) &&
         Objects.equals(this.id, tagResponse.id) &&
         Objects.equals(this._self, tagResponse._self) &&
-        Objects.equals(this.username, tagResponse.username) &&
-        Objects.equals(this.createTime, tagResponse.createTime);
+        Objects.equals(this.username, tagResponse.username);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(isPublic, color, name, id, _self, username, createTime);
+    return Objects.hash(isPublic, color, createTime, name, id, _self, username);
   }
 
 
@@ -206,11 +205,11 @@ public class TagResponse implements Serializable{
     
     sb.append("    isPublic: ").append(toIndentedString(isPublic)).append("\n");
     sb.append("    color: ").append(toIndentedString(color)).append("\n");
+    sb.append("    createTime: ").append(toIndentedString(createTime)).append("\n");
     sb.append("    name: ").append(toIndentedString(name)).append("\n");
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    _self: ").append(toIndentedString(_self)).append("\n");
     sb.append("    username: ").append(toIndentedString(username)).append("\n");
-    sb.append("    createTime: ").append(toIndentedString(createTime)).append("\n");
     sb.append("}");
     return sb.toString();
   }
