@@ -23,7 +23,6 @@ import com.unknowncyber.magic.model.FileSimilarityObject;
 import com.unknowncyber.magic.model.HashSchema;
 import com.unknowncyber.magic.model.UploadTimesChild;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
