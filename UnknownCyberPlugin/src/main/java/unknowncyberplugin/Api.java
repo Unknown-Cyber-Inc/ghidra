@@ -79,7 +79,7 @@ public class Api {
 	private static Exception stashedException;
 
 	// Dummy exception to allow us to detect and specifically handle an exception within nested try/catch blocks
-	private class NestedException extends Exception {
+	private static class NestedException extends Exception {
 		private NestedException() {}
 	}
 
