@@ -43,6 +43,7 @@ import com.unknowncyber.magic.model.ExtendedProcedureResponse;
 import com.unknowncyber.magic.model.Note;
 import com.unknowncyber.magic.model.Procedure;
 import com.unknowncyber.magic.model.Tag;
+import com.unknowncyber.magic.model.TagResponse;
 import com.unknowncyber.magic.model.TagCreatedResponse;
 
 // Can't double import things of the same name
@@ -86,29 +87,33 @@ public class Api {
   /**
    * Wraps the original file upload endpoint.
    *  - Takes a fileProvider to access the current program and other at-runtime data.
+	 * Returns a boolean true/false to indicate success/failure.
    */
-  public static void submitFile() {
+  public static boolean submitFile() {
 		File myFile = new File(fileProvider.getProgram().getExecutablePath());
 		List<File> files = Arrays.asList(myFile);
 		try {
 			EnvelopedFileUploadResponseList200 response = fileProvider.getFilesApi().uploadFile(files, "", Arrays.asList(), Arrays.asList(), "json", false, false, "", true, false, false, false, false, false, false, false);
+			return true;
 		} catch (Exception e) {
 			Msg.error(fileProvider, e);
+			return false;
 		}
-		// announce("Success or Failure");
-
-		// Edit file access on success
 	}
 
   /**
    * Wraps the disassembled file upload endpoint.
    *  - Takes a fileProvider to access the current program and other at-runtime data.
+	 * Returns a boolean true/false to indicate success/failure.
    */
-  public static void submitDisassembly() {
+  public static boolean submitDisassembly() {
 		// Declare important paths here so they can be deleted in the finally clause
 		Path procDirectory = null;
 		Path fileJson = null;
 		ZipFile zip = null;
+
+		// Output boolean to denote success/failure
+		boolean toReturn = false;
 
 		// TODO: number stuff:
 		//   Potentially look into cleaning up 0-padding?
@@ -325,6 +330,9 @@ public class Api {
 				stashedException = e;
 				throw new NestedException();
 			}
+
+			// Set output boolean to true if all critical code runs successfully.
+			toReturn = true;
 		} catch (NestedException e) {
 			// Unexpected, nested error in disassembly upload; report the stashed exception
 			Msg.error(fileProvider, stashedException);
@@ -366,13 +374,15 @@ public class Api {
 				Msg.error(fileProvider, "Error occurred when attempting to delete temporary Disassembly ZIP.");
 				Msg.error(fileProvider, e);
 			}
+
+			return toReturn;
 		}
 	}
 
   /**
    * Checks if a file exists and is accessible to the user.
    * - Takes a hash string to query the API with.
-   * Returns boolean true/false
+   * Returns boolean true/false to denote whether a user can access a file
    */
   public static boolean isFileAccessible(String hash) {
 		String readMask = "";
@@ -401,7 +411,7 @@ public class Api {
 			Float maxThreshold = 1.0f;
 			Float minThreshold = 0.7f;
 			EnvelopedFileMatchResponseList200EnvelopedIdList200 response = fileProvider.getFilesApi().listFileMatches(hash, "json", false, false, "", true, false, pageCount, pageSize, 0, readMask, expandMask, maxThreshold, minThreshold);
-			//Msg.info("RESP", response);
+			Msg.info("File matches", response);
 		} catch (Exception e) {
 			Msg.error(fileProvider, e);
 		}
@@ -508,15 +518,22 @@ public class Api {
   /**
    * Wraps the listFileTags endpoint.
    *  - Takes a hash string to query the API with.
+	 * Returns an array of Unknown Cyber Plugin Tag objects.
    */
-  public static void listFileTags(String hash) {
-		//busted, returns null
+  public static unknowncyberplugin.models.responsedata.Tag[] listFileTags(String hash) {
     try {
       String expandMask = "tags";
       EnvelopedTagResponseList200 response = fileProvider.getFilesApi().listFileTags(hash, "json", false, false, "", true, false, expandMask);
-			//Msg.info("Tag List", response);
+			List<unknowncyberplugin.models.responsedata.Tag> tagList = new ArrayList<unknowncyberplugin.models.responsedata.Tag>();
+
+			for (TagResponse tag : response.getResources()) {
+				tagList.add(new unknowncyberplugin.models.responsedata.Tag(tag.getName(), tag.getUsername(), tag.getCreateTime(), tag.getId()));
+			}
+
+			return tagList.toArray(new unknowncyberplugin.models.responsedata.Tag[tagList.size()]);
     } catch (Exception e) {
       Msg.error(fileProvider, e);
+			return null;
     }
   }
 
@@ -527,16 +544,12 @@ public class Api {
 	 * Returns an Unknown Cyber Plugin Tag object.
    */
   public static unknowncyberplugin.models.responsedata.Tag createFileTag(String hash, String name) {
-		//busted, error reading entity from input stream
-		//api call still goes through, though; tag clearly exists on-site
-		// endpoint does not return username when creating tag
     try {
       // Color is set to null to use default color
       EnvelopedTagCreatedResponse200 response = fileProvider.getFilesApi().createFileTag(hash, name, null, "json", false, false, "", true, false, false);
 			TagCreatedResponse newTag = response.getResource();
 
-			// Endpoint does not return a username
-			return new unknowncyberplugin.models.responsedata.Tag(newTag.getName(), null, newTag.getCreateTime().toString(), newTag.getId());
+			return new unknowncyberplugin.models.responsedata.Tag(newTag.getName(), newTag.getUsername(), newTag.getCreateTime().toString(), newTag.getId());
     } catch (Exception e) {
       Msg.error(fileProvider, e);
 			return null;
@@ -671,14 +684,22 @@ public class Api {
 	 * Wraps the listProcedureGenomicsTags endpoint.
    *  - Takes a hash string to reference the file.
 	 *  - Takes an address string to reference the procedure.
+	 * Returns an array of Unknown Cyber Plugin Tag objects.
 	 */
-	public static void listProcedureGenomicsTags(String hash, String address) {
+	public static unknowncyberplugin.models.responsedata.Tag[] listProcedureGenomicsTags(String hash, String address) {
 		//busted, returns null
 		try {
 			EnvelopedTagResponseList200 response = fileProvider.getFilesApi().listProcedureGenomicsTags(hash, address, "json", false, false, "", true, false);
-			//Msg.info("List proc tags", response);
+			List<unknowncyberplugin.models.responsedata.Tag> tagList = new ArrayList<unknowncyberplugin.models.responsedata.Tag>();
+
+			for (TagResponse tag : response.getResources()) {
+				tagList.add(new unknowncyberplugin.models.responsedata.Tag(tag.getName(), tag.getUsername(), tag.getCreateTime(), tag.getId()));
+			}
+
+			return tagList.toArray(new unknowncyberplugin.models.responsedata.Tag[tagList.size()]);
 		} catch (Exception e) {
 			Msg.error(fileProvider, e);
+			return null;
 		}
 	}
 

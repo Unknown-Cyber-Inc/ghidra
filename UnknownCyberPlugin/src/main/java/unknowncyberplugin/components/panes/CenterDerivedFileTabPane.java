@@ -28,8 +28,8 @@ public class CenterDerivedFileTabPane extends BaseCenterTabPane{
             Note[] notes = Api.listFileNotes(fileName);
             ((DerivedFileRootNode)getRootNode()).populateNotes(notes);
         } else if (subRootNode instanceof TagsRootNode){
-            // Tag[] tags = Api.listFileTags(fileName);
-            // ((DerivedFileRootNode)getRootNode()).populateTags(tags);
+            Tag[] tags = Api.listFileTags(fileName);
+            ((DerivedFileRootNode)getRootNode()).populateTags(tags);
         } else if (subRootNode instanceof MatchesRootNode){
             // File[] matches = Api.getFileMatches(fileName);
             // ((DerivedFileRootNode)getRootNode()).populateMatches(matches);
