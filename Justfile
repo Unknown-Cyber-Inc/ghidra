@@ -48,8 +48,14 @@ reload:
 
 # Recompiles the plugin
 recompile:
-    docker exec -it -u root --workdir "/root/.ghidra/.ghidra_{{GHIDRA_VERSION}}_PUBLIC/Extensions/UnknownCyberPlugin" ghidra ./gradlew clean build
+    docker exec -it -u root --workdir "/root/.ghidra/.ghidra_{{GHIDRA_VERSION}}_PUBLIC/Extensions/UnknownCyberPlugin" ghidra /opt/gradle/gradlew clean build
     docker exec -it -u root --workdir "/root/.ghidra/.ghidra_{{GHIDRA_VERSION}}_PUBLIC/Extensions/UnknownCyberPlugin" ghidra mv ./build/libs/UnknownCyberPlugin.jar lib/
+
+# Packages the dependencies for distribution
+redist:
+    docker exec -it -u root --workdir "/root/.ghidra/.ghidra_{{GHIDRA_VERSION}}_PUBLIC/Extensions/UnknownCyberPlugin" ghidra /opt/gradle/gradlew downloadDependencies
+    cd UnknownCyberPlugin
+    tar cvzf dependencies.tgz dependencies/*
 
 # Kills Ghidra
 kill:
