@@ -36,10 +36,11 @@ public class FileEditButton extends BaseButton {
     }
 
     public void processItem(Note selectedItem){
-        // This code does not work, there is no return value for updateFileNote's API call
-        // Note updatedNote = Api.updateFileNote(binaryId, selectedItem.getId(), popupReturnedText);;
-        //     if (updatedNote != null) {
-        //         selectedItem.updateItemData(updatedNote);
-        //     }
+        if (Api.updateFileNote(binaryId, selectedItem.getId(), popupReturnedText)) {
+            Note note = new Note(popupReturnedText, selectedItem.getId(), selectedItem.getUserName(), selectedItem.getTimeStamp());
+            selectedItem.updateItemData(note);
+        } else {
+            // TODO: handle update failure
+        }
     }
 }

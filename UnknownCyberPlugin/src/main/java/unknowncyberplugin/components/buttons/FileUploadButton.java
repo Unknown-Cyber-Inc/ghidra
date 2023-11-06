@@ -24,12 +24,8 @@ public class FileUploadButton extends BaseButton {
 				Api.submitFile();
 			} else if (uploadType.equals("Disassembly")) {
 				Msg.info(this, "Disassembly upload button clicked");
-				Api.getFileMatches("b87a947f3e85701fcdadd733e9b055a65a3b1308");
-				Api.listFileTags("b87a947f3e85701fcdadd733e9b055a65a3b1308");
-				Api.createFileTag("b87a947f3e85701fcdadd733e9b055a65a3b1308", "Test tag again");
-				Api.listProcedureGenomicsTags("b87a947f3e85701fcdadd733e9b055a65a3b1308", "0x1000");
 				//Api.listProcedureFiles("b87a947f3e85701fcdadd733e9b055a65a3b1308");
-				//Api.submitDisassembly();
+				Api.submitDisassembly();
 			}
 		}
 	}

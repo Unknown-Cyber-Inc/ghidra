@@ -50,10 +50,14 @@ import com.unknowncyber.magic.model.TagCreatedResponse;
 // import unknowncyberplugin.models.responsedata.Note;
 // import unknowncyberplugin.models.responsedata.Procedure;
 
-//import okhttp3.OkHttpClient;
-//import okhttp3.Request;
-//import okhttp3.Response;
-//import okhttp3.ResponseBody;  // TODO: remove these and gradle import if unneeded
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
+
+import io.swagger.client.ApiException;
 
 /**
  * Serves to hold easy-use wrappers for Unknown Cyber API calls.
@@ -62,15 +66,16 @@ public class Api {
 
 	// TODO: grab environment variable for these, be mindful of whether v2 is included
 	//   for use with okhttp
-	//private static String baseUrl = "http://api:8000/v2/";
-	//private static String apiKey = "&key=adminkey";
+	private static String baseUrl = "http://api:8000/v2/";
+	private static String apiKey = "&key=adminkey";
 
 	// Globally usable link disabler to clean up calls and inherently include the mandatory
 	//   ? symbol needed for this and other parameters, for use with okhttp.
-	//private static String noLinks = "?no_links=true";
+	private static String noLinks = "?no_links=true";
+	private static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
 
   private static UnknownCyberFileProvider fileProvider = References.getFileProvider();
-	//private static OkHttpClient client = new OkHttpClient();
+	private static OkHttpClient client = new OkHttpClient();
 
   private Api() {
 	throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
@@ -486,15 +491,30 @@ public class Api {
    *  - Takes a hash string to reference the file.
    *  - Takes a noteId string to reference the specific note.
    *  - Takes a note string that contains the updated text of the note.
+	 * Returns boolean true/false to indicate success/failure.
+	 * Uses okhttp to manage PATCH behavior.
    */
-  public static void updateFileNote(String hash, String noteId, String note) {
-		//busted, returns field accessibility error
+  public static boolean updateFileNote(String hash, String noteId, String note) {
     try {
-      String updateMask = "note";
-      // This does not return a response
-      fileProvider.getFilesApi().updateFileNote(hash, noteId, note, false, "json", false, false, "", true, false, updateMask);
+			String updateMask = "&update_mask=note";
+			JSONObject noteData = new JSONObject();
+			noteData.put("note", note);
+
+			RequestBody body = RequestBody.create(noteData.toString(), JSON);
+			Request request = new Request.Builder().url(baseUrl + "files/" + hash + "/notes/" + noteId + "/" + noLinks + updateMask + apiKey).patch(body).build();
+
+			Response response = client.newCall(request).execute();
+
+			if (response.isSuccessful()) {
+				return true;
+			}
+			// Data returned via okhttp on failure does not exactly match "normal" swagger API fail responses
+			// Regardless, attempt to ape the error in a similar fashion for consistency's sake
+			throw new ApiException(response.code(), response.message());
+
     } catch (Exception e) {
       Msg.error(fileProvider, e);
+			return false;
     }
   }
 
@@ -651,14 +671,30 @@ public class Api {
 	 *  - Takes an address string to reference the procedure.
 	 *  - Takes a noteId string that refernces the specific note.
 	 *  - Takes a note string that contains the updated text of the note.
+	 * Returns boolean true/false to indicate success/failure.
+	 * Uses okhttp to manage PATCH behavior.
 	 */
-	public static void updateProcedureGenomicsNote(String hash, String address, String noteId, String note) {
-		//busted, gives the unable to make field accessible error
+	public static boolean updateProcedureGenomicsNote(String hash, String address, String noteId, String note) {
 		try {
-			String updateMask = "note";
-			EnvelopedNote200 response = fileProvider.getFilesApi().updateProcedureGenomicsNote(hash, address, noteId, note, false, "json", false, false, "", true, false, updateMask);
+			String updateMask = "&update_mask=note";
+			JSONObject noteData = new JSONObject();
+			noteData.put("note", note);
+
+			RequestBody body = RequestBody.create(noteData.toString(), JSON);
+			Request request = new Request.Builder().url(baseUrl + "files/" + hash + "/genomics/" + address + "/notes/" + noteId + "/" + noLinks + updateMask + apiKey).patch(body).build();
+
+			Response response = client.newCall(request).execute();
+
+			if (response.isSuccessful()) {
+				return true;
+			}
+			// Data returned via okhttp on failure does not exactly match "normal" swagger API fail responses
+			// Regardless, attempt to ape the error in a similar fashion for consistency's sake
+			throw new ApiException(response.code(), response.message());
+
 		} catch (Exception e) {
 			Msg.error(fileProvider, e);
+			return false;
 		}
 	}
 
@@ -687,7 +723,6 @@ public class Api {
 	 * Returns an array of Unknown Cyber Plugin Tag objects.
 	 */
 	public static unknowncyberplugin.models.responsedata.Tag[] listProcedureGenomicsTags(String hash, String address) {
-		//busted, returns null
 		try {
 			EnvelopedTagResponseList200 response = fileProvider.getFilesApi().listProcedureGenomicsTags(hash, address, "json", false, false, "", true, false);
 			List<unknowncyberplugin.models.responsedata.Tag> tagList = new ArrayList<unknowncyberplugin.models.responsedata.Tag>();
