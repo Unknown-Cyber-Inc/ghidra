@@ -6,7 +6,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.WindowConstants;
 
-import ghidra.util.Msg;
 import unknowncyberplugin.components.buttons.CancelButton;
 import unknowncyberplugin.components.buttons.ResetButton;
 import unknowncyberplugin.components.buttons.SaveButton;
@@ -35,7 +34,6 @@ public class CRUDPopup extends JOptionPane {
 
         saveButton = new SaveButton(this);
         saveButton.addActionListener(ev -> {
-            Msg.info(this, ("Saving: " + textArea.getText()));
             setValue(saveButton);
         });
 

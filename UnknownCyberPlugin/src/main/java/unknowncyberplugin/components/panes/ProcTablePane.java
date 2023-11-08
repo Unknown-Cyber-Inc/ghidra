@@ -14,7 +14,7 @@ public class ProcTablePane extends JScrollPane{
         super();
         table = new ProcTable(null);
 
-        // PHONY DATA -- REMOVE ONCE API CALLS IN PLACE
+        // TODO: PHONY DATA -- REMOVE ONCE API CALLS IN PLACE
         Object[][] data = {
             {"ox1", "testProc", "5", "someMalware", "2", "1"},
             {"ox2", "otherName", "2", "otherMalware", "1", "0"},

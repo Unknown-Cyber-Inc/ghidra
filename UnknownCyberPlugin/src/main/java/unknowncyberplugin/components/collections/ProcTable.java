@@ -11,7 +11,6 @@ import unknowncyberplugin.components.panes.CenterProcedureTabPane;
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import ghidra.util.Msg;
 
 public class ProcTable extends JTable {
     // May replace DefaultTableModel with custom model to avoid copying response data
@@ -55,7 +54,6 @@ public class ProcTable extends JTable {
 
     public void handleDoubleClick(Object value) {
         CenterPanel cp = References.getCenterPanel();
-        Msg.info(this, ("Double-clicked on: " + value));
         cp.addCenterTab(
             value.toString(),
             new CenterProcedureTabPane(value.toString())

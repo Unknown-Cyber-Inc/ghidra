@@ -1,19 +1,11 @@
 package unknowncyberplugin.components.buttons;
 
-import javax.swing.tree.DefaultMutableTreeNode;
-
-import ghidra.util.Msg;
 import unknowncyberplugin.Api;
 import unknowncyberplugin.References;
 import unknowncyberplugin.UnknownCyberFileProvider;
 import unknowncyberplugin.components.panels.FilePanel;
-import unknowncyberplugin.components.panes.BaseCenterTabPane;
 import unknowncyberplugin.components.panes.BaseFileListPane;
-import unknowncyberplugin.components.panes.CenterDerivedFileTabPane;
-import unknowncyberplugin.components.panes.CenterDerivedProcedureTabPane;
-import unknowncyberplugin.components.panes.CenterProcedureTabPane;
 import unknowncyberplugin.components.panes.FileNotesPane;
-import unknowncyberplugin.components.panes.FileTabbedPane;
 import unknowncyberplugin.components.panes.FileTagsPane;
 import unknowncyberplugin.components.popups.DeleteConfirmationPopup;
 import unknowncyberplugin.models.responsedata.Note;

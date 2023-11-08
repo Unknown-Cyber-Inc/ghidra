@@ -1,13 +1,9 @@
 package unknowncyberplugin.components.buttons;
 
-import ghidra.util.Msg;
 import unknowncyberplugin.Api;
 import unknowncyberplugin.References;
 import unknowncyberplugin.UnknownCyberFileProvider;
 import unknowncyberplugin.components.panels.FilePanel;
-import unknowncyberplugin.components.panes.BaseFileListPane;
-import unknowncyberplugin.components.panes.FileNotesPane;
-import unknowncyberplugin.components.panes.FileTagsPane;
 import unknowncyberplugin.components.popups.FileCRUDPopup;
 import unknowncyberplugin.models.responsedata.Note;
 
@@ -40,7 +36,11 @@ public class FileEditButton extends BaseButton {
             Note note = new Note(popupReturnedText, selectedItem.getId(), selectedItem.getUserName(), selectedItem.getTimeStamp());
             selectedItem.updateItemData(note);
         } else {
-            // TODO: handle update failure
+            References.getFileProvider().announce(
+                    "Failed to Update",
+                    "An error occurred while updating the file note, see the User Log for more information.",
+                    true
+                );
         }
     }
 }

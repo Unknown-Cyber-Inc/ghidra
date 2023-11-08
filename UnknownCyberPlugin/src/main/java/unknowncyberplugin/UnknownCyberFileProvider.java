@@ -1,18 +1,3 @@
-/* ###
- * IP: GHIDRA
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package unknowncyberplugin;
 
 import java.io.File;
@@ -75,23 +60,23 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 			} catch (FileNotFoundException e) {
 				// TODO: disable upload buttons
 				announce(
-					"ERROR\n" +
-					"\n" +
+					"Cannot Find File",
 					"Ghidra is unable to access the original copy of this file.\n" +
 					"Therefore, this file cannot be uploaded to Unknown Cyber.\n" +
 					"\n" +
 					"Potential causes:\n" +
 					" - The file is not present on your computer.\n" +
 					" - The file has been moved from its original location.\n" +
-					" - The file is inside an archive."
+					" - The file is inside an archive.",
+					true
 				);
 			} catch (Exception e) {
 				// TODO: disable upload buttons
 				announce(
-					"ERROR\n" +
-					"\n" +
+					"Unknown Error Loading File",
 					"An unexpected error has occurred when trying to access the original copy of this file.\n" +
-					"Therefore, this file cannot be uploaded to Unknown Cyber."
+					"Therefore, this file cannot be uploaded to Unknown Cyber.",
+					true
 				);
 			}
 			// Check if file is accessible to user on the backend
@@ -111,7 +96,6 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 		// createActions();
 		apiClient = new ApiClient();
 		filesApi = new FilesApi(apiClient);
-		// procsApi = new ProcsApi(apiClient);
 	}
 
 	public Program getProgram(){
@@ -138,60 +122,6 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 		return originalSha512;
 	}
 
-	// This was used as part of the original code to create the menu bar popup action
-	// Keeping for now as an example
-	/*
-	private void createActions() {
-		action = new DockingAction("DockingAction", getName()) {
-			@Override
-			public void actionPerformed(ActionContext context) {
-				announce("Hello World announcement");
-			}
-		};
-
-		action.setEnabled(true);
-
-		ImageIcon prevImage = ResourceManager.loadImage(PREV_IMAGE);
-		// This adds an in-window menu dropdown
-		action.setMenuBarData(new MenuData(new String[] {"Misc", "Unknown Cyber"}, prevImage));
-		// This fires the action on keybind
-		action.setKeyBindingData(new KeyBindingData(KeyStroke.getKeyStroke(KeyEvent.VK_W, InputEvent.CTRL_MASK)));
-
-		action.setToolBarData(new ToolBarData(prevImage));
-		action.setDescription("Unknown Cyber setDescription");
-
-		// No clue what this actually does
-		action.setHelpLocation(HELP);
-
-		// This adds the action to a local button in the in-window menu
-		addLocalAction(action);
-
-		// No idea how this is meant to fire
-		// I assume it has to do with the myButton suppressing an unused warning...
-		DockingAction popupAction = new DockingAction("Unknown Cyber Popup", getName()) {
-			@Override
-			public void actionPerformed(ActionContext context) {
-				announce("Hello World announcement2");
-
-				Object contextObject = context.getContextObject();
-
-				@SuppressWarnings("unused")
-				MyButton myButton = (MyButton) contextObject;
-			}
-
-			@Override
-			public boolean isAddToPopup(ActionContext context) {
-				if (context.getContextObject() instanceof MyButton) {
-					return true;
-				}
-				return false;
-			}
-		};
-		popupAction.setEnabled(true);
-		popupAction.setPopupMenuData(new MenuData(new String[] { "Example of Popup" }));
-		addLocalAction(popupAction);
-	} //*/
-
 	@Override
 	public JComponent getComponent() {
 		return mainPanel;
@@ -204,7 +134,12 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 
 	// This is the built announce function that runs on the DummyButton
 	// Original code used it in other places as well, as a general use function
-	protected void announce(String message) {
-		Msg.showInfo(getClass(),  mainPanel,  "Hello World showInfo", message);
+	public void announce(String title, String message, boolean asError) {
+		if (asError) {
+			Msg.showError(getClass(),  mainPanel,  title, message);
+		} else {
+			Msg.showInfo(getClass(),  mainPanel,  title, message);
+		}
+		
 	}
 }

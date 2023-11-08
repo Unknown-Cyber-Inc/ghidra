@@ -2,23 +2,16 @@ package unknowncyberplugin.components.buttons;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
-import ghidra.util.Msg;
 import unknowncyberplugin.Api;
 import unknowncyberplugin.References;
 import unknowncyberplugin.components.panels.CenterPanel;
 import unknowncyberplugin.components.panes.BaseCenterTabPane;
-import unknowncyberplugin.components.panes.CenterDerivedFileTabPane;
-import unknowncyberplugin.components.panes.CenterDerivedProcedureTabPane;
-import unknowncyberplugin.components.panes.CenterProcedureTabPane;
 import unknowncyberplugin.components.popups.CenterCRUDPopup;
 import unknowncyberplugin.models.responsedata.Note;
 import unknowncyberplugin.models.responsedata.Procedure;
 import unknowncyberplugin.models.treenodes.leaves.NoteNode;
-import unknowncyberplugin.models.treenodes.leaves.TagNode;
 import unknowncyberplugin.models.treenodes.roots.DerivedFileRootNode;
-import unknowncyberplugin.models.treenodes.roots.NotesRootNode;
 import unknowncyberplugin.models.treenodes.roots.ProcedureRootNode;
-import unknowncyberplugin.models.treenodes.roots.TagsRootNode;
 
 public class CenterEditButton extends BaseButton {
     private String popupReturnedText;
@@ -32,7 +25,6 @@ public class CenterEditButton extends BaseButton {
         CenterPanel cp = References.getCenterPanel();
         String currentDisplayName = cp.getSelectedTreeNode().toString();
 
-        Msg.info(this, "Center edit button clicked");
         popupReturnedText = null;
 
         // bring up center popup filled with current data
@@ -55,7 +47,6 @@ public class CenterEditButton extends BaseButton {
     
     public void processProcedureTreeNode(BaseCenterTabPane tabPane, DefaultMutableTreeNode node){
         ProcedureRootNode rootNode = (ProcedureRootNode) tabPane.getRootNode();
-        DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) node.getParent();
         String binaryId = rootNode.getBinaryId();
         String startEA = rootNode.getStartEA();
 
@@ -64,7 +55,11 @@ public class CenterEditButton extends BaseButton {
                 Note note = new Note(popupReturnedText, ((NoteNode)node).getNodeData().getId(), ((NoteNode)node).getNodeData().getUserName(), ((NoteNode)node).getNodeData().getTimeStamp());
                 ((NoteNode)node).getNodeData().updateItemData(note);
             } else {
-                // TODO: handle update failure
+                References.getFileProvider().announce(
+                    "Failed to Update",
+                    "An error occurred while updating the procedure genomics note, see the User Log for more information.",
+                    true
+                );
             }
         } else if (node instanceof ProcedureRootNode){
             // TODO: waiting on creation at API side
@@ -77,7 +72,6 @@ public class CenterEditButton extends BaseButton {
 
     public void processDerivedFileTreeNode(BaseCenterTabPane tabPane, DefaultMutableTreeNode node){
         DerivedFileRootNode rootNode = (DerivedFileRootNode) tabPane.getRootNode();
-        DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) node.getParent();
         String binaryId = rootNode.getBinaryId();
 
         if (node instanceof NoteNode){
@@ -85,7 +79,11 @@ public class CenterEditButton extends BaseButton {
                 Note note = new Note(popupReturnedText, ((NoteNode)node).getNodeData().getId(), ((NoteNode)node).getNodeData().getUserName(), ((NoteNode)node).getNodeData().getTimeStamp());
                 ((NoteNode)node).getNodeData().updateItemData(note);
             } else {
-                // TODO: handle update failure
+                References.getFileProvider().announce(
+                    "Failed to Update",
+                    "An error occurred while updating the file note, see the User Log for more information.",
+                    true
+                );
             }
         }
     }

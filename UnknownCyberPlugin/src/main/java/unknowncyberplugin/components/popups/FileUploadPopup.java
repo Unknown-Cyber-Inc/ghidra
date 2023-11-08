@@ -6,8 +6,6 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
-import ghidra.util.Msg;
-
 public class FileUploadPopup extends JOptionPane {
     private JDialog dialog;
     
@@ -34,8 +32,6 @@ public class FileUploadPopup extends JOptionPane {
 
         Object response = getValue();
         dialog.dispose();
-
-        Msg.info(this, ("Response is: " + response));
 
         return (String) response;
     }

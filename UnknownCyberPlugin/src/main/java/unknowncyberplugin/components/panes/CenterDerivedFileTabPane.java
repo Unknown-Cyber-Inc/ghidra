@@ -31,6 +31,7 @@ public class CenterDerivedFileTabPane extends BaseCenterTabPane{
             Tag[] tags = Api.listFileTags(fileName);
             ((DerivedFileRootNode)getRootNode()).populateTags(tags);
         } else if (subRootNode instanceof MatchesRootNode){
+            // TODO: fix this
             // File[] matches = Api.getFileMatches(fileName);
             // ((DerivedFileRootNode)getRootNode()).populateMatches(matches);
         }

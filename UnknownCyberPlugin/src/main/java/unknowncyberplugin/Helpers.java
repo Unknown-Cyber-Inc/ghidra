@@ -105,8 +105,13 @@ public class Helpers {
     allowedChars.add('f');
 
     for (int i = address.length() - 1; i >= 0; i--) {
-      // TODO: this can throw an error if the last element of a string is not hex-legal
       if (!allowedChars.contains(address.charAt(i))) {
+        // Edge case escape hatch.  If the last element of a string is not hex-legal,
+        //   return the original address as a fallback.
+        if (i == address.length()) {
+          return address;
+        }
+        // Else, return the trailing hex-legal value within the string
         return address.substring(i + 1);
       }
     }
@@ -177,10 +182,10 @@ public class Helpers {
    *   to get architecture.  This is subject to change as needed, or absorption into
    *   the main body of code.
    */
-  public static String getArchitecture(Program program) {
+  public static int getArchitecture(Program program) {
     int pointer = program.getLanguage().getDefaultSpace().getPointerSize();
-    if (pointer == 4) return "32";
-    if (pointer == 8) return "64";
-    return null;
+    if (pointer == 4) return 32;
+    if (pointer == 8) return 64;
+    return -1;
   }
 }
