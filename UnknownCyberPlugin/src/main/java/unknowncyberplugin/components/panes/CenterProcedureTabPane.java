@@ -55,8 +55,8 @@ public class CenterProcedureTabPane extends BaseCenterTabPane{
             Note[] notes = Api.listProcedureGenomicsNotes(binaryId, startEa);
             ((ProcedureRootNode)getRootNode()).populateNotes(notes);
         } else if (subRootNode instanceof TagsRootNode){
-            // Tag[] tags = Api.listProcedureGenomicsTags(binaryId, startEa);
-            // ((ProcedureRootNode)getRootNode()).populateTags(tags);
+            Tag[] tags = Api.listProcedureGenomicsTags(binaryId, startEa);
+            ((ProcedureRootNode)getRootNode()).populateTags(tags);
         } else if (subRootNode instanceof SimilaritiesRootNode){
             Procedure[] response = Api.listProcedureSimilarities(binaryId, startEa);
             parseSimilarProcedures(response);

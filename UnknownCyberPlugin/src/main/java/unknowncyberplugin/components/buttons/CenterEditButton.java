@@ -60,11 +60,14 @@ public class CenterEditButton extends BaseButton {
         String startEA = rootNode.getStartEA();
 
         if (node instanceof NoteNode){
-            // Note updatedNote = Api.updateProcedureGenomicsNote(binaryId, startEA, ((NoteNode)node).getNodeData().getId(), popupReturnedText);
-            // if (updatedNote != null) {
-            //     ((NoteNode)node).setNodeData(updatedNote);
-            // }
+            if (Api.updateProcedureGenomicsNote(binaryId, startEA, ((NoteNode)node).getNodeData().getId(), popupReturnedText)) {
+                Note note = new Note(popupReturnedText, ((NoteNode)node).getNodeData().getId(), ((NoteNode)node).getNodeData().getUserName(), ((NoteNode)node).getNodeData().getTimeStamp());
+                ((NoteNode)node).getNodeData().updateItemData(note);
+            } else {
+                // TODO: handle update failure
+            }
         } else if (node instanceof ProcedureRootNode){
+            // TODO: waiting on creation at API side
             // Procedure updatedProcedure = Api.updateProcedureName(binaryId, startEA, popupReturnedText);
             // if (updatedProcedure != null) {
             //     ((ProcedureRootNode)node).setNodeData(updatedProcedure);
@@ -78,11 +81,12 @@ public class CenterEditButton extends BaseButton {
         String binaryId = rootNode.getBinaryId();
 
         if (node instanceof NoteNode){
-            // This code does not work, there is no return value for updateFileNote's API call
-            // Note updatedNote = Api.updateFileNote(binaryId, ((NoteNode)node).getNodeData().getId(), popupReturnedText);;
-            // if (updatedNote != null) {
-            //     ((NoteNode)node).setNodeData(updatedNote);
-            // }
+            if (Api.updateFileNote(binaryId, ((NoteNode)node).getNodeData().getId(), popupReturnedText)) {
+                Note note = new Note(popupReturnedText, ((NoteNode)node).getNodeData().getId(), ((NoteNode)node).getNodeData().getUserName(), ((NoteNode)node).getNodeData().getTimeStamp());
+                ((NoteNode)node).getNodeData().updateItemData(note);
+            } else {
+                // TODO: handle update failure
+            }
         }
     }
 }

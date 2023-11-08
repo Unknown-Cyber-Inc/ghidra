@@ -1,10 +1,10 @@
 FROM ubuntu:22.04 AS base
-ARG version=10.3.3
-ARG date=20230829
+ARG version=10.4
+ARG date=20230928
 EXPOSE 13100/tcp 13101/tcp 13102/tcp
 ENV LANG=en_US.UTF-8 LANGUAGE=en_US:en LC_ALL=en_US.UTF-8
 ENV DEBIAN_FRONTEND=noninteractive
-ENV PATH /opt/java/bin/:/opt/gradle/gradle-8.3/bin:$PATH
+ENV PATH /opt/java/bin/:/opt/gradle/gradle-8.4/bin:$PATH
 ENV GHIDRA_HOME /opt/ghidra/
 ENV GHIDRA_INSTALL_DIR /opt/ghidra/
 ENV PGHIDRA_INSTALL_DIR /opt/ghidra/
@@ -12,6 +12,7 @@ ENV JAVA_HOME /opt/java/
 ENV JAVA_VERSION=jdk-17.0.7+7
 ENV MAXMEM=768M
 
+COPY ca.crt .
 # Install the Java JDK
 RUN set -x \
     && apt update \
@@ -24,10 +25,12 @@ RUN set -x \
     && find $JAVA_HOME/lib -name '*.so' -exec dirname '{}' ';' | sort -u > /etc/ld.so.conf.d/docker-openjdk.conf \
     && ldconfig \
     && java -Xshare:dump \
+    && echo "yes" | keytool -import -alias "magic" -file ca.crt -keystore $JAVA_HOME/lib/security/cacerts -storepass changeit \
     && rm -rf ~/.java \
     && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives /tmp/* /var/tmp/* \
     && apt -y remove wget \
     && apt -y autoremove
+
 
 # Install Ghidra and Gradle
 RUN apt-get update \
@@ -51,11 +54,13 @@ RUN apt-get update \
     && unzip ghidra_${version}_PUBLIC_${date}.zip -d /opt/ \
     && mv /opt/ghidra_${version}_PUBLIC /opt/ghidra \
     && rm -rf ghidra_${version}_PUBLIC_${date}.zip \
-    && wget https://services.gradle.org/distributions/gradle-8.3-bin.zip \
-    && unzip gradle-8.3-bin.zip -d /opt/gradle \
-    && rm -rf gradle-8.3-bin.zip \
+    && wget https://services.gradle.org/distributions/gradle-8.4-bin.zip \
+    && unzip gradle-8.4-bin.zip -d /opt/gradle \
+    && rm -rf gradle-8.4-bin.zip \
     && cd /opt/gradle \
-    && ./gradle wrapper \
+    && mv gradle-8.4 gradle \
+    && ./gradle/bin/gradle init \
+    && ./gradle/bin/gradle wrapper \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives /tmp/* /var/tmp/* \
     && apt -y remove wget unzip \

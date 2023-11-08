@@ -48,7 +48,7 @@ public class FileTabbedPane extends JTabbedPane {
             items = Api.listFileNotes(hash);
         } else if (tabComponent instanceof FileTagsPane){
             fcp.tagsTabSelected();
-            // items = Api.listFileTags(hash);
+            items = Api.listFileTags(hash);
         } else if (tabComponent instanceof FileMatchesPane){
             fcp.disableButtons();
             // items = Api.getFileMatches(hash);
