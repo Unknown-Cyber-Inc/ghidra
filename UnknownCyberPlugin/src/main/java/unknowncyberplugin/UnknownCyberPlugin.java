@@ -28,42 +28,42 @@ import ghidra.util.task.TaskMonitor;
 
 //@formatter:off
 @PluginInfo(
-	status = PluginStatus.RELEASED,
-	packageName = ExamplesPluginPackage.NAME,
-	category = PluginCategoryNames.MISC,
-	shortDescription = "Unknown Cyber",
-	description = "Unknown Cyber's API integration plugin"
+    status = PluginStatus.RELEASED,
+    packageName = ExamplesPluginPackage.NAME,
+    category = PluginCategoryNames.MISC,
+    shortDescription = "Unknown Cyber",
+    description = "Unknown Cyber's API integration plugin"
 )
 //@formatter:on
 public class UnknownCyberPlugin extends ProgramPlugin {
 
-	private UnknownCyberFileProvider fileProvider;
+    private UnknownCyberFileProvider fileProvider;
 
-	@Override
-	public void programOpened(Program program) {
-		if (fileProvider != null) {
-			fileProvider.setProgram(program);
-		}
-	}
+    @Override
+    public void programOpened(Program program) {
+        if (fileProvider != null) {
+            fileProvider.setProgram(program);
+            String md5 = program.getExecutableMD5();
+            References.enableFullPlugin(Api.isFileAccessible(md5));
+        }
+    }
 
-	/**
-	 * Plugin constructor.
-	 *
-	 * @param tool The plugin tool that this plugin is added to.
-	 */
-	public UnknownCyberPlugin(PluginTool tool) {
-		super(tool);
+    /**
+     * Plugin constructor.
+     *
+     * @param tool The plugin tool that this plugin is added to.
+     */
+    public UnknownCyberPlugin(PluginTool tool) {
+        super(tool);
 
-		fileProvider = new UnknownCyberFileProvider(tool, getName());
-		fileProvider.setProgram(currentProgram);
+        fileProvider = new UnknownCyberFileProvider(tool, getName());
+        fileProvider.setProgram(currentProgram);
 
-		References.setFileProvider(fileProvider);
+        References.setFileProvider(fileProvider);
+    }
 
-		References.enableFullPlugin(Api.isFileAccessible("05a470c6b40b43ca571b2b4292634bbc23c95128"));
-	}
-
-	@Override
-	public void dispose() {
-		fileProvider.setVisible(false);
-	}
+    @Override
+    public void dispose() {
+        fileProvider.setVisible(false);
+    }
 }
