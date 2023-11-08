@@ -28,7 +28,7 @@ import net.lingala.zip4j.ZipFile;
 import com.unknowncyber.magic.model.EnvelopedFileGenomicsResponse200;
 import com.unknowncyber.magic.model.EnvelopedFileList200;
 import com.unknowncyber.magic.model.EnvelopedFile200;
-import com.unknowncyber.magic.model.EnvelopedFileMatchResponseList200EnvelopedIdList200;
+import com.unknowncyber.magic.model.EnvelopedMatchList200;
 import com.unknowncyber.magic.model.EnvelopedFileUploadResponse200;
 import com.unknowncyber.magic.model.EnvelopedFileUploadResponseList200;
 import com.unknowncyber.magic.model.EnvelopedNote200;
@@ -415,7 +415,7 @@ public class Api {
 			Integer pageSize = 25;
 			Float maxThreshold = 1.0f;
 			Float minThreshold = 0.7f;
-			EnvelopedFileMatchResponseList200EnvelopedIdList200 response = fileProvider.getFilesApi().listFileMatches(hash, "json", false, false, "", true, false, pageCount, pageSize, 0, readMask, expandMask, maxThreshold, minThreshold);
+			EnvelopedMatchList200 response = fileProvider.getFilesApi().listFileMatches(hash, "json", false, false, "", true, false, pageCount, pageSize, 0, readMask, expandMask, maxThreshold, minThreshold);
 			Msg.info("File matches", response);
 		} catch (Exception e) {
 			Msg.error(fileProvider, e);
