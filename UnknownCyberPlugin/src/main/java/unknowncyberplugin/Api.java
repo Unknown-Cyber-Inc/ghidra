@@ -65,9 +65,8 @@ public class Api {
 
 	// TODO: grab environment variable for these, be mindful of whether v2 is included
 	//   for use with okhttp
-	private static String baseUrl = "http://api:8000/v2/";
+	private static String baseUrl = "https://api:80/v2/";
 	private static String apiKey = "&key=adminkey";
-	// pre-emptive env vars; don't know what their names are, don't know the exact expected format
 	// private static String baseUrl = System.getenv("API_URI");
 	// private static String apiKey = "&key=" + System.getenv("API_KEY");
 
