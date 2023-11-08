@@ -1,21 +1,15 @@
 package unknowncyberplugin.components.buttons;
 
-import javax.swing.tree.DefaultMutableTreeNode;
-
-import ghidra.util.Msg;
 import unknowncyberplugin.Api;
 import unknowncyberplugin.References;
 import unknowncyberplugin.UnknownCyberFileProvider;
 import unknowncyberplugin.components.panels.FilePanel;
-import unknowncyberplugin.components.panes.BaseCenterTabPane;
 import unknowncyberplugin.components.panes.BaseFileListPane;
 import unknowncyberplugin.components.panes.FileNotesPane;
 import unknowncyberplugin.components.panes.FileTagsPane;
 import unknowncyberplugin.components.popups.FileCRUDPopup;
 import unknowncyberplugin.models.responsedata.Note;
 import unknowncyberplugin.models.responsedata.Tag;
-import unknowncyberplugin.models.treenodes.roots.DerivedFileRootNode;
-import unknowncyberplugin.models.treenodes.roots.ProcedureRootNode;
 
 public class FileCreateButton extends BaseButton {
     private String popupReturnedText;

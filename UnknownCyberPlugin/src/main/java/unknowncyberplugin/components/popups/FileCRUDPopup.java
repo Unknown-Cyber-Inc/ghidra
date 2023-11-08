@@ -7,8 +7,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.WindowConstants;
 
-import ghidra.util.Msg;
-
 public class FileCRUDPopup extends JOptionPane {
     
     private JTextArea textArea;
@@ -33,7 +31,6 @@ public class FileCRUDPopup extends JOptionPane {
 
         saveButton = new JButton("Save");
         saveButton.addActionListener(ev -> {
-            Msg.info(this, ("Saving: " + textArea.getText()));
             setValue(saveButton);
         });
 

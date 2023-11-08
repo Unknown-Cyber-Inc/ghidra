@@ -2,7 +2,6 @@ package unknowncyberplugin.components.buttons;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
-import ghidra.util.Msg;
 import unknowncyberplugin.Api;
 import unknowncyberplugin.References;
 import unknowncyberplugin.components.panels.CenterPanel;
@@ -12,7 +11,6 @@ import unknowncyberplugin.components.panes.CenterDerivedProcedureTabPane;
 import unknowncyberplugin.components.panes.CenterProcedureTabPane;
 import unknowncyberplugin.components.popups.DeleteConfirmationPopup;
 import unknowncyberplugin.models.treenodes.leaves.NoteNode;
-import unknowncyberplugin.models.treenodes.leaves.PlaceholderNode;
 import unknowncyberplugin.models.treenodes.leaves.TagNode;
 import unknowncyberplugin.models.treenodes.roots.DerivedFileRootNode;
 import unknowncyberplugin.models.treenodes.roots.ProcedureRootNode;
@@ -26,11 +24,9 @@ public class CenterDeleteButton extends BaseButton {
     @Override
     protected void runClickedAction(){
         CenterPanel cp = References.getCenterPanel();
-        Msg.info(this, "Center delete button clicked");
 
         DeleteConfirmationPopup delPopup = new DeleteConfirmationPopup();
         int response = delPopup.displayAndGetResponse();
-        Msg.info(this, ("Confirmation response: " + response));
 
         if (response == 0){
             processNode(cp.getActiveTabComponent(), cp.getSelectedTreeNode());

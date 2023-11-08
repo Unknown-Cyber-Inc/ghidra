@@ -1,7 +1,11 @@
 package unknowncyberplugin.components.popups;
 
-import javax.swing.*;
-import ghidra.util.Msg;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.WindowConstants;
 
 public class CenterCRUDPopup extends JOptionPane {
     
@@ -27,7 +31,6 @@ public class CenterCRUDPopup extends JOptionPane {
 
         saveButton = new JButton("Save");
         saveButton.addActionListener(ev -> {
-            Msg.info(this, ("Saving: " + textArea.getText()));
             setValue(saveButton);
         });
 

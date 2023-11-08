@@ -14,13 +14,11 @@ import unknowncyberplugin.models.responsedata.Note;
 import unknowncyberplugin.models.responsedata.Procedure;
 import unknowncyberplugin.models.responsedata.Tag;
 import unknowncyberplugin.models.treenodes.leaves.SimilarProcedureNode;
-import unknowncyberplugin.models.treenodes.roots.BaseRootNode;
 import unknowncyberplugin.models.treenodes.roots.FilesRootNode;
 import unknowncyberplugin.models.treenodes.roots.NotesRootNode;
 import unknowncyberplugin.models.treenodes.roots.ProcedureRootNode;
 import unknowncyberplugin.models.treenodes.roots.SimilaritiesRootNode;
 import unknowncyberplugin.models.treenodes.roots.TagsRootNode;
-import unknowncyberplugin.models.treenodes.roots.FilesRootNode;
 
 public class CenterProcedureTabPane extends BaseCenterTabPane{
     private String startEa;

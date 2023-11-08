@@ -2,19 +2,14 @@ package unknowncyberplugin.components.buttons;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
-import ghidra.util.Msg;
 import unknowncyberplugin.Api;
 import unknowncyberplugin.References;
 import unknowncyberplugin.components.panels.CenterPanel;
 import unknowncyberplugin.components.panes.BaseCenterTabPane;
-import unknowncyberplugin.components.panes.CenterDerivedFileTabPane;
-import unknowncyberplugin.components.panes.CenterDerivedProcedureTabPane;
-import unknowncyberplugin.components.panes.CenterProcedureTabPane;
 import unknowncyberplugin.components.popups.CenterCRUDPopup;
 import unknowncyberplugin.models.responsedata.Note;
 import unknowncyberplugin.models.responsedata.Tag;
 import unknowncyberplugin.models.treenodes.leaves.NoteNode;
-import unknowncyberplugin.models.treenodes.leaves.PlaceholderNode;
 import unknowncyberplugin.models.treenodes.leaves.TagNode;
 import unknowncyberplugin.models.treenodes.roots.DerivedFileRootNode;
 import unknowncyberplugin.models.treenodes.roots.NotesRootNode;
@@ -30,8 +25,6 @@ public class CenterCreateButton extends BaseButton {
     
     @Override
     protected void runClickedAction(){
-        Msg.info(this, "Center create button clicked");
-        
         CenterPanel cp = References.getCenterPanel();
         popupReturnedText = null;
 

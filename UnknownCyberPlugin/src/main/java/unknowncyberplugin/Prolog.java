@@ -54,10 +54,6 @@ public class Prolog {
     return new String[]{operand, operand};
   }
 
-  public static void formatOperand() {
-    // RET -> retn mnemonic?
-  }
-
   /**
    * Converts a mnemonic assembly instruction and an array of operands into a prolog atom or function.
    * 
@@ -68,9 +64,8 @@ public class Prolog {
    * Calls dtype2ptr to clean pointer operands.
    * 
    * UNHANDLED CASES:
-   *   - Does not perform special mnemonic conversions, i.e. RETN -> ret; only lowercases mnemonics
-   *   - Does not handle colon notation, i.e. fs:ebx.  Frankly, I don't even know what that would look
-   *     like, coming out of Ghidra
+   *   - Does not perform any special mnemonic conversions; only lowercases mnemonics
+   *   - Does not handle colon notation, i.e. fs:ebx, or any other non-standard notation
    */
   public static String formatInstruction(String mnemonic, JSONArray operands) {
     if (operands.size() == 0) {

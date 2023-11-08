@@ -22,11 +22,12 @@ import java.util.List;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 import net.lingala.zip4j.ZipFile;
 
 import com.unknowncyber.magic.model.EnvelopedFileGenomicsResponse200;
-import com.unknowncyber.magic.model.EnvelopedFileList200;
+import com.google.gson.JsonObject;
 import com.unknowncyber.magic.model.EnvelopedFile200;
 import com.unknowncyber.magic.model.EnvelopedMatchList200;
 import com.unknowncyber.magic.model.EnvelopedFileUploadResponse200;
@@ -35,9 +36,7 @@ import com.unknowncyber.magic.model.EnvelopedNote200;
 import com.unknowncyber.magic.model.EnvelopedNote201;
 import com.unknowncyber.magic.model.EnvelopedNoteList200;
 import com.unknowncyber.magic.model.EnvelopedProcedureList200;
-import com.unknowncyber.magic.model.EnvelopedTag200;
 import com.unknowncyber.magic.model.EnvelopedTagCreatedResponse200;
-import com.unknowncyber.magic.model.EnvelopedTagList200;
 import com.unknowncyber.magic.model.EnvelopedTagResponseList200;
 import com.unknowncyber.magic.model.ExtendedProcedureResponse;
 import com.unknowncyber.magic.model.Note;
@@ -68,6 +67,8 @@ public class Api {
 	//   for use with okhttp
 	private static String baseUrl = "https://api:80/v2/";
 	private static String apiKey = "&key=adminkey";
+	// private static String baseUrl = System.getenv("API_URI");
+	// private static String apiKey = "&key=" + System.getenv("API_KEY");
 
 	// Globally usable link disabler to clean up calls and inherently include the mandatory
 	//   ? symbol needed for this and other parameters, for use with okhttp.
@@ -135,7 +136,25 @@ public class Api {
 			fileData.put("sha256", fileProvider.getProgram().getExecutableSHA256());
 			fileData.put("sha512", fileProvider.getOriginalSha512());
 			fileData.put("unix_filetype", fileType);
-			fileData.put("version", "Ghidra-" + Application.getApplicationVersion());
+			fileData.put("version", Application.getApplicationVersion());
+			fileData.put("disassembler", "ghidra");
+			int architecture = Helpers.getArchitecture(fileProvider.getProgram());
+			if (architecture == 32) {
+				fileData.put("use_32", true);
+				fileData.put("use_64", false);
+			} else if (architecture == 64) {
+				fileData.put("use_64", true);
+				fileData.put("use_32", false);
+			} else {
+				fileData.put("use_32", false);
+				fileData.put("use_64", false);
+			}
+			String path = fileProvider.getProgram().getExecutablePath();
+			if (path.contains("/") && !path.substring(path.length() - 1).equals("/")) {
+				fileData.put("filename", path.substring(path.lastIndexOf("/") + 1));
+			} else {
+				fileData.put("filename", null);
+			}
 
 			try {
 				// Create and write to the file's JSON file
@@ -327,7 +346,6 @@ public class Api {
 			}
 
 			try {
-				// TODO: program.getExecutableFormat() does not return values that we use; it will need some form of mapping
 				EnvelopedFileUploadResponse200 response = fileProvider.getFilesApi().uploadDisassembly(zip.getFile(), fileType, fileProvider.getOriginalSha1(), "json", false, false, "", true, false, false);
 			} catch (Exception e) {
 				// Unexpected error occurrs during disassembly upload, specify location and escalate
@@ -495,6 +513,7 @@ public class Api {
 	 * Uses okhttp to manage PATCH behavior.
    */
   public static boolean updateFileNote(String hash, String noteId, String note) {
+		Response response = null;
     try {
 			String updateMask = "&update_mask=note";
 			JSONObject noteData = new JSONObject();
@@ -503,9 +522,10 @@ public class Api {
 			RequestBody body = RequestBody.create(noteData.toString(), JSON);
 			Request request = new Request.Builder().url(baseUrl + "files/" + hash + "/notes/" + noteId + "/" + noLinks + updateMask + apiKey).patch(body).build();
 
-			Response response = client.newCall(request).execute();
+			response = client.newCall(request).execute();
 
 			if (response.isSuccessful()) {
+				response.close();
 				return true;
 			}
 			// Data returned via okhttp on failure does not exactly match "normal" swagger API fail responses
@@ -514,6 +534,13 @@ public class Api {
 
     } catch (Exception e) {
       Msg.error(fileProvider, e);
+			if (response != null) {
+				try {
+					response.close();
+				} catch (Exception f) {
+					// Allow this to silently fail
+				}
+			}
 			return false;
     }
   }
@@ -675,6 +702,7 @@ public class Api {
 	 * Uses okhttp to manage PATCH behavior.
 	 */
 	public static boolean updateProcedureGenomicsNote(String hash, String address, String noteId, String note) {
+		Response response = null;
 		try {
 			String updateMask = "&update_mask=note";
 			JSONObject noteData = new JSONObject();
@@ -683,9 +711,10 @@ public class Api {
 			RequestBody body = RequestBody.create(noteData.toString(), JSON);
 			Request request = new Request.Builder().url(baseUrl + "files/" + hash + "/genomics/" + address + "/notes/" + noteId + "/" + noLinks + updateMask + apiKey).patch(body).build();
 
-			Response response = client.newCall(request).execute();
+			response = client.newCall(request).execute();
 
 			if (response.isSuccessful()) {
+				response.close();
 				return true;
 			}
 			// Data returned via okhttp on failure does not exactly match "normal" swagger API fail responses
@@ -694,6 +723,13 @@ public class Api {
 
 		} catch (Exception e) {
 			Msg.error(fileProvider, e);
+			if (response != null) {
+				try {
+					response.close();
+				} catch (Exception f) {
+					// Allow this to silently fail
+				}
+			}
 			return false;
 		}
 	}
@@ -772,6 +808,45 @@ public class Api {
 			return true;
 		} catch (Exception e) {
 			Msg.error(fileProvider, e);
+			return false;
+		}
+	}
+
+	/**
+	 * Wraps the updateFileProcedureGenomics endpoint.
+	 *  - Takes a hash string to reference the file.
+	 *  - Takes an address string to reference the procedure.
+	 *  - Takes a name string to apply to the procedure.
+	 * Returns a boolean true/false to indicate success/failure.
+	 */
+	public static boolean updateProcedureName(String hash, String address, String name) {
+		Response response = null;
+		try {
+			String updateMask = "&update_mask=procedure_name";
+			JSONObject nameData = new JSONObject();
+			nameData.put("procedure_name", name);
+
+			RequestBody body = RequestBody.create(nameData.toString(), JSON);
+			Request request = new Request.Builder().url(baseUrl + "files/" + hash + "/genomics/" + address + "/" + noLinks + updateMask + apiKey).patch(body).build();
+
+			response = client.newCall(request).execute();
+
+			if (response.isSuccessful()) {
+				response.close();
+				return true;
+			}
+			// Data returned via okhttp on failure does not exactly match "normal" swagger API fail responses
+			// Regardless, attempt to ape the error in a similar fashion for consistency's sake
+			throw new ApiException(response.code(), response.message());
+		} catch (Exception e) {
+			Msg.error(fileProvider, e);
+			if (response != null) {
+				try {
+					response.close();
+				} catch (Exception f) {
+					// Allow this to silently fail
+				}
+			}
 			return false;
 		}
 	}
