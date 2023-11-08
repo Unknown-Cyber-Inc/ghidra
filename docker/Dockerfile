@@ -12,6 +12,7 @@ ENV JAVA_HOME /opt/java/
 ENV JAVA_VERSION=jdk-17.0.7+7
 ENV MAXMEM=768M
 
+COPY ca.crt .
 # Install the Java JDK
 RUN set -x \
     && apt update \
@@ -24,10 +25,12 @@ RUN set -x \
     && find $JAVA_HOME/lib -name '*.so' -exec dirname '{}' ';' | sort -u > /etc/ld.so.conf.d/docker-openjdk.conf \
     && ldconfig \
     && java -Xshare:dump \
+    && echo "yes" | keytool -import -alias "magic" -file ca.crt -keystore $JAVA_HOME/lib/security/cacerts -storepass changeit \
     && rm -rf ~/.java \
     && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives /tmp/* /var/tmp/* \
     && apt -y remove wget \
     && apt -y autoremove
+
 
 # Install Ghidra and Gradle
 RUN apt-get update \
