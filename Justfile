@@ -3,8 +3,8 @@
 
 set shell := ["bash", "-uc"]
 
-GHIDRA_VERSION := "10.3.3"
-GHIDRA_DATE := "20230829"
+GHIDRA_VERSION := "10.4"
+GHIDRA_DATE := "20230928"
 
 # Justfile Help message {{{
 
@@ -48,8 +48,14 @@ reload:
 
 # Recompiles the plugin
 recompile:
-    docker exec -it -u root --workdir "/root/.ghidra/.ghidra_{{GHIDRA_VERSION}}_PUBLIC/Extensions/UnknownCyberPlugin" ghidra ./gradlew clean build
+    docker exec -it -u root --workdir "/root/.ghidra/.ghidra_{{GHIDRA_VERSION}}_PUBLIC/Extensions/UnknownCyberPlugin" ghidra /opt/gradle/gradlew clean build
     docker exec -it -u root --workdir "/root/.ghidra/.ghidra_{{GHIDRA_VERSION}}_PUBLIC/Extensions/UnknownCyberPlugin" ghidra mv ./build/libs/UnknownCyberPlugin.jar lib/
+
+# Packages the dependencies for distribution
+redist:
+    docker exec -it -u root --workdir "/root/.ghidra/.ghidra_{{GHIDRA_VERSION}}_PUBLIC/Extensions/UnknownCyberPlugin" ghidra /opt/gradle/gradlew downloadDependencies
+    cd UnknownCyberPlugin
+    tar cvzf dependencies.tgz dependencies/*
 
 # Kills Ghidra
 kill:
