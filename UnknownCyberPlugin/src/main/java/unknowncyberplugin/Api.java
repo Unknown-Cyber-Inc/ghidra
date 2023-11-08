@@ -66,7 +66,7 @@ public class Api {
 
 	// TODO: grab environment variable for these, be mindful of whether v2 is included
 	//   for use with okhttp
-	private static String baseUrl = "http://api:8000/v2/";
+	private static String baseUrl = "https://api:80/v2/";
 	private static String apiKey = "&key=adminkey";
 
 	// Globally usable link disabler to clean up calls and inherently include the mandatory
