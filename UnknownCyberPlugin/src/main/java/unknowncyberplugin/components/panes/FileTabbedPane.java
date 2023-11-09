@@ -55,7 +55,9 @@ public class FileTabbedPane extends JTabbedPane {
             References.getFilePanel().getPageControls().setVisible(true);
             FileMatchesPaginationControls pc = References.getFileMatchesPaginationControls();
             items = Api.listFileMatches(hash, pc.getCurrentPage());
-            pc.setCurrentPageSize(items.length);
+            if (items != null){
+                pc.setCurrentPageSize(items.length);
+            }
         }
 
         if (items != null){

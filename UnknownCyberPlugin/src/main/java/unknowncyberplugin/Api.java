@@ -517,8 +517,9 @@ public class Api {
 					true, false, pageCount, pageSize, 0, readMask, expandMask, maxThreshold, minThreshold);
 
 			List<Match> responseMatches = response.getResources();
+			if (responseMatches == null) return new MatchModel[0];
 			MatchModel[] matchList = new MatchModel[responseMatches.size()];
-
+			
 			for(int i=0; i < responseMatches.size(); i++){
 				Match match = responseMatches.get(i);
 				matchList[i] = new MatchModel(match.getSha1(), match.getMaxSimilarity());
