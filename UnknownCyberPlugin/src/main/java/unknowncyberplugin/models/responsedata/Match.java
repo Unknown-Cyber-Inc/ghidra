@@ -8,4 +8,12 @@ public class Match {
         this.sha1 = sha1;
         this.maxSimilarity = maxSimilarity;
     }
+
+    public String getSha1(){
+        return sha1;
+    }
+
+    public float getMaxSimilarity(){
+        return maxSimilarity;
+    }
 }
