@@ -34,6 +34,7 @@ public class UnknownCyberPlugin extends ProgramPlugin {
             fileProvider.setProgram(program);
             String md5 = program.getExecutableMD5();
             References.enableFullPlugin(Api.isFileAccessible(program.getExecutableMD5()));
+            References.getFilePanel().setMatchesTabToActive();
         }
     }
 
