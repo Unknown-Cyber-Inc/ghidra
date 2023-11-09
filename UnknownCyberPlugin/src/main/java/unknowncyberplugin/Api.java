@@ -424,7 +424,7 @@ public class Api {
    * Wraps the getFileMatches endpoint.
    *  - Takes a hash string to query the API with.
    */
-  public static void getFileMatches(String hash) {
+  public static EnvelopedMatchList200 getFileMatches(String hash) {
 		//busted, returns null
 		try {
 			String readMask = "";
@@ -435,8 +435,10 @@ public class Api {
 			Float minThreshold = 0.7f;
 			EnvelopedMatchList200 response = fileProvider.getFilesApi().listFileMatches(hash, "json", false, false, "", true, false, pageCount, pageSize, 0, readMask, expandMask, maxThreshold, minThreshold);
 			Msg.info("File matches", response);
+			return response;
 		} catch (Exception e) {
 			Msg.error(fileProvider, e);
+			return null;
 		}
 	}
 
