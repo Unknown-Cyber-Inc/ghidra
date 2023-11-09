@@ -477,7 +477,7 @@ public class Api {
 			for (Match match : response.getResources()) {
 				matchList.add(new MatchModel(match.getSha1(), match.getMaxSimilarity()));
 			}
-			return matchList;
+			return matchList.toArray(new MatchModel[matchList.size()]);
 		} catch (Exception e) {
 			Msg.error(fileProvider, e);
 			return null;

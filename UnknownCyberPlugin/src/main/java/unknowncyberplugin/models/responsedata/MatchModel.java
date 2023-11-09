@@ -2,7 +2,7 @@ package unknowncyberplugin.models.responsedata;
 
 public class MatchModel {
     private String sha1;
-    private float maxSimilarity;
+    private Double maxSimilarity;
 
     public MatchModel(String sha1, Double maxSimilarity){
         this.sha1 = sha1;
