@@ -1,7 +1,6 @@
 package unknowncyberplugin.components.panes;
 
 import unknowncyberplugin.Api;
-import unknowncyberplugin.models.responsedata.FileModel;
 import unknowncyberplugin.models.responsedata.NoteModel;
 import unknowncyberplugin.models.responsedata.TagModel;
 import unknowncyberplugin.models.treenodes.roots.MatchesRootNode;
@@ -30,10 +29,6 @@ public class CenterDerivedFileTabPane extends BaseCenterTabPane{
         } else if (subRootNode instanceof TagsRootNode){
             TagModel[] tags = Api.listFileTags(fileName);
             ((DerivedFileRootNode)getRootNode()).populateTags(tags);
-        } else if (subRootNode instanceof MatchesRootNode){
-            // TODO: fix this
-            // File[] matches = Api.listFileMatches(fileName);
-            // ((DerivedFileRootNode)getRootNode()).populateMatches(matches);
         }
     }
 
