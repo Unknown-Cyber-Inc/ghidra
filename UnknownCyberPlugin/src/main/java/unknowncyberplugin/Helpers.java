@@ -10,9 +10,15 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.xml.bind.DatatypeConverter;
+
+import com.unknowncyber.magic.model.FilePipeline;
 
 public class Helpers {
 
@@ -187,5 +193,30 @@ public class Helpers {
     if (pointer == 4) return 32;
     if (pointer == 8) return 64;
     return -1;
+  }
+
+  public static Map<String, String> parsePipelines(FilePipeline pipeline){
+    Map<String, String> pipelines = new LinkedHashMap<>();
+
+    pipelines.put("dashboard_campaign", pipeline.getDashboardCampaign());
+    pipelines.put("dashboard_report", pipeline.getDashboardCampaign());
+    pipelines.put("ioc_handler", pipeline.getDashboardCampaign());
+    pipelines.put("proc_hash_signatures", pipeline.getDashboardCampaign());
+    pipelines.put("similarity_computation", pipeline.getDashboardCampaign());
+    pipelines.put("srlJuice", pipeline.getDashboardCampaign());
+    pipelines.put("srlScanners", pipeline.getDashboardCampaign());
+    pipelines.put("srlUnpacker", pipeline.getDashboardCampaign());
+    pipelines.put("variant_hash_signatures", pipeline.getDashboardCampaign());
+    pipelines.put("webRequestHandler", pipeline.getDashboardCampaign());
+
+    Iterator<Entry<String, String>> iter = pipelines.entrySet().iterator();
+    while(iter.hasNext()) {
+      Entry<String, String> entry = iter.next();
+      if(entry.getValue() == null){
+        iter.remove();
+      }
+    }
+
+    return pipelines;
   }
 }

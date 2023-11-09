@@ -49,6 +49,7 @@ import com.unknowncyber.magic.model.TagResponse;
 import com.unknowncyber.magic.model.TagCreatedResponse;
 
 import unknowncyberplugin.models.responsedata.FileModel;
+import unknowncyberplugin.models.responsedata.FileStatusModel;
 import unknowncyberplugin.models.responsedata.ImageBase;
 import unknowncyberplugin.models.responsedata.MatchModel;
 import unknowncyberplugin.models.responsedata.NoteModel;
@@ -462,6 +463,31 @@ public class Api {
 		} catch (Exception e) {
 			Msg.error("Unknown Cyber API", e);
 			return false;
+		}
+	}
+
+	/**
+	 * Gets a file object information.
+	 * - Takes a hash string to query the API with.
+	 * Returns file status.
+	 */
+	public static FileStatusModel getFile(String hash) {
+		String readMask = "status,pipeline";
+		String expandMask = "";
+		String dynamicMask = "";
+		try {
+			EnvelopedFile200 response = filesApi.getFile(hash, "json", false, false, "", true, false,
+					readMask, expandMask, dynamicMask);
+	
+			FilePipeline pipeStatus = response.getResource().getPipeline();
+
+			Map<String, String> pipelineStatus = parsePipelines(pipeStatus);
+
+			return new FileStatusModel(response.getResource().getStatus(), pipelineStatus);
+
+		} catch (Exception e) {
+			Msg.error("Unknown Cyber API", e);
+			return null;
 		}
 	}
 
