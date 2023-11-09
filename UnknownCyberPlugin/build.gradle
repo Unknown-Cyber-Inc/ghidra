@@ -57,7 +57,7 @@ repositories {
 sourceSets {
   main {
     java {
-      srcDirs 'src/main/java', 'lib/unknowncyber'
+      srcDirs 'src'
     }
   }
 }
