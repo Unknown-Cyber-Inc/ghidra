@@ -7,13 +7,17 @@ public class ProcedureModel {
     private String baseAdjustedStartEA;
     private String procedureName;
     private String binaryId;
+    private int tags;
+    private int notes;
 
-    public ProcedureModel(int count, String status, String startEA, String procedureName, String binaryId){
+    public ProcedureModel(String startEA, String procedureName, int count, String status, int notes, int tags, String binaryId){
         this.count = count;
         this.status = status;
         this.startEA = startEA;
         this.procedureName = procedureName;
         this.binaryId = binaryId;
+        this.tags = tags;
+        this.notes = notes;
     }
 
     public String getCount(){
@@ -43,6 +47,14 @@ public class ProcedureModel {
 
     public String getBinaryId(){
         return binaryId;
+    }
+
+    public String getNotes(){
+        return String.valueOf(notes);
+    }
+
+    public String getTags(){
+        return String.valueOf(tags);
     }
 
     @Override
