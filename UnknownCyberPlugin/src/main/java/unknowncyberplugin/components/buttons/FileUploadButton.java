@@ -32,9 +32,16 @@ public class FileUploadButton extends BaseButton {
 					);
 				}
 			} else if (uploadType.equals("Disassembly")) {
-				// TODO: swap these out for final release
-				//Api.submitDisassembly();
-				if (Api.getFileMatches("b87a947f3e85701fcdadd733e9b055a65a3b1308")) {
+				// TODO: remove this for final release
+				/*
+				Api.getFileMatches("b87a947f3e85701fcdadd733e9b055a65a3b1308");
+				int dummy = 5;
+				if (dummy == 5) {
+					return;
+				}
+				//*/
+
+				if (Api.submitDisassembly()) {
 					References.getFileProvider().announce(
 						"Upload Successful",
 						"Disassembled file was successfully uploaded.",
