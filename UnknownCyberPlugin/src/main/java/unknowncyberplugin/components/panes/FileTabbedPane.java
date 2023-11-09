@@ -32,8 +32,9 @@ public class FileTabbedPane extends JTabbedPane {
             shownList = getActiveTabComponent().getList();
             DefaultListModel<Object> listModel = (DefaultListModel<Object>)shownList.getModel();
             listModel.clear();
-
-            fetchAndPopulateList();
+            if (listModel != null){
+                fetchAndPopulateList();
+            }
         });
     }
 
