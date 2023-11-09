@@ -53,10 +53,6 @@ import unknowncyberplugin.models.responsedata.ProcedureModel;
 import unknowncyberplugin.models.responsedata.SimilarProcedureModel;
 import unknowncyberplugin.models.responsedata.TagModel;
 
-// Can't double import things of the same name
-// import unknowncyberplugin.models.responsedata.Note;
-// import unknowncyberplugin.models.responsedata.Procedure;
-
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -104,8 +100,8 @@ public class Api {
 	 * Returns a boolean true/false to indicate success/failure.
    */
   public static boolean submitFile() {
-		FileModel myFile = new FileModel(fileProvider.getProgram().getExecutablePath());
-		List<FileModel> files = Arrays.asList(myFile);
+		File myFile = new File(fileProvider.getProgram().getExecutablePath());
+		List<File> files = Arrays.asList(myFile);
 		try {
 			EnvelopedFileUploadResponseList200 response = fileProvider.getFilesApi().uploadFile(files, "", Arrays.asList(), Arrays.asList(), "json", false, false, "", true, false, false, false, false, false, false, false);
 			return true;
@@ -456,20 +452,20 @@ public class Api {
    *  - Takes a hash string to query the API with.
 	 * Returns an array of Unknown Cyber Plugin Procedure objects.
    */
-  public static unknowncyberplugin.models.responsedata.ProcedureModel[] getFileGenomics(String hash) {
+  public static ProcedureModel[] getFileGenomics(String hash) {
     try {
       String readMask = "binary_id,occurrence_count,procedure_name,start_ea,status";
       String orderBy = "start_ea";
       Integer pageCount = 1;
       Integer pageSize = 25;
       EnvelopedFileGenomicsResponse200 response = fileProvider.getFilesApi().listFileGenomics(hash, "json", false, false, "", true, false, pageCount, pageSize, 0, readMask, orderBy, false);
-			List<unknowncyberplugin.models.responsedata.ProcedureModel> procList = new ArrayList<unknowncyberplugin.models.responsedata.ProcedureModel>();
+			List<ProcedureModel> procList = new ArrayList<ProcedureModel>();
 			
 			for (ExtendedProcedureResponse proc : response.getResource().getProcedures()) {
-				procList.add(new unknowncyberplugin.models.responsedata.ProcedureModel(proc.getOccurrenceCount(), proc.getStatus(), proc.getStartEA(), proc.getProcedureName(), proc.getBinaryId()));
+				procList.add(new ProcedureModel(proc.getOccurrenceCount(), proc.getStatus(), proc.getStartEA(), proc.getProcedureName(), proc.getBinaryId()));
 			}
 
-			return procList.toArray(new unknowncyberplugin.models.responsedata.ProcedureModel[procList.size()]);
+			return procList.toArray(new ProcedureModel[procList.size()]);
 		} catch (Exception e) {
       Msg.error(fileProvider, e);
 			return null;
@@ -481,16 +477,16 @@ public class Api {
    *  - Takes a hash string to query the API with.
 	 * Returns an array of Unknown Cyber Plugin Note objects.
    */
-  public static unknowncyberplugin.models.responsedata.NoteModel[] listFileNotes(String hash) {
+  public static NoteModel[] listFileNotes(String hash) {
     try {
       EnvelopedNoteList200 response = fileProvider.getFilesApi().listFileNotes(hash, "json", false, false, "", true, false);
-			List<unknowncyberplugin.models.responsedata.NoteModel> noteList = new ArrayList<unknowncyberplugin.models.responsedata.NoteModel>();
+			List<NoteModel> noteList = new ArrayList<NoteModel>();
 
-			for (NoteModel note : response.getResources()) {
-				noteList.add(new unknowncyberplugin.models.responsedata.NoteModel(note.getNote(), note.getId(), note.getUsername(), note.getCreateTime()));
+			for (Note note : response.getResources()) {
+				noteList.add(new NoteModel(note.getNote(), note.getId(), note.getUsername(), note.getCreateTime()));
 			}
 
-			return noteList.toArray(new unknowncyberplugin.models.responsedata.NoteModel[noteList.size()]);
+			return noteList.toArray(new NoteModel[noteList.size()]);
     } catch (Exception e) {
       Msg.error(fileProvider, e);
 			return null;
@@ -503,12 +499,12 @@ public class Api {
    *  - Takes a note string that contains the text of the note.
 	 * Returns an Unknown Cyber Plugin Note object.
    */
-  public static unknowncyberplugin.models.responsedata.NoteModel createFileNote(String hash, String note) {
+  public static NoteModel createFileNote(String hash, String note) {
     try {
       EnvelopedNote201 response = fileProvider.getFilesApi().createFileNote(note, false, hash, "json", false, false, "", true, false, false);
-			NoteModel newNote = response.getResource();
+			Note newNote = response.getResource();
 
-			return new unknowncyberplugin.models.responsedata.NoteModel(newNote.getNote(), newNote.getId(), newNote.getUsername(), newNote.getCreateTime());
+			return new NoteModel(newNote.getNote(), newNote.getId(), newNote.getUsername(), newNote.getCreateTime());
     } catch (Exception e) {
       Msg.error(fileProvider, e);
 			return null;
@@ -578,17 +574,17 @@ public class Api {
    *  - Takes a hash string to query the API with.
 	 * Returns an array of Unknown Cyber Plugin Tag objects.
    */
-  public static unknowncyberplugin.models.responsedata.TagModel[] listFileTags(String hash) {
+  public static TagModel[] listFileTags(String hash) {
     try {
       String expandMask = "tags";
       EnvelopedTagResponseList200 response = fileProvider.getFilesApi().listFileTags(hash, "json", false, false, "", true, false, expandMask);
-			List<unknowncyberplugin.models.responsedata.TagModel> tagList = new ArrayList<unknowncyberplugin.models.responsedata.TagModel>();
+			List<TagModel> tagList = new ArrayList<TagModel>();
 
 			for (TagResponse tag : response.getResources()) {
-				tagList.add(new unknowncyberplugin.models.responsedata.TagModel(tag.getName(), tag.getUsername(), tag.getCreateTime(), tag.getId()));
+				tagList.add(new TagModel(tag.getName(), tag.getUsername(), tag.getCreateTime(), tag.getId()));
 			}
 
-			return tagList.toArray(new unknowncyberplugin.models.responsedata.TagModel[tagList.size()]);
+			return tagList.toArray(new TagModel[tagList.size()]);
     } catch (Exception e) {
       Msg.error(fileProvider, e);
 			return null;
@@ -601,13 +597,13 @@ public class Api {
    *  - Takes a name string to label the tag with.
 	 * Returns an Unknown Cyber Plugin Tag object.
    */
-  public static unknowncyberplugin.models.responsedata.TagModel createFileTag(String hash, String name) {
+  public static TagModel createFileTag(String hash, String name) {
     try {
       // Color is set to null to use default color
       EnvelopedTagCreatedResponse200 response = fileProvider.getFilesApi().createFileTag(hash, name, null, "json", false, false, "", true, false, false);
 			TagCreatedResponse newTag = response.getResource();
 
-			return new unknowncyberplugin.models.responsedata.TagModel(newTag.getName(), newTag.getUsername(), newTag.getCreateTime().toString(), newTag.getId());
+			return new TagModel(newTag.getName(), newTag.getUsername(), newTag.getCreateTime().toString(), newTag.getId());
     } catch (Exception e) {
       Msg.error(fileProvider, e);
 			return null;
@@ -637,7 +633,7 @@ public class Api {
 	 *  - Takes an address string to reference the procedure.
 	 * Returns an array of Unknown Cyber Procedure Plugin objects.
 	 */
-	public static unknowncyberplugin.models.responsedata.ProcedureModel[] listProcedureSimilarities(String hash, String address) {
+	public static ProcedureModel[] listProcedureSimilarities(String hash, String address) {
 		try {
 			String method = "semantic_similarity";
 			Integer pageCount = 1;
@@ -646,14 +642,14 @@ public class Api {
 			Float maxThreshold = 1.0f;
 			EnvelopedProcedureList200 response = fileProvider.getFilesApi().listProcedureSimilarities(hash, address, "json", false, false, "", true, false, pageCount, pageSize, 0, maxThreshold, method, minThreshold);
 			
-			List<unknowncyberplugin.models.responsedata.ProcedureModel> procList = new ArrayList<unknowncyberplugin.models.responsedata.ProcedureModel>();
+			List<ProcedureModel> procList = new ArrayList<ProcedureModel>();
 			
-			for (ProcedureModel proc : response.getResources()) {
+			for (Procedure proc : response.getResources()) {
 				// The client code Procedure object doesn't have occurrenceCount or status
-				procList.add(new unknowncyberplugin.models.responsedata.ProcedureModel(-1, null, proc.getStartEa(), proc.getProcedureName(), proc.getBinaryId()));
+				procList.add(new ProcedureModel(-1, null, proc.getStartEa(), proc.getProcedureName(), proc.getBinaryId()));
 			}
 
-			return procList.toArray(new unknowncyberplugin.models.responsedata.ProcedureModel[procList.size()]);
+			return procList.toArray(new ProcedureModel[procList.size()]);
 		} catch (Exception e) {
 			Msg.error(fileProvider, e);
 			return null;
@@ -666,17 +662,17 @@ public class Api {
 	 *  - Takes an address string to reference the procedure.
 	 * Returns an array of Unknown Cyber Plugin Note objects.
 	 */
-	public static unknowncyberplugin.models.responsedata.NoteModel[] listProcedureGenomicsNotes(String hash, String address) {
+	public static NoteModel[] listProcedureGenomicsNotes(String hash, String address) {
 		try {
 			EnvelopedNoteList200 response = fileProvider.getFilesApi().listProcedureGenomicsNotes(hash, address, "json", false, false, "", true, false);
 			
-			List<unknowncyberplugin.models.responsedata.NoteModel> noteList = new ArrayList<unknowncyberplugin.models.responsedata.NoteModel>();
+			List<NoteModel> noteList = new ArrayList<NoteModel>();
 
-			for (NoteModel note : response.getResources()) {
-				noteList.add(new unknowncyberplugin.models.responsedata.NoteModel(note.getNote(), note.getId(), note.getUsername(), note.getCreateTime()));
+			for (Note note : response.getResources()) {
+				noteList.add(new NoteModel(note.getNote(), note.getId(), note.getUsername(), note.getCreateTime()));
 			}
 
-			return noteList.toArray(new unknowncyberplugin.models.responsedata.NoteModel[noteList.size()]);
+			return noteList.toArray(new NoteModel[noteList.size()]);
 		} catch (Exception e) {
 			Msg.error(fileProvider, e);
 			return null;
@@ -690,13 +686,13 @@ public class Api {
 	 *  - Takes a note string that contains the text of the note.
 	 * Returns an Unknown Cyber Plugin Note object.
 	 */
-	public static unknowncyberplugin.models.responsedata.NoteModel createProcedureGenomicsNote(String hash, String address, String note) {
+	public static NoteModel createProcedureGenomicsNote(String hash, String address, String note) {
 		try {
 			EnvelopedNote200 response = fileProvider.getFilesApi().createProcedureGenomicsNote(note, false, hash, address, "json", false, false, "", true, false);
 			
-			NoteModel newNote = response.getResource();
+			Note newNote = response.getResource();
 
-			return new unknowncyberplugin.models.responsedata.NoteModel(newNote.getNote(), newNote.getId(), newNote.getUsername(), newNote.getCreateTime());
+			return new NoteModel(newNote.getNote(), newNote.getId(), newNote.getUsername(), newNote.getCreateTime());
 		} catch (Exception e) {
 			Msg.error(fileProvider, e);
 			return null;
@@ -769,16 +765,16 @@ public class Api {
 	 *  - Takes an address string to reference the procedure.
 	 * Returns an array of Unknown Cyber Plugin Tag objects.
 	 */
-	public static unknowncyberplugin.models.responsedata.TagModel[] listProcedureGenomicsTags(String hash, String address) {
+	public static TagModel[] listProcedureGenomicsTags(String hash, String address) {
 		try {
 			EnvelopedTagResponseList200 response = fileProvider.getFilesApi().listProcedureGenomicsTags(hash, address, "json", false, false, "", true, false);
-			List<unknowncyberplugin.models.responsedata.TagModel> tagList = new ArrayList<unknowncyberplugin.models.responsedata.TagModel>();
+			List<TagModel> tagList = new ArrayList<TagModel>();
 
 			for (TagResponse tag : response.getResources()) {
-				tagList.add(new unknowncyberplugin.models.responsedata.TagModel(tag.getName(), tag.getUsername(), tag.getCreateTime(), tag.getId()));
+				tagList.add(new TagModel(tag.getName(), tag.getUsername(), tag.getCreateTime(), tag.getId()));
 			}
 
-			return tagList.toArray(new unknowncyberplugin.models.responsedata.TagModel[tagList.size()]);
+			return tagList.toArray(new TagModel[tagList.size()]);
 		} catch (Exception e) {
 			Msg.error(fileProvider, e);
 			return null;
@@ -792,13 +788,13 @@ public class Api {
 	 *  - Takes a name string to label the tag with.
 	 * Returns an Unknown Cyber Plugin Tag object.
 	 */
-	public static unknowncyberplugin.models.responsedata.TagModel createProcedureGenomicsTag(String hash, String address, String name) {
+	public static TagModel createProcedureGenomicsTag(String hash, String address, String name) {
 		try {
 			EnvelopedTagCreatedResponse200 response = fileProvider.getFilesApi().createProcedureGenomicsTag(name, hash, address, "json", false, false, "", true, false, false);
 			
 			TagCreatedResponse tag = response.getResource();
 
-			return new unknowncyberplugin.models.responsedata.TagModel(tag.getName(), tag.getUsername(), tag.getCreateTime(), tag.getId());
+			return new TagModel(tag.getName(), tag.getUsername(), tag.getCreateTime(), tag.getId());
 		} catch (Exception e) {
 			Msg.error(fileProvider, e);
 			return null;

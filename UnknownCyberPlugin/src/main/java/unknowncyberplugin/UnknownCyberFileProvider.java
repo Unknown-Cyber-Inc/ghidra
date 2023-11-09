@@ -42,7 +42,7 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 	private FunctionIterator fIterator;
 
 	// Declare file-dependent variables in advance
-	FileModel originalFile;
+	File originalFile;
 	String originalSha1;
 	String originalSha512;
 	public void setProgram(Program programIn) {
@@ -53,7 +53,7 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 
 			// Attempt to hash file locally, alert user on failure
 			try {
-				originalFile = new FileModel(program.getExecutablePath());
+				originalFile = new File(program.getExecutablePath());
 				originalSha1 = Helpers.hashFile(originalFile, "SHA-1");
 				originalSha512 = Helpers.hashFile(originalFile, "SHA-512");
 				// TODO: enable upload buttons if previously disabled
