@@ -7,6 +7,7 @@ import unknowncyberplugin.Api;
 import unknowncyberplugin.References;
 import unknowncyberplugin.components.collections.FileList;
 import unknowncyberplugin.components.panels.FileCRUDPanel;
+import unknowncyberplugin.components.panels.FileMatchesPaginationControls;
 
 public class FileTabbedPane extends JTabbedPane {
     private FileList shownList;
@@ -50,7 +51,10 @@ public class FileTabbedPane extends JTabbedPane {
             items = Api.listFileTags(hash);
         } else if (tabComponent instanceof FileMatchesPane){
             fcp.disableButtons();
-            items = Api.listFileMatches(hash);
+            References.getFilePanel().getPageControls().setVisible(true);
+            FileMatchesPaginationControls pc = References.getFileMatchesPaginationControls();
+            items = Api.listFileMatches(hash, pc.getCurrentPage());
+            pc.setCurrentPageSize(items.length);
         }
 
         if (items != null){

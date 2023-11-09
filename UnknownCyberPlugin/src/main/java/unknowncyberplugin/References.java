@@ -4,6 +4,7 @@ import unknowncyberplugin.components.panels.CenterCRUDPanel;
 import unknowncyberplugin.components.panels.CenterPanel;
 import unknowncyberplugin.components.panels.FileButtonsPanel;
 import unknowncyberplugin.components.panels.FileCRUDPanel;
+import unknowncyberplugin.components.panels.FileMatchesPaginationControls;
 import unknowncyberplugin.components.panels.FilePanel;
 import unknowncyberplugin.components.panels.ProcButtonsPanel;
 import unknowncyberplugin.components.panels.ProcTablePanel;
@@ -25,9 +26,10 @@ public class References {
     private static CenterCRUDPanel centerCRUDPanel;
     private static ProcButtonsPanel procButtonsPanel;
     private static ProcTablePanel procTablePanel;
-    private static ProcTablePane procTablePane;
+    private static FileMatchesPaginationControls paginationControls;
 
     // Pane references
+    private static ProcTablePane procTablePane;
     private static FileNotesPane fileNotesPane;
     private static FileTagsPane fileTagsPane;
     private static FileMatchesPane fileMatchesPane;
@@ -115,6 +117,14 @@ public class References {
 
     public static void setProcTablePanel(ProcTablePanel ptp){
         procTablePanel = ptp; 
+    }
+
+    public static FileMatchesPaginationControls getFileMatchesPaginationControls(){
+        return paginationControls;
+    }
+
+    public static void setFileMatchesPaginationControls(FileMatchesPaginationControls pc){
+        paginationControls = pc;
     }
 
     // Pane getters/setters
