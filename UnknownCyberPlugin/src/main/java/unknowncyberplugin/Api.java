@@ -471,7 +471,7 @@ public class Api {
 	 * - Takes a hash string to query the API with.
 	 * Returns file status.
 	 */
-	public static FileStatusModel getFile(String hash) {
+	public static FileStatusModel getFileStatus(String hash) {
 		String readMask = "status,pipeline";
 		String expandMask = "";
 		String dynamicMask = "";
