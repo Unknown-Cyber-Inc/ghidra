@@ -45,6 +45,14 @@ import com.unknowncyber.magic.model.Tag;
 import com.unknowncyber.magic.model.TagResponse;
 import com.unknowncyber.magic.model.TagCreatedResponse;
 
+import unknowncyberplugin.models.responsedata.FileModel;
+import unknowncyberplugin.models.responsedata.ImageBase;
+import unknowncyberplugin.models.responsedata.MatchModel;
+import unknowncyberplugin.models.responsedata.NoteModel;
+import unknowncyberplugin.models.responsedata.ProcedureModel;
+import unknowncyberplugin.models.responsedata.SimilarProcedureModel;
+import unknowncyberplugin.models.responsedata.TagModel;
+
 // Can't double import things of the same name
 // import unknowncyberplugin.models.responsedata.Note;
 // import unknowncyberplugin.models.responsedata.Procedure;
