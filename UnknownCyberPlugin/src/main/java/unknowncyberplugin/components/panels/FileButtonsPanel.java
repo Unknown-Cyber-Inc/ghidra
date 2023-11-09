@@ -17,6 +17,7 @@ public class FileButtonsPanel extends JPanel {
         toggleButton = new FileToggleButton();
         uploadButton = new FileUploadButton();
         statusButton = new StatusButton();
+        statusButton.setEnabled(false);
 
         setLayout(new FlowLayout());
         add(statusButton);
@@ -26,6 +27,10 @@ public class FileButtonsPanel extends JPanel {
 
     public FileToggleButton getToggleButton(){
         return toggleButton;
+    }
+
+    public StatusButton getStatusButton(){
+        return statusButton;
     }
     
 }

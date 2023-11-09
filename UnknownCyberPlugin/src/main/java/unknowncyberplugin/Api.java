@@ -124,6 +124,7 @@ public class Api {
 					false, false);
 			String uploadHash = response.getResources().get(0).getSha1();
 			References.setUploadHash(uploadHash);
+			References.getFileButtonsPanel().getStatusButton().setEnabled(true);
 			return true;
 		} catch (Exception e) {
 			Msg.error("API Wrappers", e);
