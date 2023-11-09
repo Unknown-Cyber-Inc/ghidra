@@ -24,7 +24,7 @@ public class ProcedureRootNode extends BaseRootNode<Object>{
         similaritiesRoot = new SimilaritiesRootNode();
         FilesRootNode procHoldingFileRoot = new FilesRootNode(new FileModel(binaryId, binaryId, binaryId), binaryId);
         similaritiesRoot.add(procHoldingFileRoot);
-        SimilarProcedureNode similarProcNode = new SimilarProcedureNode(new ProcedureModel(1, "badMal", "0xTEST", "TEST PROC", binaryId));
+        SimilarProcedureNode similarProcNode = new SimilarProcedureNode(new ProcedureModel("0x1000", "badMal", 10, "TEST PROC", 0, 0, binaryId));
         procHoldingFileRoot.add(similarProcNode);
 
         add(notesRoot);

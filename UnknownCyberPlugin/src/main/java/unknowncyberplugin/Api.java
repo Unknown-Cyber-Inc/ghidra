@@ -491,19 +491,23 @@ public class Api {
 	 */
 	public static ProcedureModel[] getFileGenomics(String hash) {
 		try {
-			String readMask = "binary_id,occurrence_count,procedure_name,start_ea,status";
+			String readMask = "binary_id,occurrence_count,procedure_name,start_ea,status,notes,tags";
 			String orderBy = "start_ea";
 			Integer pageCount = 1;
 			Integer pageSize = 0;
 			EnvelopedFileGenomicsResponse200 response = fileProvider.getFilesApi().listFileGenomics(hash, "json", false,
 					false, "", true, false, pageCount, pageSize, 0, readMask, orderBy, false);
-			List<ProcedureModel> procList = new ArrayList<ProcedureModel>();
-			for (ExtendedProcedureResponse proc : response.getResource().getProcedures()) {
-				procList.add(new ProcedureModel(proc.getOccurrenceCount(), proc.getStatus(), proc.getStartEA(),
-						proc.getProcedureName(), proc.getBinaryId()));
+
+			List<ExtendedProcedureResponse> responseProcs = response.getResource().getProcedures();
+			ProcedureModel[] procList = new ProcedureModel[responseProcs.size()];
+
+			for (int i=0; i < responseProcs.size(); i++){
+				ExtendedProcedureResponse proc = responseProcs.get(i);
+				procList[i] = new ProcedureModel(proc.getStartEA(), proc.getProcedureName(), proc.getOccurrenceCount(),
+						proc.getStatus(), proc.getNotes().size(), proc.getTags().size(), proc.getBinaryId());
 			}
 
-			return procList.toArray(new ProcedureModel[procList.size()]);
+			return procList;
 		} catch (Exception e) {
 			Msg.error(fileProvider, e);
 			return null;
@@ -695,7 +699,7 @@ public class Api {
 			for (Procedure proc : response.getResources()) {
 				// The client code Procedure object doesn't have occurrenceCount or status
 				procList.add(
-						new ProcedureModel(-1, null, proc.getStartEa(), proc.getProcedureName(), proc.getBinaryId()));
+						new ProcedureModel(proc.getStartEa(), proc.getProcedureName(), -1, null, 0, 0, proc.getBinaryId()));
 			}
 
 			return procList.toArray(new ProcedureModel[procList.size()]);
