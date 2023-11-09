@@ -26,9 +26,9 @@ public class FileTabbedPane extends JTabbedPane {
         addTab("Tags", tagsPane);
         addTab("Matches", matchesPane);
 
-        References.setFileNotesPane(notesPane);
-        References.setFileTagsPane(tagsPane);
-        References.setFileMatchesPane(matchesPane);
+        References.setFileNotesPane((FileNotesPane)notesPane);
+        References.setFileTagsPane((FileTagsPane)tagsPane);
+        References.setFileMatchesPane((FileMatchesPane)matchesPane);
 
         this.addChangeListener(ev -> {
             if (shownList != null){
