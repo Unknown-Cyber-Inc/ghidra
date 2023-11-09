@@ -500,11 +500,11 @@ public class Api {
 	 * Wraps the listFileMatches endpoint.
 	 * - Takes a hash string to query the API with.
 	 */
-	public static MatchModel[] listFileMatches(String hash) {
+	public static MatchModel[] listFileMatches(String hash, int pageCnt) {
 		try {
 			String readMask = "";
 			String expandMask = "matches";
-			Integer pageCount = 1;
+			Integer pageCount = pageCnt;
 			Integer pageSize = 25;
 			Float maxThreshold = 1.0f;
 			Float minThreshold = 0.7f;
