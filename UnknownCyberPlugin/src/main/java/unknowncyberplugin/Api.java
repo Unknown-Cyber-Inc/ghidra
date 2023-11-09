@@ -20,6 +20,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -41,6 +42,7 @@ import com.unknowncyber.magic.model.EnvelopedProcedureList200;
 import com.unknowncyber.magic.model.EnvelopedTagCreatedResponse200;
 import com.unknowncyber.magic.model.EnvelopedTagResponseList200;
 import com.unknowncyber.magic.model.ExtendedProcedureResponse;
+import com.unknowncyber.magic.model.FilePipeline;
 import com.unknowncyber.magic.model.Match;
 import com.unknowncyber.magic.model.Note;
 import com.unknowncyber.magic.model.Procedure;
@@ -49,12 +51,15 @@ import com.unknowncyber.magic.model.TagResponse;
 import com.unknowncyber.magic.model.TagCreatedResponse;
 
 import unknowncyberplugin.models.responsedata.FileModel;
+import unknowncyberplugin.models.responsedata.FileStatusModel;
 import unknowncyberplugin.models.responsedata.ImageBase;
 import unknowncyberplugin.models.responsedata.MatchModel;
 import unknowncyberplugin.models.responsedata.NoteModel;
 import unknowncyberplugin.models.responsedata.ProcedureModel;
 import unknowncyberplugin.models.responsedata.SimilarProcedureModel;
 import unknowncyberplugin.models.responsedata.TagModel;
+
+import unknowncyberplugin.Helpers;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -117,6 +122,9 @@ public class Api {
 			EnvelopedFileUploadResponseList200 response = filesApi.uploadFile(files, "",
 					Arrays.asList(), Arrays.asList(), "json", false, false, "", true, false, false, false, false, false,
 					false, false);
+			String uploadHash = response.getResources().get(0).getSha1();
+			References.setUploadHash(uploadHash);
+			References.getFileButtonsPanel().getStatusButton().setEnabled(true);
 			return true;
 		} catch (Exception e) {
 			Msg.error("API Wrappers", e);
@@ -460,6 +468,31 @@ public class Api {
 		} catch (Exception e) {
 			Msg.error("Unknown Cyber API", e);
 			return false;
+		}
+	}
+
+	/**
+	 * Gets a file object information.
+	 * - Takes a hash string to query the API with.
+	 * Returns file status.
+	 */
+	public static FileStatusModel getFileStatus(String hash) {
+		String readMask = "status,pipeline";
+		String expandMask = "";
+		String dynamicMask = "";
+		try {
+			EnvelopedFile200 response = filesApi.getFile(hash, "json", false, false, "", true, false,
+					readMask, expandMask, dynamicMask);
+	
+			FilePipeline pipeStatus = response.getResource().getPipeline();
+
+			Map<String, String> pipelineStatus = Helpers.parsePipelines(pipeStatus);
+
+			return new FileStatusModel(response.getResource().getStatus(), pipelineStatus);
+
+		} catch (Exception e) {
+			Msg.error("Unknown Cyber API", e);
+			return null;
 		}
 	}
 

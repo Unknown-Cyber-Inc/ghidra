@@ -33,6 +33,9 @@ public class References {
     private static FileMatchesPane fileMatchesPane;
     private static CenterTabbedPane centerTabbedPane;
 
+    // Upload hash reference
+    private static String uploadHash;
+
     private References(){
         throw new UnsupportedOperationException(
             "This is a utility class and cannot be instantiated"
@@ -154,5 +157,15 @@ public class References {
 
     public static void setCenterTabbedPane(CenterTabbedPane ctp){
         centerTabbedPane = ctp;
+    }
+
+    // Upload hash getters/setters
+
+    public static String getUploadHash(){
+        return uploadHash;
+    }
+
+    public static void setUploadHash(String uHash){
+        uploadHash = uHash.toLowerCase();
     }
 }
