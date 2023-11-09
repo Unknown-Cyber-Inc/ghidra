@@ -14,29 +14,6 @@ public class ProcTablePane extends JScrollPane{
         super();
         table = new ProcTable(null);
 
-        // TODO: PHONY DATA -- REMOVE ONCE API CALLS IN PLACE
-        Object[][] data = {
-            {"ox1", "testProc", "5", "someMalware", "2", "1"},
-            {"ox2", "otherName", "2", "otherMalware", "1", "0"},
-            {"ox3", "someName", "1", "badMalware", "3", "2"},
-            {"ox4", "", "4", "someMalware", "5", "3"},
-            {"ox5", "testProc", "2", "BADMalware", "0", "1"},
-            {"ox6", "", "3", "sosoMalware", "2", "1"},
-            {"ox1", "otherName", "5", "someMalware", "2", "1"},
-            {"ox2", "", "2", "otherMalware", "1", "0"},
-            {"ox3", "", "1", "badMalware", "3", "2"},
-            {"ox4", "testProc", "4", "someMalware", "5", "3"},
-            {"ox5", "", "2", "BADMalware", "0", "1"},
-            {"ox6", "otherName", "3", "sosoMalware", "2", "1"},
-            {"ox1", "", "5", "someMalware", "2", "1"},
-            {"ox2", "testProc", "2", "otherMalware", "1", "0"},
-            {"ox3", "otherName", "1", "badMalware", "3", "2"},
-            {"ox4", "someName", "4", "someMalware", "5", "3"},
-            {"ox5", "", "2", "BADMalware", "0", "1"},
-            {"ox6", "testProc", "3", "sosoMalware", "2", "1"},
-        };
-
-        populate(data);
         setOpaque(true);
         setBackground(Color.WHITE);
         setViewportView(table);

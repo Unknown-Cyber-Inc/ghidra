@@ -1,27 +1,24 @@
 package unknowncyberplugin.components.panes;
 
 import javax.swing.JTabbedPane;
+import javax.swing.DefaultListModel;
 
 import unknowncyberplugin.Api;
 import unknowncyberplugin.References;
 import unknowncyberplugin.components.collections.FileList;
 import unknowncyberplugin.components.panels.FileCRUDPanel;
-import unknowncyberplugin.models.responsedata.FileModel;
-import unknowncyberplugin.models.responsedata.NoteModel;
-import unknowncyberplugin.models.responsedata.TagModel;
 
 public class FileTabbedPane extends JTabbedPane {
     private FileList shownList;
+    private BaseFileListPane mPane;
     
     public FileTabbedPane() {
         super();
 
         BaseFileListPane notesPane = new FileNotesPane();
-        notesPane.addItem(new NoteModel("TEST NOTE ITEM", null, null, null));
 		BaseFileListPane tagsPane = new FileTagsPane();
-        tagsPane.addItem(new TagModel("TEST TAG ITEM", null, null, null));
 		BaseFileListPane matchesPane = new FileMatchesPane();
-        matchesPane.addItem(new FileModel("TEST MATCH ITEM", null, null));
+        mPane = matchesPane;
         addTab("Notes", notesPane);
         addTab("Tags", tagsPane);
         addTab("Matches", matchesPane);
@@ -31,13 +28,11 @@ public class FileTabbedPane extends JTabbedPane {
         References.setFileMatchesPane((FileMatchesPane)matchesPane);
 
         this.addChangeListener(ev -> {
-            if (shownList != null){
-                shownList.clearSelection();
-            }
+            shownList = getActiveTabComponent().getList();
+            DefaultListModel<Object> listModel = (DefaultListModel<Object>)shownList.getModel();
+            listModel.clear();
 
             fetchAndPopulateList();
-
-            shownList = getActiveTabComponent().getList();
         });
     }
 
@@ -55,8 +50,7 @@ public class FileTabbedPane extends JTabbedPane {
             items = Api.listFileTags(hash);
         } else if (tabComponent instanceof FileMatchesPane){
             fcp.disableButtons();
-            // TODO: fix this
-            // items = Api.listFileMatches(hash);
+            items = Api.listFileMatches(hash);
         }
 
         if (items != null){
@@ -69,6 +63,10 @@ public class FileTabbedPane extends JTabbedPane {
             return null;
         }
         return (BaseFileListPane) getComponentAt(getSelectedIndex());
+    }
+
+    public BaseFileListPane getMatchesPane(){
+        return mPane;
     }
 
 }

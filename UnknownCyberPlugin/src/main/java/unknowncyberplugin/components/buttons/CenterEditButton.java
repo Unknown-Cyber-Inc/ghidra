@@ -63,7 +63,7 @@ public class CenterEditButton extends BaseButton {
             }
         } else if (node instanceof ProcedureRootNode){
             // TODO: waiting on creation at API side
-            // Procedure updatedProcedure = Api.updateProcedureName(binaryId, startEA, popupReturnedText);
+            // ProcedureModel updatedProcedure = Api.updateProcedureName(binaryId, startEA, popupReturnedText);
             // if (updatedProcedure != null) {
             //     ((ProcedureRootNode)node).setNodeData(updatedProcedure);
             // }

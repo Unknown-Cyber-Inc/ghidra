@@ -494,11 +494,10 @@ public class Api {
 			String readMask = "binary_id,occurrence_count,procedure_name,start_ea,status";
 			String orderBy = "start_ea";
 			Integer pageCount = 1;
-			Integer pageSize = 25;
+			Integer pageSize = 0;
 			EnvelopedFileGenomicsResponse200 response = fileProvider.getFilesApi().listFileGenomics(hash, "json", false,
 					false, "", true, false, pageCount, pageSize, 0, readMask, orderBy, false);
 			List<ProcedureModel> procList = new ArrayList<ProcedureModel>();
-
 			for (ExtendedProcedureResponse proc : response.getResource().getProcedures()) {
 				procList.add(new ProcedureModel(proc.getOccurrenceCount(), proc.getStatus(), proc.getStartEA(),
 						proc.getProcedureName(), proc.getBinaryId()));

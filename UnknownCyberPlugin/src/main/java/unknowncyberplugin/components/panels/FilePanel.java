@@ -31,6 +31,10 @@ public class FilePanel extends JPanel{
         return fileTabs.getActiveTabComponent();
     }
 
+    public void setMatchesTabToActive(){
+        fileTabs.setSelectedComponent(fileTabs.getMatchesPane());
+    }
+
     public Object getSelectedListItem(){
         BaseFileListPane tab = fileTabs.getActiveTabComponent();
         FileList list = tab.getList();

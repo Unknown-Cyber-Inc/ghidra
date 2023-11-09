@@ -16,4 +16,9 @@ public class MatchModel {
     public Double getMaxSimilarity(){
         return maxSimilarity;
     }
+
+    @Override
+    public String toString(){
+        return ("hash:" + sha1 + " - sim:" + maxSimilarity);
+    }
 }

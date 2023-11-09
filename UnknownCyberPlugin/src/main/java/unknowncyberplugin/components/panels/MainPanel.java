@@ -25,7 +25,7 @@ public class MainPanel extends JPanel{
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // order of added panels below dictates GUI layout
+        // Order of added panels below dictates GUI layout
         add(fileButtonsPanel);
         add(filePanel);
         add(centerPanel);
