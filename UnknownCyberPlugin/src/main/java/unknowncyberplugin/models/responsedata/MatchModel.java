@@ -4,7 +4,7 @@ public class MatchModel {
     private String sha1;
     private float maxSimilarity;
 
-    public MatchModel(String sha1, float maxSimilarity){
+    public MatchModel(String sha1, Double maxSimilarity){
         this.sha1 = sha1;
         this.maxSimilarity = maxSimilarity;
     }
@@ -13,7 +13,7 @@ public class MatchModel {
         return sha1;
     }
 
-    public float getMaxSimilarity(){
+    public Double getMaxSimilarity(){
         return maxSimilarity;
     }
 }

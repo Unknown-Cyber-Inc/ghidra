@@ -32,7 +32,7 @@ public class CenterDerivedFileTabPane extends BaseCenterTabPane{
             ((DerivedFileRootNode)getRootNode()).populateTags(tags);
         } else if (subRootNode instanceof MatchesRootNode){
             // TODO: fix this
-            // File[] matches = Api.getFileMatches(fileName);
+            // File[] matches = Api.listFileMatches(fileName);
             // ((DerivedFileRootNode)getRootNode()).populateMatches(matches);
         }
     }

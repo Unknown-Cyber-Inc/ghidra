@@ -39,6 +39,7 @@ import com.unknowncyber.magic.model.EnvelopedProcedureList200;
 import com.unknowncyber.magic.model.EnvelopedTagCreatedResponse200;
 import com.unknowncyber.magic.model.EnvelopedTagResponseList200;
 import com.unknowncyber.magic.model.ExtendedProcedureResponse;
+import com.unknowncyber.magic.model.Match;
 import com.unknowncyber.magic.model.Note;
 import com.unknowncyber.magic.model.Procedure;
 import com.unknowncyber.magic.model.Tag;
@@ -459,11 +460,10 @@ public class Api {
 	}
 
 	/**
-	 * Wraps the getFileMatches endpoint.
+	 * Wraps the listFileMatches endpoint.
 	 * - Takes a hash string to query the API with.
 	 */
-	public static EnvelopedMatchList200 getFileMatches(String hash) {
-		// busted, returns null
+	public static MatchModel[] listFileMatches(String hash) {
 		try {
 			String readMask = "";
 			String expandMask = "matches";
@@ -473,9 +473,11 @@ public class Api {
 			Float minThreshold = 0.7f;
 			EnvelopedMatchList200 response = fileProvider.getFilesApi().listFileMatches(hash, "json", false, false, "",
 					true, false, pageCount, pageSize, 0, readMask, expandMask, maxThreshold, minThreshold);
-			Msg.info("File matches", response);
-
-			return response;
+			List<MatchModel> matchList = new ArrayList<MatchModel>();
+			for (Match match : response.getResources()) {
+				matchList.add(new MatchModel(match.getSha1(), match.getMaxSimilarity()));
+			}
+			return matchList;
 		} catch (Exception e) {
 			Msg.error(fileProvider, e);
 			return null;
