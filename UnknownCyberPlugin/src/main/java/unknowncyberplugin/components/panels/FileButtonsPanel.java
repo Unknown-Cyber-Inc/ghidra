@@ -6,16 +6,20 @@ import javax.swing.JPanel;
 
 import unknowncyberplugin.components.buttons.FileToggleButton;
 import unknowncyberplugin.components.buttons.FileUploadButton;
+import unknowncyberplugin.components.buttons.StatusButton;
 
 public class FileButtonsPanel extends JPanel {
     private FileToggleButton toggleButton;
     private FileUploadButton uploadButton;
+    private StatusButton statusButton;
 
     public FileButtonsPanel(){
         toggleButton = new FileToggleButton();
         uploadButton = new FileUploadButton();
+        statusButton = new StatusButton();
 
         setLayout(new FlowLayout());
+        add(statusButton);
         add(toggleButton);
         add(uploadButton);
     }
