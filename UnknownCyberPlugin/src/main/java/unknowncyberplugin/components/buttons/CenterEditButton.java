@@ -62,11 +62,22 @@ public class CenterEditButton extends BaseButton {
                 );
             }
         } else if (node instanceof ProcedureRootNode){
-            // TODO: waiting on creation at API side
+            // TODO: finish getting counts and status
             // ProcedureModel updatedProcedure = Api.updateProcedureName(binaryId, startEA, popupReturnedText);
             // if (updatedProcedure != null) {
             //     ((ProcedureRootNode)node).setNodeData(updatedProcedure);
             // }
+            /*
+            if (Api.updateProcedureName(binaryId, startEA, popupReturnedText)) {
+                ProcedureModel updatedProcedure = new ProcedureModel(((ProcedureRootNode)node).getNodeData().getCount(), ((ProcedureRootNode)node).getNodeData().getStatus(), startEA, popupReturnedText, binaryId);
+            } else {
+                References.getFileProvider().announce(
+                    "Failed to Update",
+                    "An error occurred while updating the procedure name, see the User Log for more information.",
+                    true
+                );
+            }
+            //*/
         }
     }
 

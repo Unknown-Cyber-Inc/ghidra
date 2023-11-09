@@ -75,8 +75,7 @@ import io.swagger.client.ApiException;
  */
 public class Api {
 
-	// TODO: grab environment variable for these, be mindful of whether v2 is
-	// included
+	// TODO: swap out env vars for actual testing/delivery
 	// for use with okhttp
 	private static String baseUrl = "https://api:80/v2/";
 	private static String apiKey = "&key=adminkey";
@@ -84,8 +83,8 @@ public class Api {
 	// private static String apiKey = "&key=" + System.getenv("API_KEY");
 
 	// Globally usable link disabler to clean up calls and inherently include the
-	// mandatory
-	// ? symbol needed for this and other parameters, for use with okhttp.
+	// mandatory ? symbol needed for this and other parameters, for use with
+	// okhttp.
 	private static String noLinks = "?no_links=true";
 	private static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
 
@@ -120,15 +119,15 @@ public class Api {
 		List<File> files = Arrays.asList(myFile);
 		try {
 			EnvelopedFileUploadResponseList200 response = filesApi.uploadFile(files, "",
-					Arrays.asList(), Arrays.asList(), "json", false, false, "", true, false, false, false, false, false,
-					false, false);
+				Arrays.asList(), Arrays.asList(), "json", false, false, "", true, false, false, false, false, false,
+				false, false);
 			String uploadHash = response.getResources().get(0).getSha1();
 			References.setUploadHash(uploadHash);
 			References.getFileButtonsPanel().getStatusButton().setEnabled(true);
 			References.enableFullPlugin(true);
 			return true;
 		} catch (Exception e) {
-			Msg.error("API Wrappers", e);
+			Msg.error(fileProvider, e);
 			return false;
 		}
 	}
@@ -147,9 +146,6 @@ public class Api {
 
 		// Output boolean to denote success/failure
 		boolean toReturn = false;
-
-		// TODO: number stuff:
-		// Potentially look into cleaning up 0-padding?
 
 		try {
 			BasicBlockModel blockModel = new BasicBlockModel(program);
@@ -192,7 +188,7 @@ public class Api {
 				procDirectory = Files.createTempDirectory("");
 			} catch (Exception e) {
 				// File error occurs, specify issue and escalate to highest try/catch block
-				Msg.error("API Wrappers", "Error occurred while creating temp disassembly files.");
+				Msg.error(fileProvider, "Error occurred while creating temp disassembly files.");
 				stashedException = e;
 				throw new NestedException();
 			}
@@ -212,7 +208,7 @@ public class Api {
 					// Iterate over blocks
 					try {
 						CodeBlockIterator blockIterator = blockModel.getCodeBlocksContaining(f.getBody(),
-								TaskMonitor.DUMMY);
+							TaskMonitor.DUMMY);
 						while (blockIterator.hasNext()) {
 							CodeBlock currentBlock = blockIterator.next();
 
@@ -222,7 +218,7 @@ public class Api {
 							// Iterate over lines
 							try {
 								InstructionIterator lineIterator = program.getListing()
-										.getInstructions(currentBlock, true);
+									.getInstructions(currentBlock, true);
 								while (lineIterator.hasNext()) {
 									Instruction currentLine = lineIterator.next();
 
@@ -251,13 +247,13 @@ public class Api {
 												apiCallArray.add(currentLine.getExternalReference(i).getLabel());
 											}
 											operandArray
-													.add(currentLine.getDefaultOperandRepresentation(i).toLowerCase());
+												.add(currentLine.getDefaultOperandRepresentation(i).toLowerCase());
 										}
 									} catch (Exception e) {
 										// Unexpected error occurrs while looping operands, specify location and
 										// escalate
-										Msg.error("API Wrappers",
-												"Error occurred while traversing an instruction's operands.");
+										Msg.error(fileProvider,
+											"Error occurred while traversing an instruction's operands.");
 										stashedException = e;
 										throw new NestedException();
 									}
@@ -271,15 +267,13 @@ public class Api {
 									lineJson.put("bytes", byteString);
 									lineJson.put("mnem", currentLine.getMnemonicString().toLowerCase());
 									// TODO: operands come out of ghidra with 0x-format hexes; we prefer h-format
-									// hexes
-									// except sometimes, because jumps tend to be off. For now, I'll leave operands
-									// as
-									// they natively appear; it will be easier to adjust the backend to account for
-									// 0x-
-									// and h-format hexes, than try to brute force acceptable decision logic here
+									// hexes except sometimes, because jumps tend to be off. For now, I'll leave
+									// operands as they natively appear; it will be easier to adjust the backend
+									// to account for 0x- and h-format hexes, than try to brute force acceptable
+									// decision logic here
 									lineJson.put("operands", operandArray);
 									lineJson.put("prolog_format",
-											Prolog.formatInstruction(currentLine.getMnemonicString(), operandArray));
+										Prolog.formatInstruction(currentLine.getMnemonicString(), operandArray));
 									lineJson.put("api_call_name", apiCallName);
 									lineJson.put("is_call", isCall);
 
@@ -288,7 +282,7 @@ public class Api {
 							} catch (Exception e) {
 								// Unexpected error occurrs while looping instructions, specify location and
 								// escalate
-								Msg.error("API Wrappers", "Error occurred while traversing a block's instructions.");
+								Msg.error(fileProvider, "Error occurred while traversing a block's instructions.");
 								stashedException = e;
 								throw new NestedException();
 							}
@@ -307,7 +301,7 @@ public class Api {
 							// Do cfg stuff for this block
 							JSONArray blockDestinations = new JSONArray();
 							CodeBlockReferenceIterator destinationIterator = currentBlock
-									.getDestinations(TaskMonitor.DUMMY);
+								.getDestinations(TaskMonitor.DUMMY);
 
 							// TODO: these values are mosly in hex, but prepend 0040 instead of 0x
 							// likely to do with a need to normalize for image base or something
@@ -317,14 +311,14 @@ public class Api {
 							try {
 								while (destinationIterator.hasNext()) {
 									blockDestinations.add("0x" + Helpers.cleanAddress(
-											destinationIterator.next().getDestinationAddress().toString()));
+										destinationIterator.next().getDestinationAddress().toString()));
 								}
 								cfgObject.put("0x" + Helpers.cleanAddress(currentBlock.getMinAddress().toString()),
-										blockDestinations);
+									blockDestinations);
 							} catch (Exception e) {
 								// Unexpected error occurrs while generating cfg, specify location and escalate
-								Msg.error("API Wrappers",
-										"Error occurred while generating a block's control flow graph.");
+								Msg.error(fileProvider,
+									"Error occurred while generating a block's control flow graph.");
 								stashedException = e;
 								throw new NestedException();
 							}
@@ -335,7 +329,7 @@ public class Api {
 						throw stashedException;
 					} catch (Exception e) {
 						// Unexpected error occurrs while looping blocks, specify location and escalate
-						Msg.error("API Wrappers", "Error occurred while traversing a function's blocks.");
+						Msg.error(fileProvider, "Error occurred while traversing a function's blocks.");
 						stashedException = e;
 						throw new NestedException();
 					}
@@ -349,7 +343,7 @@ public class Api {
 					procData.put("endEA", Helpers.formatEA(f.getBody().getMaxAddress()));
 					procData.put("procedure_name", f.getName());
 					procData.put("segment_name",
-							program.getMemory().getBlock(f.getBody().getMinAddress()).getName());
+						program.getMemory().getBlock(f.getBody().getMinAddress()).getName());
 					// TODO: Strings are the likely-string values held in referenced memory
 					// addresses
 					procData.put("strings", new String[0]);
@@ -359,12 +353,12 @@ public class Api {
 					// Create and write to the temporary file containing this procedure's JSON data
 					try {
 						Path procJson = Files.createTempFile(procDirectory,
-								f.getBody().getMinAddress().toString() + "_", ".json");
+							f.getBody().getMinAddress().toString() + "_", ".json");
 						Files.write(procJson, procData.toJSONString().getBytes());
 					} catch (Exception e) {
 						// Unexpected error occurrs while writing procedure file, specify location and
 						// escalate
-						Msg.error("API Wrappers", "Error occurred while writing a procedure's data to temp file.");
+						Msg.error(fileProvider, "Error occurred while writing a procedure's data to temp file.");
 						stashedException = e;
 						throw new NestedException();
 					}
@@ -376,7 +370,7 @@ public class Api {
 			} catch (Exception e) {
 				// Unexpected error occurrs while looping functions, specify location and
 				// escalate
-				Msg.error("API Wrappers", "Error occurred while traversing program functions.");
+				Msg.error(fileProvider, "Error occurred while traversing program functions.");
 				stashedException = e;
 				throw new NestedException();
 			}
@@ -389,14 +383,14 @@ public class Api {
 				zip.addFolder(procDirectory.toFile());
 			} catch (Exception e) {
 				// Unexpected error occurrs while zipping data, specify location and escalate
-				Msg.error("API Wrappers", "Error occurred while generating temporary zip file for disassembly upload.");
+				Msg.error(fileProvider, "Error occurred while generating temporary zip file for disassembly upload.");
 				stashedException = e;
 				throw new NestedException();
 			}
 
 			try {
 				EnvelopedFileUploadResponse200 response = filesApi.uploadDisassembly(zip.getFile(),
-						fileType, fileProvider.getOriginalSha1(), "json", false, false, "", true, false, false);
+					fileType, fileProvider.getOriginalSha1(), "json", false, false, "", true, false, false);
 				String uploadHash = response.getResource().getSha1();
 				References.setUploadHash(uploadHash);
 				References.getFileButtonsPanel().getStatusButton().setEnabled(true);
@@ -404,7 +398,7 @@ public class Api {
 			} catch (Exception e) {
 				// Unexpected error occurrs during disassembly upload, specify location and
 				// escalate
-				Msg.error("API Wrappers", "Error occurred during disassembly upload.");
+				Msg.error(fileProvider, "Error occurred during disassembly upload.");
 				stashedException = e;
 				throw new NestedException();
 			}
@@ -413,10 +407,10 @@ public class Api {
 			toReturn = true;
 		} catch (NestedException e) {
 			// Unexpected, nested error in disassembly upload; report the stashed exception
-			Msg.error("API Wrappers", stashedException);
+			Msg.error(fileProvider, stashedException);
 		} catch (Exception e) {
 			// Unexpected error in disassembly upload
-			Msg.error("API Wrappers", e);
+			Msg.error(fileProvider, e);
 		} finally {
 			// Clean up any dangling files
 			// Wrapped separately to ensure each one is tried
@@ -427,8 +421,8 @@ public class Api {
 					}
 				}
 			} catch (Exception e) {
-				Msg.error("API Wrappers", "Error occurred when attempting to delete temporary File JSON.");
-				Msg.error("API Wrappers", e);
+				Msg.error(fileProvider, "Error occurred when attempting to delete temporary File JSON.");
+				Msg.error(fileProvider, e);
 			}
 
 			try {
@@ -438,8 +432,8 @@ public class Api {
 					}
 				}
 			} catch (Exception e) {
-				Msg.error("API Wrappers", "Error occurred when attempting to delete temporary Procedure Directory.");
-				Msg.error("API Wrappers", e);
+				Msg.error(fileProvider, "Error occurred when attempting to delete temporary Procedure Directory.");
+				Msg.error(fileProvider, e);
 			}
 
 			try {
@@ -449,8 +443,8 @@ public class Api {
 					}
 				}
 			} catch (Exception e) {
-				Msg.error("API Wrappers", "Error occurred when attempting to delete temporary Disassembly ZIP.");
-				Msg.error("API Wrappers", e);
+				Msg.error(fileProvider, "Error occurred when attempting to delete temporary Disassembly ZIP.");
+				Msg.error(fileProvider, e);
 			}
 
 			return toReturn;
@@ -468,10 +462,10 @@ public class Api {
 		String dynamicMask = "";
 		try {
 			EnvelopedFile200 response = filesApi.getFile(hash, "json", false, false, "", true, false,
-					readMask, expandMask, dynamicMask);
+				readMask, expandMask, dynamicMask);
 			return true;
 		} catch (Exception e) {
-			Msg.error("Unknown Cyber API", e);
+			Msg.error(fileProvider, e);
 			return false;
 		}
 	}
@@ -496,7 +490,7 @@ public class Api {
 			return new FileStatusModel(response.getResource().getStatus(), pipelineStatus);
 
 		} catch (Exception e) {
-			Msg.error("Unknown Cyber API", e);
+			Msg.error(fileProvider, e);
 			return null;
 		}
 	}
@@ -505,16 +499,15 @@ public class Api {
 	 * Wraps the listFileMatches endpoint.
 	 * - Takes a hash string to query the API with.
 	 */
-	public static MatchModel[] listFileMatches(String hash, int pageCnt) {
+	public static MatchModel[] listFileMatches(String hash, int pageCount) {
 		try {
 			String readMask = "";
 			String expandMask = "matches";
-			Integer pageCount = pageCnt;
 			Integer pageSize = 25;
 			Float maxThreshold = 1.0f;
 			Float minThreshold = 0.7f;
 			EnvelopedMatchList200 response = filesApi.listFileMatches(hash, "json", false, false, "",
-					true, false, pageCount, pageSize, 0, readMask, expandMask, maxThreshold, minThreshold);
+				true, false, pageCount, pageSize, 0, readMask, expandMask, maxThreshold, minThreshold);
 
 			List<Match> responseMatches = response.getResources();
 			if (responseMatches == null) return new MatchModel[0];
@@ -527,7 +520,7 @@ public class Api {
 
 			return matchList;
 		} catch (Exception e) {
-			Msg.error("API Wrappers", e);
+			Msg.error(fileProvider, e);
 			return null;
 		}
 	}
@@ -544,7 +537,7 @@ public class Api {
 			Integer pageCount = 1;
 			Integer pageSize = 0;
 			EnvelopedFileGenomicsResponse200 response = filesApi.listFileGenomics(hash, "json", false,
-					false, "", true, false, pageCount, pageSize, 0, readMask, orderBy, false);
+				false, "", true, false, pageCount, pageSize, 0, readMask, orderBy, false);
 
 			List<ExtendedProcedureResponse> responseProcs = response.getResource().getProcedures();
 			ProcedureModel[] procList = new ProcedureModel[responseProcs.size()];
@@ -552,12 +545,12 @@ public class Api {
 			for (int i=0; i < responseProcs.size(); i++){
 				ExtendedProcedureResponse proc = responseProcs.get(i);
 				procList[i] = new ProcedureModel(proc.getStartEA(), proc.getProcedureName(), proc.getOccurrenceCount(),
-						proc.getStatus(), proc.getNotes().size(), proc.getTags().size(), proc.getBinaryId());
+					proc.getStatus(), proc.getNotes().size(), proc.getTags().size(), proc.getBinaryId());
 			}
 
 			return procList;
 		} catch (Exception e) {
-			Msg.error("API Wrappers", e);
+			Msg.error(fileProvider, e);
 			return null;
 		}
 	}
@@ -570,7 +563,7 @@ public class Api {
 	public static NoteModel[] listFileNotes(String hash) {
 		try {
 			EnvelopedNoteList200 response = filesApi.listFileNotes(hash, "json", false, false, "",
-					true, false);
+				true, false);
 
 			List<Note> responseNotes = response.getResources();
 			NoteModel[] noteList = new NoteModel[responseNotes.size()];
@@ -582,7 +575,7 @@ public class Api {
 
 			return noteList;
 		} catch (Exception e) {
-			Msg.error("API Wrappers", e);
+			Msg.error(fileProvider, e);
 			return null;
 		}
 	}
@@ -596,12 +589,12 @@ public class Api {
 	public static NoteModel createFileNote(String hash, String note) {
 		try {
 			EnvelopedNote201 response = filesApi.createFileNote(note, false, hash, "json", false,
-					false, "", true, false, false);
+				false, "", true, false, false);
 			Note newNote = response.getResource();
 
 			return new NoteModel(newNote.getNote(), newNote.getId(), newNote.getUsername(), newNote.getCreateTime());
 		} catch (Exception e) {
-			Msg.error("API Wrappers", e);
+			Msg.error(fileProvider, e);
 			return null;
 		}
 	}
@@ -623,8 +616,8 @@ public class Api {
 
 			RequestBody body = RequestBody.create(noteData.toString(), JSON);
 			Request request = new Request.Builder()
-					.url(baseUrl + "files/" + hash + "/notes/" + noteId + "/" + noLinks + updateMask + apiKey)
-					.patch(body).build();
+				.url(baseUrl + "files/" + hash + "/notes/" + noteId + "/" + noLinks + updateMask + apiKey)
+				.patch(body).build();
 
 			response = client.newCall(request).execute();
 
@@ -639,7 +632,7 @@ public class Api {
 			throw new ApiException(response.code(), response.message());
 
 		} catch (Exception e) {
-			Msg.error("API Wrappers", e);
+			Msg.error(fileProvider, e);
 			if (response != null) {
 				try {
 					response.close();
@@ -663,7 +656,7 @@ public class Api {
 			filesApi.deleteFileNote(hash, noteId, "json", false, false, "", true, false, true);
 			return true;
 		} catch (Exception e) {
-			Msg.error("API Wrappers", e);
+			Msg.error(fileProvider, e);
 			return false;
 		}
 	}
@@ -677,7 +670,7 @@ public class Api {
 		try {
 			String expandMask = "tags";
 			EnvelopedTagResponseList200 response = filesApi.listFileTags(hash, "json", false, false,
-					"", true, false, expandMask);
+				"", true, false, expandMask);
 			List<TagResponse> responseTags = response.getResources();
 			TagModel[] tagList = new TagModel[responseTags.size()];
 
@@ -688,7 +681,7 @@ public class Api {
 
 			return tagList;
 		} catch (Exception e) {
-			Msg.error("API Wrappers", e);
+			Msg.error(fileProvider, e);
 			return null;
 		}
 	}
@@ -703,13 +696,13 @@ public class Api {
 		try {
 			// Color is set to null to use default color
 			EnvelopedTagCreatedResponse200 response = filesApi.createFileTag(hash, name, null, "json",
-					false, false, "", true, false, false);
+				false, false, "", true, false, false);
 			TagCreatedResponse newTag = response.getResource();
 
 			return new TagModel(newTag.getName(), newTag.getUsername(), newTag.getCreateTime().toString(),
-					newTag.getId());
+				newTag.getId());
 		} catch (Exception e) {
-			Msg.error("API Wrappers", e);
+			Msg.error(fileProvider, e);
 			return null;
 		}
 	}
@@ -726,7 +719,7 @@ public class Api {
 			filesApi.removeFileTag(hash, tagId, "json", false, false, "", true, false, true);
 			return true;
 		} catch (Exception e) {
-			Msg.error("API Wrappers", e);
+			Msg.error(fileProvider, e);
 			return false;
 		}
 	}
@@ -745,7 +738,7 @@ public class Api {
 			Float minThreshold = 0.7f;
 			Float maxThreshold = 1.0f;
 			EnvelopedProcedureList200 response = filesApi.listProcedureSimilarities(hash, address,
-					"json", false, false, "", true, false, pageCount, pageSize, 0, maxThreshold, method, minThreshold);
+				"json", false, false, "", true, false, pageCount, pageSize, 0, maxThreshold, method, minThreshold);
 
 			List<Procedure> responseProcs = response.getResources();
 			ProcedureModel[] procList = new ProcedureModel[responseProcs.size()];
@@ -757,7 +750,7 @@ public class Api {
 
 			return procList;
 		} catch (Exception e) {
-			Msg.error("API Wrappers", e);
+			Msg.error(fileProvider, e);
 			return null;
 		}
 	}
@@ -771,7 +764,7 @@ public class Api {
 	public static NoteModel[] listProcedureGenomicsNotes(String hash, String address) {
 		try {
 			EnvelopedNoteList200 response = filesApi.listProcedureGenomicsNotes(hash, address, "json",
-					false, false, "", true, false);
+				false, false, "", true, false);
 			List<Note> responseNotes = response.getResources();
 			NoteModel[] noteList = new NoteModel[responseNotes.size()];
 
@@ -782,7 +775,7 @@ public class Api {
 
 			return noteList;
 		} catch (Exception e) {
-			Msg.error("API Wrappers", e);
+			Msg.error(fileProvider, e);
 			return null;
 		}
 	}
@@ -797,13 +790,13 @@ public class Api {
 	public static NoteModel createProcedureGenomicsNote(String hash, String address, String note) {
 		try {
 			EnvelopedNote200 response = filesApi.createProcedureGenomicsNote(note, false, hash,
-					address, "json", false, false, "", true, false);
+				address, "json", false, false, "", true, false);
 
 			Note newNote = response.getResource();
 
 			return new NoteModel(newNote.getNote(), newNote.getId(), newNote.getUsername(), newNote.getCreateTime());
 		} catch (Exception e) {
-			Msg.error("API Wrappers", e);
+			Msg.error(fileProvider, e);
 			return null;
 		}
 	}
@@ -826,7 +819,7 @@ public class Api {
 
 			RequestBody body = RequestBody.create(noteData.toString(), JSON);
 			Request request = new Request.Builder().url(baseUrl + "files/" + hash + "/genomics/" + address + "/notes/"
-					+ noteId + "/" + noLinks + updateMask + apiKey).patch(body).build();
+				+ noteId + "/" + noLinks + updateMask + apiKey).patch(body).build();
 
 			response = client.newCall(request).execute();
 
@@ -841,7 +834,7 @@ public class Api {
 			throw new ApiException(response.code(), response.message());
 
 		} catch (Exception e) {
-			Msg.error("API Wrappers", e);
+			Msg.error(fileProvider, e);
 			if (response != null) {
 				try {
 					response.close();
@@ -864,10 +857,10 @@ public class Api {
 		try {
 			// This does not return a response
 			filesApi.deleteProcedureGenomicsNote(hash, address, noteId, "json", false, false, "",
-					true, false, true);
+				true, false, true);
 			return true;
 		} catch (Exception e) {
-			Msg.error("API Wrappers", e);
+			Msg.error(fileProvider, e);
 			return false;
 		}
 	}
@@ -881,7 +874,7 @@ public class Api {
 	public static TagModel[] listProcedureGenomicsTags(String hash, String address) {
 		try {
 			EnvelopedTagResponseList200 response = filesApi.listProcedureGenomicsTags(hash, address,
-					"json", false, false, "", true, false);
+				"json", false, false, "", true, false);
 
 			List<TagResponse> responseTags = response.getResources();
 			TagModel[] tagList = new TagModel[responseTags.size()];
@@ -893,7 +886,7 @@ public class Api {
 
 			return tagList;
 		} catch (Exception e) {
-			Msg.error("API Wrappers", e);
+			Msg.error(fileProvider, e);
 			return null;
 		}
 	}
@@ -908,13 +901,13 @@ public class Api {
 	public static TagModel createProcedureGenomicsTag(String hash, String address, String name) {
 		try {
 			EnvelopedTagCreatedResponse200 response = filesApi.createProcedureGenomicsTag(name, hash,
-					address, "json", false, false, "", true, false, false);
+				address, "json", false, false, "", true, false, false);
 
 			TagCreatedResponse tag = response.getResource();
 
 			return new TagModel(tag.getName(), tag.getUsername(), tag.getCreateTime(), tag.getId());
 		} catch (Exception e) {
-			Msg.error("API Wrappers", e);
+			Msg.error(fileProvider, e);
 			return null;
 		}
 	}
@@ -930,10 +923,10 @@ public class Api {
 		try {
 			// This does not return a response
 			filesApi.deleteProcedureGenomicsTagById(hash, address, tagId, "json", false, false, "",
-					true, false, true);
+				true, false, true);
 			return true;
 		} catch (Exception e) {
-			Msg.error("API Wrappers", e);
+			Msg.error(fileProvider, e);
 			return false;
 		}
 	}
@@ -954,8 +947,8 @@ public class Api {
 
 			RequestBody body = RequestBody.create(nameData.toString(), JSON);
 			Request request = new Request.Builder()
-					.url(baseUrl + "files/" + hash + "/genomics/" + address + "/" + noLinks + updateMask + apiKey)
-					.patch(body).build();
+				.url(baseUrl + "files/" + hash + "/genomics/" + address + "/" + noLinks + updateMask + apiKey)
+				.patch(body).build();
 
 			response = client.newCall(request).execute();
 
@@ -969,7 +962,7 @@ public class Api {
 			// sake
 			throw new ApiException(response.code(), response.message());
 		} catch (Exception e) {
-			Msg.error("API Wrappers", e);
+			Msg.error(fileProvider, e);
 			if (response != null) {
 				try {
 					response.close();

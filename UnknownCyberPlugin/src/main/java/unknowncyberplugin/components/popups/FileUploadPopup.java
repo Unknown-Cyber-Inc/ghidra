@@ -1,5 +1,7 @@
 package unknowncyberplugin.components.popups;
 
+import unknowncyberplugin.References;
+
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
@@ -24,6 +26,14 @@ public class FileUploadPopup extends JOptionPane {
 
         binaryButton.addActionListener(buttonListener);
         disassemblyButton.addActionListener(buttonListener);
+
+        // Check to make sure the file upload button doesn't function when the
+        // file to upload doesn't exist.
+        if (References.getFileProvider().getOriginalSha1() == null) {
+            binaryButton.setEnabled(false);
+        } else {
+            binaryButton.setEnabled(true);
+        }
     }
 
     public String displayAndGetResponse() {

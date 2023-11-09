@@ -5,31 +5,20 @@ import java.io.FileNotFoundException;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
 
 import com.unknowncyber.magic.api.FilesApi;
-import com.unknowncyber.magic.api.ProceduresApi;
 
 import docking.WindowPosition;
-import docking.action.DockingAction;
 import ghidra.framework.plugintool.ComponentProviderAdapter;
 import ghidra.framework.plugintool.PluginTool;
 import ghidra.program.model.listing.FunctionIterator;
 import ghidra.program.model.listing.Program;
-import ghidra.util.HelpLocation;
 import ghidra.util.Msg;
 import io.swagger.client.ApiClient;
-import resources.ResourceManager;
 import unknowncyberplugin.components.panels.MainPanel;
 
 
 public class UnknownCyberFileProvider extends ComponentProviderAdapter {
-	private static final String PREV_IMAGE = "/images/check_icon.jpg";
-	private static final HelpLocation HELP = new HelpLocation("SampleHelpTopic", "SampleHelpTopic_Anchor_Name");
-	private DockingAction action;
-
 	// Set component references ahead of time so they can be accessed at a global level
 	// as opposed to being passed into functions as a local reference.
 	private ApiClient apiClient;
@@ -43,8 +32,8 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 
 	// Declare file-dependent variables in advance
 	File originalFile;
-	String originalSha1;
-	String originalSha512;
+	String originalSha1 = null;
+	String originalSha512 = null;
 	public void setProgram(Program programIn) {
 		program = programIn;
 		if (program != null) {
@@ -56,9 +45,9 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 				originalFile = new File(program.getExecutablePath());
 				originalSha1 = Helpers.hashFile(originalFile, "SHA-1");
 				originalSha512 = Helpers.hashFile(originalFile, "SHA-512");
-				// TODO: enable upload buttons if previously disabled
 			} catch (FileNotFoundException e) {
-				// TODO: disable upload buttons
+				originalSha1 = null;
+				originalSha512 = null;
 				announce(
 					"Cannot Find File",
 					"Ghidra is unable to access the original copy of this file.\n" +
@@ -71,7 +60,8 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 					true
 				);
 			} catch (Exception e) {
-				// TODO: disable upload buttons
+				originalSha1 = null;
+				originalSha512 = null;
 				announce(
 					"Unknown Error Loading File",
 					"An unexpected error has occurred when trying to access the original copy of this file.\n" +
@@ -79,21 +69,15 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 					true
 				);
 			}
-			// Check if file is accessible to user on the backend
 		}
 	}
 
 	public UnknownCyberFileProvider(PluginTool tool, String name) {
 		super(tool, name, name);
 		buildMainPanel();
-		// TODO: Fix image loading
-		setIcon(ResourceManager.loadImage("/images/x_icon.jpg"));
-		// No idea what the help thing actually does
-		setHelpLocation(HELP);
 		setDefaultWindowPosition(WindowPosition.WINDOW);
-		setTitle("Unknown Cyber File Interface");
+		setTitle("Unknown Cyber");
 		setVisible(true);
-		// createActions();
 		apiClient = new ApiClient();
 		filesApi = new FilesApi(apiClient);
 	}

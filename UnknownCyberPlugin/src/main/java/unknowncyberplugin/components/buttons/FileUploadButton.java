@@ -3,6 +3,7 @@ package unknowncyberplugin.components.buttons;
 import unknowncyberplugin.Api;
 import unknowncyberplugin.components.popups.FileUploadPopup;
 import unknowncyberplugin.References;
+import ghidra.program.util.GhidraProgramUtilities;
 
 
 public class FileUploadButton extends BaseButton {
@@ -33,13 +34,18 @@ public class FileUploadButton extends BaseButton {
 				}
 			} else if (uploadType.equals("Disassembly")) {
 				// TODO: remove this for final release
-				/*
-				Api.listFileMatches("b87a947f3e85701fcdadd733e9b055a65a3b1308");
+				//*
+				//Api.listFileMatches("b87a947f3e85701fcdadd733e9b055a65a3b1308");
 				int dummy = 5;
 				if (dummy == 5) {
 					return;
 				}
 				//*/
+
+				if (GhidraProgramUtilities.shouldAskToAnalyze(References.getFileProvider().getProgram())) {
+					References.getFileProvider().announce("Cannot Disassemble File", "You must first analyze a file before submitting its disassembly.", false);
+					return;
+				}
 
 				if (Api.submitDisassembly()) {
 					References.getFileProvider().announce(

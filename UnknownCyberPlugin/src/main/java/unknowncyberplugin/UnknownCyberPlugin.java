@@ -1,6 +1,5 @@
 package unknowncyberplugin;
 
-import ghidra.app.ExamplesPluginPackage;
 import ghidra.app.plugin.PluginCategoryNames;
 import ghidra.app.plugin.ProgramPlugin;
 import ghidra.framework.plugintool.PluginInfo;
@@ -8,20 +7,20 @@ import ghidra.framework.plugintool.PluginTool;
 import ghidra.framework.plugintool.util.PluginStatus;
 import ghidra.program.model.listing.Program;
 
-// TODO: set up metadata correctly for release
 //@formatter:off
 @PluginInfo(
     status = PluginStatus.RELEASED,
-    packageName = ExamplesPluginPackage.NAME,
+    packageName = PluginCategoryNames.MISC,
     category = PluginCategoryNames.MISC,
-    shortDescription = "Unknown Cyber",
-    description = "Unknown Cyber's API integration plugin"
+    shortDescription = "Provides Unknown Cyber API Integration",
+    description = "This plugin allows the submission of original and disassembled files " +
+        "to Unknown Cyber's API, the pulling of relevant note/tag/match data for a file, " +
+        "and similar functionality for each function/procedure in a file."
 )
 //@formatter:on
+
 public class UnknownCyberPlugin extends ProgramPlugin {
-
-  private UnknownCyberFileProvider fileProvider;
-
+    private UnknownCyberFileProvider fileProvider;
 	/**
 	 * Ghidra will, paradoxically, auto-open a plugin before opening a program/file,
 	 *   even though you have to open the program/file first.  As such, we use the
@@ -32,7 +31,6 @@ public class UnknownCyberPlugin extends ProgramPlugin {
     public void programOpened(Program program) {
         if (fileProvider != null) {
             fileProvider.setProgram(program);
-            String md5 = program.getExecutableMD5();
             References.enableFullPlugin(Api.isFileAccessible(program.getExecutableMD5()));
             References.getFilePanel().setMatchesTabToActive();
         }
