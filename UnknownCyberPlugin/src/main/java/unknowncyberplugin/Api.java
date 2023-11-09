@@ -125,6 +125,7 @@ public class Api {
 			String uploadHash = response.getResources().get(0).getSha1();
 			References.setUploadHash(uploadHash);
 			References.getFileButtonsPanel().getStatusButton().setEnabled(true);
+			References.enableFullPlugin(true);
 			return true;
 		} catch (Exception e) {
 			Msg.error("API Wrappers", e);
@@ -396,6 +397,7 @@ public class Api {
 			try {
 				EnvelopedFileUploadResponse200 response = filesApi.uploadDisassembly(zip.getFile(),
 						fileType, fileProvider.getOriginalSha1(), "json", false, false, "", true, false, false);
+				References.enableFullPlugin(true);
 			} catch (Exception e) {
 				// Unexpected error occurrs during disassembly upload, specify location and
 				// escalate
