@@ -397,6 +397,9 @@ public class Api {
 			try {
 				EnvelopedFileUploadResponse200 response = filesApi.uploadDisassembly(zip.getFile(),
 						fileType, fileProvider.getOriginalSha1(), "json", false, false, "", true, false, false);
+				String uploadHash = response.getResource().getSha1();
+				References.setUploadHash(uploadHash);
+				References.getFileButtonsPanel().getStatusButton().setEnabled(true);
 				References.enableFullPlugin(true);
 			} catch (Exception e) {
 				// Unexpected error occurrs during disassembly upload, specify location and
@@ -514,8 +517,9 @@ public class Api {
 					true, false, pageCount, pageSize, 0, readMask, expandMask, maxThreshold, minThreshold);
 
 			List<Match> responseMatches = response.getResources();
+			if (responseMatches == null) return new MatchModel[0];
 			MatchModel[] matchList = new MatchModel[responseMatches.size()];
-
+			
 			for(int i=0; i < responseMatches.size(); i++){
 				Match match = responseMatches.get(i);
 				matchList[i] = new MatchModel(match.getSha1(), match.getMaxSimilarity());
