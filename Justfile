@@ -43,19 +43,28 @@ clean-all:
 # Recompiles the plugin and restarts the container
 reload:
     just recompile
+    just redist
     just kill
     just restart
 
 # Recompiles the plugin
 recompile:
-    docker exec -it -u root --workdir "/root/.ghidra/.ghidra_{{GHIDRA_VERSION}}_PUBLIC/Extensions/UnknownCyberPlugin" ghidra /opt/gradle/gradlew clean build
-    docker exec -it -u root --workdir "/root/.ghidra/.ghidra_{{GHIDRA_VERSION}}_PUBLIC/Extensions/UnknownCyberPlugin" ghidra mv ./build/libs/UnknownCyberPlugin.jar lib/
+    docker exec -it -u root --workdir "/plugins/UnknownCyberPlugin" ghidra /opt/gradle/gradlew clean build
+    docker exec -it -u root --workdir "/plugins/UnknownCyberPlugin" ghidra mv ./build/libs/UnknownCyberPlugin.jar lib/
 
 # Packages the dependencies for distribution
 redist:
-    docker exec -it -u root --workdir "/root/.ghidra/.ghidra_{{GHIDRA_VERSION}}_PUBLIC/Extensions/UnknownCyberPlugin" ghidra /opt/gradle/gradlew downloadDependencies
+    #!/bin/bash
     cd UnknownCyberPlugin
-    tar cvzf dependencies.tgz dependencies/*
+    mkdir -p dist/unknowncyber
+    cp -r data extension.properties lib LICENSE.txt Module.manifest dist/unknowncyber/
+    zip UnknownCyberPlugin-src.zip src/*
+    mv UnknownCyberPlugin-src.zip dist/unknowncyber/lib/
+    cd dist
+    tar czvf unknowncyberplugin.tgz unknowncyber
+    mv unknowncyberplugin.tgz ..
+    cd ..
+    #rm -rf dist
 
 # Kills Ghidra
 kill:
