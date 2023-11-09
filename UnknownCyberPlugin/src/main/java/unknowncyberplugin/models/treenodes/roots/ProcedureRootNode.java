@@ -1,9 +1,9 @@
 package unknowncyberplugin.models.treenodes.roots;
 
-import unknowncyberplugin.models.responsedata.File;
-import unknowncyberplugin.models.responsedata.Note;
-import unknowncyberplugin.models.responsedata.Procedure;
-import unknowncyberplugin.models.responsedata.Tag;
+import unknowncyberplugin.models.responsedata.FileModel;
+import unknowncyberplugin.models.responsedata.NoteModel;
+import unknowncyberplugin.models.responsedata.ProcedureModel;
+import unknowncyberplugin.models.responsedata.TagModel;
 import unknowncyberplugin.models.treenodes.leaves.NoteNode;
 import unknowncyberplugin.models.treenodes.leaves.SimilarProcedureNode;
 import unknowncyberplugin.models.treenodes.leaves.TagNode;
@@ -18,13 +18,13 @@ public class ProcedureRootNode extends BaseRootNode<Object>{
         super(nodeData, binaryId);
 
         notesRoot = new NotesRootNode();
-        notesRoot.add(new NoteNode(new Note("TEST NOTE NODE", null, null, null)));
+        notesRoot.add(new NoteNode(new NoteModel("TEST NOTE NODE", null, null, null)));
         tagsRoot = new TagsRootNode();
-        tagsRoot.add(new TagNode(new Tag("TEST TAG NODE", null, null, null)));
+        tagsRoot.add(new TagNode(new TagModel("TEST TAG NODE", null, null, null)));
         similaritiesRoot = new SimilaritiesRootNode();
-        FilesRootNode procHoldingFileRoot = new FilesRootNode(new File(binaryId, binaryId, binaryId), binaryId);
+        FilesRootNode procHoldingFileRoot = new FilesRootNode(new FileModel(binaryId, binaryId, binaryId), binaryId);
         similaritiesRoot.add(procHoldingFileRoot);
-        SimilarProcedureNode similarProcNode = new SimilarProcedureNode(new Procedure(1, "badMal", "0xTEST", "TEST PROC", binaryId));
+        SimilarProcedureNode similarProcNode = new SimilarProcedureNode(new ProcedureModel(1, "badMal", "0xTEST", "TEST PROC", binaryId));
         procHoldingFileRoot.add(similarProcNode);
 
         add(notesRoot);
@@ -40,8 +40,8 @@ public class ProcedureRootNode extends BaseRootNode<Object>{
         return notesRoot;
     }
 
-    public void populateNotes(Note[] notes){
-        for (Note note : notes){
+    public void populateNotes(NoteModel[] notes){
+        for (NoteModel note : notes){
             notesRoot.add(new NoteNode(note));
         }
     }
@@ -50,8 +50,8 @@ public class ProcedureRootNode extends BaseRootNode<Object>{
         return tagsRoot;
     }
 
-    public void populateTags(Tag[] tags){
-        for (Tag tag : tags){
+    public void populateTags(TagModel[] tags){
+        for (TagModel tag : tags){
             tagsRoot.add(new TagNode(tag));
         }
     }

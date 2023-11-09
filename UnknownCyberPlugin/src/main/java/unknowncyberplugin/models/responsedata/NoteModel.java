@@ -1,12 +1,12 @@
 package unknowncyberplugin.models.responsedata;
 
-public class Note {
+public class NoteModel {
     private String noteText;
     private String userName;
     private String timeStamp;
     private String noteId;
 
-    public Note(String noteText, String noteId, String userName, String timeStamp){
+    public NoteModel(String noteText, String noteId, String userName, String timeStamp){
         this.noteText = noteText;
         this.userName = userName;
         this.timeStamp = timeStamp;
@@ -29,7 +29,7 @@ public class Note {
         return noteId;
     }
 
-    public void updateItemData(Note note){
+    public void updateItemData(NoteModel note){
         this.noteText = note.getNoteText();
         this.userName = note.getUserName();
         this.timeStamp = note.getTimeStamp();

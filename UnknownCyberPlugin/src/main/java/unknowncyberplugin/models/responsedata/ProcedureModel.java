@@ -1,6 +1,6 @@
 package unknowncyberplugin.models.responsedata;
 
-public class Procedure {
+public class ProcedureModel {
     private int count;
     private String status;
     private String startEA;
@@ -8,7 +8,7 @@ public class Procedure {
     private String procedureName;
     private String binaryId;
 
-    public Procedure(int count, String status, String startEA, String procedureName, String binaryId){
+    public ProcedureModel(int count, String status, String startEA, String procedureName, String binaryId){
         this.count = count;
         this.status = status;
         this.startEA = startEA;

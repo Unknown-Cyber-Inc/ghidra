@@ -6,9 +6,9 @@ import unknowncyberplugin.Api;
 import unknowncyberplugin.References;
 import unknowncyberplugin.components.collections.FileList;
 import unknowncyberplugin.components.panels.FileCRUDPanel;
-import unknowncyberplugin.models.responsedata.File;
-import unknowncyberplugin.models.responsedata.Note;
-import unknowncyberplugin.models.responsedata.Tag;
+import unknowncyberplugin.models.responsedata.FileModel;
+import unknowncyberplugin.models.responsedata.NoteModel;
+import unknowncyberplugin.models.responsedata.TagModel;
 
 public class FileTabbedPane extends JTabbedPane {
     private FileList shownList;
@@ -17,11 +17,11 @@ public class FileTabbedPane extends JTabbedPane {
         super();
 
         BaseFileListPane notesPane = new FileNotesPane();
-        notesPane.addItem(new Note("TEST NOTE ITEM", null, null, null));
+        notesPane.addItem(new NoteModel("TEST NOTE ITEM", null, null, null));
 		BaseFileListPane tagsPane = new FileTagsPane();
-        tagsPane.addItem(new Tag("TEST TAG ITEM", null, null, null));
+        tagsPane.addItem(new TagModel("TEST TAG ITEM", null, null, null));
 		BaseFileListPane matchesPane = new FileMatchesPane();
-        matchesPane.addItem(new File("TEST MATCH ITEM", null, null));
+        matchesPane.addItem(new FileModel("TEST MATCH ITEM", null, null));
         addTab("Notes", notesPane);
         addTab("Tags", tagsPane);
         addTab("Matches", matchesPane);

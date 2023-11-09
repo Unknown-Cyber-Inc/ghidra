@@ -8,8 +8,8 @@ import unknowncyberplugin.components.panes.BaseFileListPane;
 import unknowncyberplugin.components.panes.FileNotesPane;
 import unknowncyberplugin.components.panes.FileTagsPane;
 import unknowncyberplugin.components.popups.FileCRUDPopup;
-import unknowncyberplugin.models.responsedata.Note;
-import unknowncyberplugin.models.responsedata.Tag;
+import unknowncyberplugin.models.responsedata.NoteModel;
+import unknowncyberplugin.models.responsedata.TagModel;
 
 public class FileCreateButton extends BaseButton {
     private String popupReturnedText;
@@ -43,14 +43,14 @@ public class FileCreateButton extends BaseButton {
     }
 
     public void processNewFileNote(){
-        Note newNote = Api.createFileNote(binaryId, popupReturnedText);
+        NoteModel newNote = Api.createFileNote(binaryId, popupReturnedText);
         if(newNote != null){
             References.getFileNotesPane().addItem(newNote);
         }
     }
 
     public void processNewFileTag(){
-        Tag newTag = Api.createFileTag(binaryId, popupReturnedText);
+        TagModel newTag = Api.createFileTag(binaryId, popupReturnedText);
         if(newTag != null){
             References.getFileTagsPane().addItem(newTag);
         }

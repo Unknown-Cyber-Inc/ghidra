@@ -1,10 +1,10 @@
 package unknowncyberplugin.models.treenodes.leaves;
 
-import unknowncyberplugin.models.responsedata.Note;
+import unknowncyberplugin.models.responsedata.NoteModel;
 
-public class NoteNode extends BaseLeafNode<Note>{
+public class NoteNode extends BaseLeafNode<NoteModel>{
 
-    public NoteNode(Note nodeData){
+    public NoteNode(NoteModel nodeData){
         super(nodeData);
     }
     

@@ -7,8 +7,8 @@ import unknowncyberplugin.References;
 import unknowncyberplugin.components.panels.CenterPanel;
 import unknowncyberplugin.components.panes.BaseCenterTabPane;
 import unknowncyberplugin.components.popups.CenterCRUDPopup;
-import unknowncyberplugin.models.responsedata.Note;
-import unknowncyberplugin.models.responsedata.Tag;
+import unknowncyberplugin.models.responsedata.NoteModel;
+import unknowncyberplugin.models.responsedata.TagModel;
 import unknowncyberplugin.models.treenodes.leaves.NoteNode;
 import unknowncyberplugin.models.treenodes.leaves.TagNode;
 import unknowncyberplugin.models.treenodes.roots.DerivedFileRootNode;
@@ -67,14 +67,14 @@ public class CenterCreateButton extends BaseButton {
     }
 
     public void createProcedureNoteNode(String binaryId, String startEA, DefaultMutableTreeNode rootNode){
-        Note newNote = Api.createProcedureGenomicsNote(binaryId, startEA, popupReturnedText);
+        NoteModel newNote = Api.createProcedureGenomicsNote(binaryId, startEA, popupReturnedText);
         if(newNote != null){
             rootNode.add(new NoteNode(newNote));
         }
     }
 
     public void createProcedureTagNode(String binaryId, String startEA, DefaultMutableTreeNode rootNode){
-        Tag newTag = Api.createProcedureGenomicsTag(binaryId, startEA, popupReturnedText);
+        TagModel newTag = Api.createProcedureGenomicsTag(binaryId, startEA, popupReturnedText);
         if(newTag != null){
             rootNode.add(new TagNode(newTag));
         }
@@ -97,14 +97,14 @@ public class CenterCreateButton extends BaseButton {
     }
 
     public void createFileNoteNode(String binaryId, DefaultMutableTreeNode rootNode){
-        Note newNote = Api.createFileNote(binaryId, popupReturnedText);
+        NoteModel newNote = Api.createFileNote(binaryId, popupReturnedText);
         if(newNote != null){
             rootNode.add(new NoteNode(newNote));
         }
     }
 
     public void createFileTagNode(String binaryId, DefaultMutableTreeNode rootNode){
-        Tag newTag = Api.createFileTag(binaryId, popupReturnedText);
+        TagModel newTag = Api.createFileTag(binaryId, popupReturnedText);
         if(newTag != null){
             rootNode.add(new TagNode(newTag));
         }

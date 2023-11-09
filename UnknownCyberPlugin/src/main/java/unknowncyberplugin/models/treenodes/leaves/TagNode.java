@@ -1,10 +1,10 @@
 package unknowncyberplugin.models.treenodes.leaves;
 
-import unknowncyberplugin.models.responsedata.Tag;
+import unknowncyberplugin.models.responsedata.TagModel;
 
-public class TagNode extends BaseLeafNode<Tag>{
+public class TagNode extends BaseLeafNode<TagModel>{
 
-    public TagNode(Tag nodeData){
+    public TagNode(TagModel nodeData){
         super(nodeData);
     }
     

@@ -7,8 +7,8 @@ import unknowncyberplugin.References;
 import unknowncyberplugin.components.panels.CenterPanel;
 import unknowncyberplugin.components.panes.BaseCenterTabPane;
 import unknowncyberplugin.components.popups.CenterCRUDPopup;
-import unknowncyberplugin.models.responsedata.Note;
-import unknowncyberplugin.models.responsedata.Procedure;
+import unknowncyberplugin.models.responsedata.NoteModel;
+import unknowncyberplugin.models.responsedata.ProcedureModel;
 import unknowncyberplugin.models.treenodes.leaves.NoteNode;
 import unknowncyberplugin.models.treenodes.roots.DerivedFileRootNode;
 import unknowncyberplugin.models.treenodes.roots.ProcedureRootNode;
@@ -52,7 +52,7 @@ public class CenterEditButton extends BaseButton {
 
         if (node instanceof NoteNode){
             if (Api.updateProcedureGenomicsNote(binaryId, startEA, ((NoteNode)node).getNodeData().getId(), popupReturnedText)) {
-                Note note = new Note(popupReturnedText, ((NoteNode)node).getNodeData().getId(), ((NoteNode)node).getNodeData().getUserName(), ((NoteNode)node).getNodeData().getTimeStamp());
+                NoteModel note = new NoteModel(popupReturnedText, ((NoteNode)node).getNodeData().getId(), ((NoteNode)node).getNodeData().getUserName(), ((NoteNode)node).getNodeData().getTimeStamp());
                 ((NoteNode)node).getNodeData().updateItemData(note);
             } else {
                 References.getFileProvider().announce(
@@ -76,7 +76,7 @@ public class CenterEditButton extends BaseButton {
 
         if (node instanceof NoteNode){
             if (Api.updateFileNote(binaryId, ((NoteNode)node).getNodeData().getId(), popupReturnedText)) {
-                Note note = new Note(popupReturnedText, ((NoteNode)node).getNodeData().getId(), ((NoteNode)node).getNodeData().getUserName(), ((NoteNode)node).getNodeData().getTimeStamp());
+                NoteModel note = new NoteModel(popupReturnedText, ((NoteNode)node).getNodeData().getId(), ((NoteNode)node).getNodeData().getUserName(), ((NoteNode)node).getNodeData().getTimeStamp());
                 ((NoteNode)node).getNodeData().updateItemData(note);
             } else {
                 References.getFileProvider().announce(

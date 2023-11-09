@@ -29,7 +29,7 @@ public class Helpers {
    *     it was first imported from; I have not tested for this edge case
    * - The file was imported from an archive through the "Batch" option
    */
-  public static String hashFile(File file, String algo) throws IOException, NoSuchAlgorithmException {
+  public static String hashFile(FileModel file, String algo) throws IOException, NoSuchAlgorithmException {
     MessageDigest digest = MessageDigest.getInstance(algo);
     FileInputStream fis = new FileInputStream(file);
     byte[] buffer = new byte[1024];
