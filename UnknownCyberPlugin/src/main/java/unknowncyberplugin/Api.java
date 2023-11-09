@@ -117,6 +117,8 @@ public class Api {
 			EnvelopedFileUploadResponseList200 response = filesApi.uploadFile(files, "",
 					Arrays.asList(), Arrays.asList(), "json", false, false, "", true, false, false, false, false, false,
 					false, false);
+			String uploadHash = response.getResource().getSha1();
+			References.setUploadHash(uploadHash);
 			return true;
 		} catch (Exception e) {
 			Msg.error("API Wrappers", e);
