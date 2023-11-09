@@ -5,7 +5,7 @@ import unknowncyberplugin.References;
 import unknowncyberplugin.UnknownCyberFileProvider;
 import unknowncyberplugin.components.panels.FilePanel;
 import unknowncyberplugin.components.popups.FileCRUDPopup;
-import unknowncyberplugin.models.responsedata.Note;
+import unknowncyberplugin.models.responsedata.NoteModel;
 
 public class FileEditButton extends BaseButton {
     private String popupReturnedText;
@@ -27,13 +27,13 @@ public class FileEditButton extends BaseButton {
         popupReturnedText = popup.displayAndGetResponse(currentDisplayName);
 
         if (popupReturnedText != null){
-            processItem((Note)fp.getSelectedListItem());
+            processItem((NoteModel)fp.getSelectedListItem());
         }
     }
 
-    public void processItem(Note selectedItem){
+    public void processItem(NoteModel selectedItem){
         if (Api.updateFileNote(binaryId, selectedItem.getId(), popupReturnedText)) {
-            Note note = new Note(popupReturnedText, selectedItem.getId(), selectedItem.getUserName(), selectedItem.getTimeStamp());
+            NoteModel note = new NoteModel(popupReturnedText, selectedItem.getId(), selectedItem.getUserName(), selectedItem.getTimeStamp());
             selectedItem.updateItemData(note);
         } else {
             References.getFileProvider().announce(

@@ -3,10 +3,10 @@ package unknowncyberplugin.components.panes;
 import javax.swing.tree.MutableTreeNode;
 
 import unknowncyberplugin.Api;
-import unknowncyberplugin.models.responsedata.Note;
-import unknowncyberplugin.models.responsedata.Procedure;
-import unknowncyberplugin.models.responsedata.Tag;
-import unknowncyberplugin.models.responsedata.File;
+import unknowncyberplugin.models.responsedata.NoteModel;
+import unknowncyberplugin.models.responsedata.ProcedureModel;
+import unknowncyberplugin.models.responsedata.TagModel;
+import unknowncyberplugin.models.responsedata.FileModel;
 import unknowncyberplugin.models.treenodes.roots.FilesRootNode;
 import unknowncyberplugin.models.treenodes.roots.NotesRootNode;
 import unknowncyberplugin.models.treenodes.roots.ProcedureRootNode;
@@ -27,27 +27,27 @@ public class CenterDerivedProcedureTabPane extends BaseCenterTabPane{
     protected void callExpandAction(Object subRootNode){
         
         if (subRootNode instanceof NotesRootNode){
-            Note[] notes = Api.listProcedureGenomicsNotes(binaryId, startEa);
+            NoteModel[] notes = Api.listProcedureGenomicsNotes(binaryId, startEa);
             ((ProcedureRootNode)getRootNode()).populateNotes(notes);
         } else if (subRootNode instanceof TagsRootNode){
-            Tag[] tags = Api.listProcedureGenomicsTags(binaryId, startEa);
+            TagModel[] tags = Api.listProcedureGenomicsTags(binaryId, startEa);
             ((ProcedureRootNode)getRootNode()).populateTags(tags);
         } else if (subRootNode instanceof SimilaritiesRootNode){
-            Procedure[] response = Api.listProcedureSimilarities(binaryId, startEa);
+            ProcedureModel[] response = Api.listProcedureSimilarities(binaryId, startEa);
             parseSimilarProcedures(response);
         }
     }
 
-    public void parseSimilarProcedures(Procedure[] procs){
+    public void parseSimilarProcedures(ProcedureModel[] procs){
         String currentBinaryId = null;
         FilesRootNode currentFileRootNode = null;
         SimilaritiesRootNode simRootNode = ((ProcedureRootNode)getRootNode()).getSimilaritiesRootNode();
         
-        for (Procedure proc : procs){
+        for (ProcedureModel proc : procs){
             if (currentBinaryId.equals(proc.getBinaryId())){
                 currentFileRootNode.add((MutableTreeNode)proc);
             } else {
-                File newFile = new File(proc.getBinaryId(), null, proc.getBinaryId());
+                FileModel newFile = new FileModel(proc.getBinaryId(), null, proc.getBinaryId());
                 currentFileRootNode = new FilesRootNode(newFile, proc.getBinaryId());
 
                 currentFileRootNode.add((MutableTreeNode)proc);

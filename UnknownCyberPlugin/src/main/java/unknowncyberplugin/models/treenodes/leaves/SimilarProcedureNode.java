@@ -1,10 +1,10 @@
 package unknowncyberplugin.models.treenodes.leaves;
 
-import unknowncyberplugin.models.responsedata.Procedure;
+import unknowncyberplugin.models.responsedata.ProcedureModel;
 
-public class SimilarProcedureNode extends BaseLeafNode<Procedure>{
+public class SimilarProcedureNode extends BaseLeafNode<ProcedureModel>{
 
-    public SimilarProcedureNode(Procedure nodeData){
+    public SimilarProcedureNode(ProcedureModel nodeData){
         super(nodeData);
     }
     

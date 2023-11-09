@@ -8,8 +8,8 @@ import unknowncyberplugin.components.panes.BaseFileListPane;
 import unknowncyberplugin.components.panes.FileNotesPane;
 import unknowncyberplugin.components.panes.FileTagsPane;
 import unknowncyberplugin.components.popups.DeleteConfirmationPopup;
-import unknowncyberplugin.models.responsedata.Note;
-import unknowncyberplugin.models.responsedata.Tag;
+import unknowncyberplugin.models.responsedata.NoteModel;
+import unknowncyberplugin.models.responsedata.TagModel;
 
 public class FileDeleteButton extends BaseButton {
     private String binaryId;
@@ -34,12 +34,12 @@ public class FileDeleteButton extends BaseButton {
 
     public void processItem(BaseFileListPane tabPane, Object selectedItem){
         if (tabPane instanceof FileNotesPane){
-            boolean successful = Api.deleteFileNote(binaryId, ((Note)selectedItem).getId());
+            boolean successful = Api.deleteFileNote(binaryId, ((NoteModel)selectedItem).getId());
             if (successful) {
                 tabPane.getList().removeItem(selectedItem);
             }
         } else if (tabPane instanceof FileTagsPane) {
-            boolean successful = Api.removeFileTag(binaryId, ((Tag)selectedItem).getId());
+            boolean successful = Api.removeFileTag(binaryId, ((TagModel)selectedItem).getId());
             if (successful) {
                 tabPane.getList().removeItem(selectedItem);
             }

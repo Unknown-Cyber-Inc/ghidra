@@ -1,12 +1,12 @@
 package unknowncyberplugin.models.responsedata;
 
-public class Tag {
+public class TagModel {
     private String tagName;
     private String userName;
     private String timeStamp;
     private String tagId;
 
-    public Tag(String tagName, String userName, String timeStamp, String tagId){
+    public TagModel(String tagName, String userName, String timeStamp, String tagId){
         this.tagName = tagName;
         this.userName = userName;
         this.timeStamp = timeStamp;
