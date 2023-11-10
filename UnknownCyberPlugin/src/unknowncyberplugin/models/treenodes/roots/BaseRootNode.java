@@ -85,6 +85,10 @@ public abstract class BaseRootNode<T> extends DefaultMutableTreeNode{
         }
     }
 
+    public void clearNode(){
+        removeAllChildren();
+    }
+
     public void removePlaceholderNode(){
         super.remove(0);
     }

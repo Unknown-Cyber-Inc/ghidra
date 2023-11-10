@@ -18,7 +18,7 @@ public class CenterDerivedProcedureTabPane extends BaseCenterTabPane{
     private String binaryId;
 
     public CenterDerivedProcedureTabPane(String startEa, String binaryId){
-        super(startEa, binaryId, "procedure");
+        super(startEa, binaryId, "derived procedure");
         this.startEa = startEa;
         this.binaryId = binaryId;
     }

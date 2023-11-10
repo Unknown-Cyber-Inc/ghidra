@@ -73,6 +73,8 @@ public class CenterProcedureTabPane extends BaseCenterTabPane{
                 currentBinaryId = proc.getBinaryId();
                 FileModel newFile = new FileModel(proc.getBinaryId(), null, proc.getBinaryId());
                 currentFileRootNode = new FilesRootNode(newFile, proc.getBinaryId());
+                currentFileRootNode.setBinaryId(proc.getBinaryId());
+                System.out.println("currFRNode BIN ID: " + currentFileRootNode.getBinaryId());
 
                 currentFileRootNode.add(new SimilarProcedureNode(proc));
                 simRootNode.add(currentFileRootNode);
@@ -87,7 +89,7 @@ public class CenterProcedureTabPane extends BaseCenterTabPane{
             nodeName = ((FilesRootNode)selectedNode).getNodeDisplayName();
             ctp.addClosableTab(
                 nodeName,
-                new CenterDerivedFileTabPane(((FilesRootNode)selectedNode).getBinaryId())
+                new CenterDerivedFileTabPane(selectedNode.toString())
             );
         } else if (selectedNode instanceof SimilarProcedureNode){
             nodeName = ((SimilarProcedureNode)selectedNode).getNodeDisplayName();
@@ -96,7 +98,7 @@ public class CenterProcedureTabPane extends BaseCenterTabPane{
                 nodeName,
                 new CenterDerivedProcedureTabPane(
                     ((SimilarProcedureNode)selectedNode).getNodeDisplayName(),
-                    parentNode.getBinaryId()
+                    parentNode.toString()
                 )
             );
         }

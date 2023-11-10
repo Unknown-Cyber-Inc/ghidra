@@ -541,6 +541,7 @@ public class Api {
 				false, "", true, false, pageCount, pageSize, 0, readMask, orderBy, false);
 
 			List<ExtendedProcedureResponse> responseProcs = response.getResource().getProcedures();
+			if (responseProcs == null) return new ProcedureModel[0];
 			ProcedureModel[] procList = new ProcedureModel[responseProcs.size()];
 
 			for (int i=0; i < responseProcs.size(); i++){
@@ -567,6 +568,7 @@ public class Api {
 				true, false);
 
 			List<Note> responseNotes = response.getResources();
+			if (responseNotes == null) return new NoteModel[0];
 			NoteModel[] noteList = new NoteModel[responseNotes.size()];
 
 			for (int i=0; i < responseNotes.size(); i++) {
@@ -673,6 +675,7 @@ public class Api {
 			EnvelopedTagResponseList200 response = filesApi.listFileTags(hash, "json", false, false,
 				"", true, false, expandMask);
 			List<TagResponse> responseTags = response.getResources();
+			if (responseTags == null) return new TagModel[0];
 			TagModel[] tagList = new TagModel[responseTags.size()];
 
 			for (int i=0; i < responseTags.size(); i++) {
@@ -742,6 +745,7 @@ public class Api {
 				"json", false, false, "", true, false, pageCount, pageSize, 0, maxThreshold, method, minThreshold);
 
 			List<Procedure> responseProcs = response.getResources();
+			if (responseProcs == null) return new ProcedureModel[0];
 			ProcedureModel[] procList = new ProcedureModel[responseProcs.size()];
 
 			for (int i=0; i < responseProcs.size(); i++) {
@@ -768,6 +772,7 @@ public class Api {
 			EnvelopedNoteList200 response = filesApi.listProcedureGenomicsNotes(hash, address, "json",
 				false, false, "", true, false);
 			List<Note> responseNotes = response.getResources();
+			if (responseNotes == null) return new NoteModel[0];
 			NoteModel[] noteList = new NoteModel[responseNotes.size()];
 
 			for (int i=0; i < responseNotes.size(); i++) {
@@ -879,6 +884,7 @@ public class Api {
 				"json", false, false, "", true, false);
 
 			List<TagResponse> responseTags = response.getResources();
+			if (responseTags == null) return new TagModel[0];
 			TagModel[] tagList = new TagModel[responseTags.size()];
 
 			for (int i=0; i < responseTags.size(); i++) {
