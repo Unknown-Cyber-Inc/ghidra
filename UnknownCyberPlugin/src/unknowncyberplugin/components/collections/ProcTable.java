@@ -59,4 +59,8 @@ public class ProcTable extends JTable {
             new CenterProcedureTabPane(value.toString())
         );
     }
+
+    public void clearTable(){
+        tableModel.setRowCount(0);
+    }
 }

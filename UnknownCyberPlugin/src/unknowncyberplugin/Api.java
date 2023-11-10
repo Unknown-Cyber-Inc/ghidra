@@ -510,7 +510,6 @@ public class Api {
 				true, false, pageCount, pageSize, 0, readMask, expandMask, maxThreshold, minThreshold);
 
 			List<Match> responseMatches = response.getResources();
-			if (responseMatches == null) return new MatchModel[0];
 			MatchModel[] matchList = new MatchModel[responseMatches.size()];
 			
 			for(int i=0; i < responseMatches.size(); i++){
@@ -531,6 +530,7 @@ public class Api {
 	 * Returns an array of Unknown Cyber Plugin Procedure objects.
 	 */
 	public static ProcedureModel[] getFileGenomics(String hash) {
+		hash = hash.toLowerCase();
 		try {
 			String readMask = "binary_id,occurrence_count,procedure_name,start_ea,status,notes,tags";
 			String orderBy = "start_ea";

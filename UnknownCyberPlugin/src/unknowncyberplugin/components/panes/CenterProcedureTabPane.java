@@ -62,18 +62,20 @@ public class CenterProcedureTabPane extends BaseCenterTabPane{
     }
 
     public void parseSimilarProcedures(ProcedureModel[] procs){
-        String currentBinaryId = binaryId;
+        String currentBinaryId = "";
         FilesRootNode currentFileRootNode = null;
         SimilaritiesRootNode simRootNode = ((ProcedureRootNode)getRootNode()).getSimilaritiesRootNode();
 
         for (ProcedureModel proc : procs){
             if (currentBinaryId.equals(proc.getBinaryId())){
-                currentFileRootNode.add((MutableTreeNode)proc);
+                currentFileRootNode.add(new SimilarProcedureNode(proc));
             } else {
+                currentBinaryId = proc.getBinaryId();
                 FileModel newFile = new FileModel(proc.getBinaryId(), null, proc.getBinaryId());
                 currentFileRootNode = new FilesRootNode(newFile, proc.getBinaryId());
+                currentFileRootNode.setBinaryId(proc.getBinaryId());
 
-                currentFileRootNode.add((MutableTreeNode)proc);
+                currentFileRootNode.add(new SimilarProcedureNode(proc));
                 simRootNode.add(currentFileRootNode);
             }
         }
@@ -86,7 +88,7 @@ public class CenterProcedureTabPane extends BaseCenterTabPane{
             nodeName = ((FilesRootNode)selectedNode).getNodeDisplayName();
             ctp.addClosableTab(
                 nodeName,
-                new CenterDerivedFileTabPane(((FilesRootNode)selectedNode).getBinaryId())
+                new CenterDerivedFileTabPane(selectedNode.toString())
             );
         } else if (selectedNode instanceof SimilarProcedureNode){
             nodeName = ((SimilarProcedureNode)selectedNode).getNodeDisplayName();
@@ -95,7 +97,7 @@ public class CenterProcedureTabPane extends BaseCenterTabPane{
                 nodeName,
                 new CenterDerivedProcedureTabPane(
                     ((SimilarProcedureNode)selectedNode).getNodeDisplayName(),
-                    parentNode.getBinaryId()
+                    parentNode.toString()
                 )
             );
         }

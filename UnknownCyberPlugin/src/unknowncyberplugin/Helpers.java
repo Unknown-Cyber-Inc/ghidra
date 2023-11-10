@@ -195,7 +195,12 @@ public class Helpers {
     return -1;
   }
 
-  // TODO: document me
+  /**
+   * Maps the FilePipeline response objects to strings.
+   * 
+   * @param pipeline
+   * @return
+   */
   public static Map<String, String> parsePipelines(FilePipeline pipeline){
     Map<String, String> pipelines = new LinkedHashMap<>();
 
