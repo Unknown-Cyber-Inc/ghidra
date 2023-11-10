@@ -36,11 +36,6 @@ public class ProcedureModel {
         return baseAdjustedStartEA;
     }
 
-    public void setAdjustedStartEA(String imageBase){
-        // TODO: implement this or delete
-        // Logic to adjust startEA with imageBase
-    }
-
     public String getProcedureName(){
         return procedureName;
     }

@@ -195,6 +195,7 @@ public class Helpers {
     return -1;
   }
 
+  // TODO: document me
   public static Map<String, String> parsePipelines(FilePipeline pipeline){
     Map<String, String> pipelines = new LinkedHashMap<>();
 
@@ -218,5 +219,13 @@ public class Helpers {
     }
 
     return pipelines;
+  }
+
+  /**
+   * Convenience function to wrap Address.subtract(Address) and clarify
+   * what's being done when this is called
+   */
+  public static long getRelativeAddress(Address address, Address base) {
+    return address.subtract(base);
   }
 }
