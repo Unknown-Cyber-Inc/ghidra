@@ -767,7 +767,6 @@ public class Api {
 	 * Returns an array of Unknown Cyber Plugin Note objects.
 	 */
 	public static NoteModel[] listProcedureGenomicsNotes(String hash, String address) {
-		System.out.println("START EA IN LISTPROCGENOM API CALL" + address);
 		try {
 			EnvelopedNoteList200 response = filesApi.listProcedureGenomicsNotes(hash, address, "json",
 				false, false, "", true, false);

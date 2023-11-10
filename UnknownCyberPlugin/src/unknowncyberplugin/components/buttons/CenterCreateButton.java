@@ -52,7 +52,6 @@ public class CenterCreateButton extends BaseButton {
         DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) node.getParent();
         String binaryId = rootNode.getBinaryId();
         String startEA = rootNode.getStartEA();
-        System.out.println("ROOT NODE START EA:" + startEA);
 
         // If the selected node is NotesRootNode or TagsRootNode
         if (node instanceof NotesRootNode){

@@ -74,7 +74,6 @@ public class CenterProcedureTabPane extends BaseCenterTabPane{
                 FileModel newFile = new FileModel(proc.getBinaryId(), null, proc.getBinaryId());
                 currentFileRootNode = new FilesRootNode(newFile, proc.getBinaryId());
                 currentFileRootNode.setBinaryId(proc.getBinaryId());
-                System.out.println("currFRNode BIN ID: " + currentFileRootNode.getBinaryId());
 
                 currentFileRootNode.add(new SimilarProcedureNode(proc));
                 simRootNode.add(currentFileRootNode);
