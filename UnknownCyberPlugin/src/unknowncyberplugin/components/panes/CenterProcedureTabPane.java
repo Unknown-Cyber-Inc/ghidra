@@ -62,7 +62,7 @@ public class CenterProcedureTabPane extends BaseCenterTabPane{
     }
 
     public void parseSimilarProcedures(ProcedureModel[] procs){
-        String currentBinaryId = binaryId;
+        String currentBinaryId = "";
         FilesRootNode currentFileRootNode = null;
         SimilaritiesRootNode simRootNode = ((ProcedureRootNode)getRootNode()).getSimilaritiesRootNode();
 
@@ -70,6 +70,7 @@ public class CenterProcedureTabPane extends BaseCenterTabPane{
             if (currentBinaryId.equals(proc.getBinaryId())){
                 currentFileRootNode.add(new SimilarProcedureNode(proc));
             } else {
+                currentBinaryId = proc.getBinaryId();
                 FileModel newFile = new FileModel(proc.getBinaryId(), null, proc.getBinaryId());
                 currentFileRootNode = new FilesRootNode(newFile, proc.getBinaryId());
 
