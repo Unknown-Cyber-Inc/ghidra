@@ -42,7 +42,6 @@ clean-all:
 
 # Recompiles the plugin and restarts the container
 reload:
-    just recompile
     just redist
     just kill
     just restart
@@ -51,9 +50,10 @@ reload:
 recompile:
     docker exec -it -u root --workdir "/plugins/UnknownCyberPlugin" ghidra /opt/gradle/gradlew clean build
     docker exec -it -u root --workdir "/plugins/UnknownCyberPlugin" ghidra mv ./build/libs/UnknownCyberPlugin.jar lib/
+    rm -rf build
 
 # Packages the dependencies for distribution
-redist:
+redist: recompile
     #!/bin/bash
     cd UnknownCyberPlugin
     mkdir -p dist/unknowncyber
@@ -64,7 +64,7 @@ redist:
     tar czvf unknowncyberplugin.tgz unknowncyber
     mv unknowncyberplugin.tgz ..
     cd ..
-    #rm -rf dist
+    rm -rf dist
 
 # Kills Ghidra
 kill:
