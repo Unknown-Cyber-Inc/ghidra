@@ -531,6 +531,7 @@ public class Api {
 	 * Returns an array of Unknown Cyber Plugin Procedure objects.
 	 */
 	public static ProcedureModel[] getFileGenomics(String hash) {
+		hash = hash.toLowerCase();
 		try {
 			String readMask = "binary_id,occurrence_count,procedure_name,start_ea,status,notes,tags";
 			String orderBy = "start_ea";
@@ -762,6 +763,7 @@ public class Api {
 	 * Returns an array of Unknown Cyber Plugin Note objects.
 	 */
 	public static NoteModel[] listProcedureGenomicsNotes(String hash, String address) {
+		System.out.println("START EA IN LISTPROCGENOM API CALL" + address);
 		try {
 			EnvelopedNoteList200 response = filesApi.listProcedureGenomicsNotes(hash, address, "json",
 				false, false, "", true, false);

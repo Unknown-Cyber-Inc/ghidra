@@ -14,18 +14,13 @@ public class ProcedureRootNode extends BaseRootNode<Object>{
     private SimilaritiesRootNode similaritiesRoot;
     private String startEA;
 
-    public ProcedureRootNode(Object nodeData, String binaryId){
+    public ProcedureRootNode(Object nodeData, String binaryId, String startEA){
         super(nodeData, binaryId);
+        this.startEA = startEA;
 
         notesRoot = new NotesRootNode();
-        notesRoot.add(new NoteNode(new NoteModel("TEST NOTE NODE", null, null, null)));
         tagsRoot = new TagsRootNode();
-        tagsRoot.add(new TagNode(new TagModel("TEST TAG NODE", null, null, null)));
         similaritiesRoot = new SimilaritiesRootNode();
-        FilesRootNode procHoldingFileRoot = new FilesRootNode(new FileModel(binaryId, binaryId, binaryId), binaryId);
-        similaritiesRoot.add(procHoldingFileRoot);
-        SimilarProcedureNode similarProcNode = new SimilarProcedureNode(new ProcedureModel("0x1000", "badMal", 10, "TEST PROC", 0, 0, binaryId));
-        procHoldingFileRoot.add(similarProcNode);
 
         add(notesRoot);
         add(tagsRoot);

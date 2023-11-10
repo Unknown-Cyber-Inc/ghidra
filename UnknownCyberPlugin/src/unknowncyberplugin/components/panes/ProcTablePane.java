@@ -24,6 +24,7 @@ public class ProcTablePane extends JScrollPane{
     }
     
     public void populate(Object[][] data){
+        table.clearTable();
         for (Object[] row : data){
             table.addTableRow(row);
         }

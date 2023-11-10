@@ -5,6 +5,8 @@ import java.awt.FlowLayout;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import unknowncyberplugin.components.buttons.TabCloseButton;
 import unknowncyberplugin.components.panes.BaseCenterTabPane;
@@ -23,6 +25,8 @@ public class CenterTabSubPanel extends JPanel{
             tabName = tabName.substring(0, 8) + "...";
         }
 
+        final String finalTabName = tabName;
+
         JLabel label = new JLabel(tabName);
 
         if (tabPane instanceof CenterProcedureTabPane){
@@ -38,6 +42,15 @@ public class CenterTabSubPanel extends JPanel{
             int index = pane.indexOfTabComponent(CenterTabSubPanel.this);
             if (index != -1){
                 pane.removeTabAndCheckTabCount(index);
+            }
+        });
+
+        label.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (!closeButton.contains(e.getPoint())) {
+                    pane.setActiveTabComponent(tabPane);
+                }
             }
         });
 

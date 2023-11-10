@@ -28,6 +28,7 @@ public class FileMatchesPaginationControls extends JPanel {
         prevButton.setEnabled(false);
         pageDisplay = new JLabel(String.valueOf(currentPage));
         nextButton = new JButton(">");
+        nextButton.setEnabled(false);
 
         firstButton.addActionListener(ev -> {
             firstPage();

@@ -10,7 +10,6 @@ import unknowncyberplugin.models.treenodes.roots.DerivedFileRootNode;
 
 public class CenterDerivedFileTabPane extends BaseCenterTabPane{
     private String fileName;
-    private MatchesRootNode matchesRoot;
     
     public CenterDerivedFileTabPane(String fileName){
         super(fileName, fileName, "file");
@@ -26,9 +25,5 @@ public class CenterDerivedFileTabPane extends BaseCenterTabPane{
             TagModel[] tags = Api.listFileTags(fileName);
             ((DerivedFileRootNode)getRootNode()).populateTags(tags);
         }
-    }
-
-    public MatchesRootNode getMatchesRootNode(){
-        return matchesRoot;
     }
 }

@@ -32,28 +32,6 @@ public class CenterDerivedProcedureTabPane extends BaseCenterTabPane{
         } else if (subRootNode instanceof TagsRootNode){
             TagModel[] tags = Api.listProcedureGenomicsTags(binaryId, startEa);
             ((ProcedureRootNode)getRootNode()).populateTags(tags);
-        } else if (subRootNode instanceof SimilaritiesRootNode){
-            ProcedureModel[] response = Api.listProcedureSimilarities(binaryId, startEa);
-            parseSimilarProcedures(response);
         }
     }
-
-    public void parseSimilarProcedures(ProcedureModel[] procs){
-        String currentBinaryId = null;
-        FilesRootNode currentFileRootNode = null;
-        SimilaritiesRootNode simRootNode = ((ProcedureRootNode)getRootNode()).getSimilaritiesRootNode();
-        
-        for (ProcedureModel proc : procs){
-            if (currentBinaryId.equals(proc.getBinaryId())){
-                currentFileRootNode.add((MutableTreeNode)proc);
-            } else {
-                FileModel newFile = new FileModel(proc.getBinaryId(), null, proc.getBinaryId());
-                currentFileRootNode = new FilesRootNode(newFile, proc.getBinaryId());
-
-                currentFileRootNode.add((MutableTreeNode)proc);
-                simRootNode.add(currentFileRootNode);
-            }
-        }
-    }
-    
 }

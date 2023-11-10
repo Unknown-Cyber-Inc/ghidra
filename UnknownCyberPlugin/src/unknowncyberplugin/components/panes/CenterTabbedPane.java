@@ -72,4 +72,8 @@ public class CenterTabbedPane extends JTabbedPane{
         }
         return (BaseCenterTabPane) getComponentAt(getSelectedIndex());
     }
+
+    public void setActiveTabComponent(BaseCenterTabPane tab){
+        setSelectedComponent(tab);
+    }
 }

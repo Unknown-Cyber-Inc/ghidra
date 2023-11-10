@@ -68,12 +68,12 @@ public class CenterProcedureTabPane extends BaseCenterTabPane{
 
         for (ProcedureModel proc : procs){
             if (currentBinaryId.equals(proc.getBinaryId())){
-                currentFileRootNode.add((MutableTreeNode)proc);
+                currentFileRootNode.add(new SimilarProcedureNode(proc));
             } else {
                 FileModel newFile = new FileModel(proc.getBinaryId(), null, proc.getBinaryId());
                 currentFileRootNode = new FilesRootNode(newFile, proc.getBinaryId());
 
-                currentFileRootNode.add((MutableTreeNode)proc);
+                currentFileRootNode.add(new SimilarProcedureNode(proc));
                 simRootNode.add(currentFileRootNode);
             }
         }
