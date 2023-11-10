@@ -27,7 +27,7 @@ public class CenterProcedureTabPane extends BaseCenterTabPane{
     public CenterProcedureTabPane(String startEa){
         super(startEa, References.getFileProvider().getOriginalSha1(), "procedure");
         this.startEa = startEa;
-        binaryId = ((ProcedureRootNode)getRootNode()).getBinaryId();
+        binaryId = References.getFileProvider().getOriginalSha1();
 
         tree.addMouseListener(new MouseAdapter() {
             @Override
@@ -62,7 +62,7 @@ public class CenterProcedureTabPane extends BaseCenterTabPane{
     }
 
     public void parseSimilarProcedures(ProcedureModel[] procs){
-        String currentBinaryId = null;
+        String currentBinaryId = binaryId;
         FilesRootNode currentFileRootNode = null;
         SimilaritiesRootNode simRootNode = ((ProcedureRootNode)getRootNode()).getSimilaritiesRootNode();
 
