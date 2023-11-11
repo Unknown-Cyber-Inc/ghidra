@@ -44,7 +44,7 @@ public class CenterTree extends JTree {
 
     public void editNode(DefaultMutableTreeNode node, Object userObject) {
         node.setUserObject(userObject);
-        centerTreeModel.reload(node);
+        centerTreeModel.reload();
     }
 
     public DefaultMutableTreeNode getCurrentSelection() {
