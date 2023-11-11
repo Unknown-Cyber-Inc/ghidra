@@ -5,6 +5,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import unknowncyberplugin.Api;
 import unknowncyberplugin.References;
 import unknowncyberplugin.components.collections.CenterTree;
+import unknowncyberplugin.components.collections.ProcTable;
 import unknowncyberplugin.components.panels.CenterPanel;
 import unknowncyberplugin.components.panes.BaseCenterTabPane;
 import unknowncyberplugin.components.popups.CenterCRUDPopup;
@@ -26,6 +27,8 @@ public class CenterEditButton extends BaseButton {
     private SimilaritiesRootNode simRoot;
     private String binaryId;
     private String popupReturnedText;
+    private ProcTable table;
+    private int rowNumber;
 
     public CenterEditButton() {
         super("Edit");
@@ -37,15 +40,24 @@ public class CenterEditButton extends BaseButton {
         tabPane = cp.getActiveTabComponent();
         selectedNode = cp.getSelectedTreeNode();
         tree = tabPane.getTree();
-        String currentDisplayName = selectedNode.toString();
+        table = References.getProcTablePane().getProcTable();
+        String textToEdit = selectedNode.toString();
+        if (selectedNode instanceof ProcedureRootNode){
+            for (int i=0; i < table.getRowCount(); i++){
+                if (table.getValueAt(i, 0).equals(textToEdit)){
+                    rowNumber = i;
+                    textToEdit = (String) table.getValueAt(rowNumber, 1);
+                }
+            }
+        }
 
         popupReturnedText = null;
 
         // bring up center popup filled with current data
         CenterCRUDPopup popup = new CenterCRUDPopup();
-        popupReturnedText = popup.displayAndGetResponse(currentDisplayName);
+        popupReturnedText = popup.displayAndGetResponse(textToEdit);
 
-        if (popupReturnedText != null && !(popupReturnedText.equals(currentDisplayName))){
+        if (popupReturnedText != null && !(popupReturnedText.equals(textToEdit))){
             // determine api call based on tab pane and node type
             if (tabPane.getRootNode() instanceof ProcedureRootNode){
                 ProcedureRootNode procRoot = (ProcedureRootNode) tabPane.getRootNode();
@@ -79,25 +91,18 @@ public class CenterEditButton extends BaseButton {
                     true
                 );
             }
+            clearSubRootNodes();
         } else if (selectedNode instanceof ProcedureRootNode){
-            // TODO: finish getting counts and status
-            // ProcedureModel updatedProcedure = Api.updateProcedureName(binaryId, startEA, popupReturnedText);
-            // if (updatedProcedure != null) {
-            //     tree.editNode(selectedNode, updatedProcedure);
-            // }
-            /*
             if (Api.updateProcedureName(binaryId, startEA, popupReturnedText)) {
-                ProcedureModel updatedProcedure = new ProcedureModel(((ProcedureRootNode)selectedNode).getNodeData().getCount(), ((ProcedureRootNode)selectedNode).getNodeData().getStatus(), startEA, popupReturnedText, binaryId);
-            } else {
-                References.getFileProvider().announce(
-                    "Failed to Update",
-                    "An error occurred while updating the procedure name, see the User Log for more information.",
-                    true
-                );
+                tree.editNode(selectedNode, new ProcedureModel(
+                    (String) table.getValueAt(rowNumber, 0), popupReturnedText,
+                    Integer.parseInt((String)table.getValueAt(rowNumber, 2)), (String) table.getValueAt(rowNumber, 3),
+                    Integer.parseInt((String)table.getValueAt(rowNumber, 4)), Integer.parseInt((String)table.getValueAt(rowNumber, 5)),
+                    binaryId
+                ));
             }
-            //*/
+            table.setValueAt(popupReturnedText, rowNumber, 1);
         }
-        clearSubRootNodes();
     }
 
     public void processDerivedFileTreeNode(){
