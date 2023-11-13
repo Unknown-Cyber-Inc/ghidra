@@ -76,17 +76,9 @@ public abstract class BaseRootNode<T> extends DefaultMutableTreeNode{
         }
     }
 
-    @Override
-    public void remove(int childIndex){
-        super.remove(childIndex);
-
-        if (getChildCount() == 0){
-            addPlaceholderNode();
-        }
-    }
-
     public void clearNode(){
         removeAllChildren();
+        addPlaceholderNode();
     }
 
     public void removePlaceholderNode(){
