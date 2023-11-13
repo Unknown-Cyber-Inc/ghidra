@@ -19,6 +19,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
@@ -32,7 +33,7 @@ import com.unknowncyber.magic.api.FilesApi;
 import com.unknowncyber.magic.model.EnvelopedFileGenomicsResponse200;
 import com.google.gson.JsonObject;
 import com.unknowncyber.magic.model.EnvelopedFile200;
-import com.unknowncyber.magic.model.EnvelopedMatchList200;
+import com.unknowncyber.magic.model.EnvelopedFileMatchResponseList200;
 import com.unknowncyber.magic.model.EnvelopedFileUploadResponse200;
 import com.unknowncyber.magic.model.EnvelopedFileUploadResponseList200;
 import com.unknowncyber.magic.model.EnvelopedNote200;
@@ -42,6 +43,7 @@ import com.unknowncyber.magic.model.EnvelopedProcedureList200;
 import com.unknowncyber.magic.model.EnvelopedTagCreatedResponse200;
 import com.unknowncyber.magic.model.EnvelopedTagResponseList200;
 import com.unknowncyber.magic.model.ExtendedProcedureResponse;
+import com.unknowncyber.magic.model.FileMatchResponse;
 import com.unknowncyber.magic.model.FilePipeline;
 import com.unknowncyber.magic.model.Match;
 import com.unknowncyber.magic.model.Note;
@@ -74,13 +76,8 @@ import io.swagger.client.ApiException;
  * Serves to hold easy-use wrappers for Unknown Cyber API calls.
  */
 public class Api {
-
-	// TODO: swap out env vars for actual testing/delivery
-	// for use with okhttp
-	private static String baseUrl = "https://api:80/v2/";
-	private static String apiKey = "&key=adminkey";
-	// private static String baseUrl = System.getenv("API_URI");
-	// private static String apiKey = "&key=" + System.getenv("API_KEY");
+	private static String baseUrl = System.getenv("API_URI") + "/";
+	private static String apiKey = "&key=" + System.getenv("API_KEY");
 
 	// Globally usable link disabler to clean up calls and inherently include the
 	// mandatory ? symbol needed for this and other parameters, for use with
@@ -147,6 +144,9 @@ public class Api {
 		// Output boolean to denote success/failure
 		boolean toReturn = false;
 
+		// Byte string to be used to identify content-version of file
+		String fileByteString = "";
+
 		try {
 			BasicBlockModel blockModel = new BasicBlockModel(program);
 			String fileType = program.getExecutableFormat();
@@ -180,10 +180,6 @@ public class Api {
 			}
 
 			try {
-				// Create and write to the file's JSON file
-				fileJson = Files.createTempFile("", ".json");
-				Files.write(fileJson, fileData.toJSONString().getBytes());
-
 				// Create the procedure's subdirectory
 				procDirectory = Files.createTempDirectory("");
 			} catch (Exception e) {
@@ -229,6 +225,9 @@ public class Api {
 										byteString = byteString + " " + String.format("%02x", myByte & 0xff);
 									}
 									byteString = byteString.trim();
+
+									// Add instruction byte string to global byte string
+									fileByteString = fileByteString + " " + byteString;
 
 									// Generate operand JSONArray
 									// Simultaneously, handle api_call behavior since that requires operand-level
@@ -363,6 +362,10 @@ public class Api {
 						throw new NestedException();
 					}
 				}
+
+				fileByteString = fileByteString.trim();
+				fileByteString = Base64.getEncoder().encodeToString(fileByteString.getBytes());
+				fileData.put("byte_data", fileByteString);
 			} catch (NestedException e) {
 				// Exception's most granular location has already been reported
 				// Escalate this to the highest try/catch block
@@ -371,6 +374,17 @@ public class Api {
 				// Unexpected error occurrs while looping functions, specify location and
 				// escalate
 				Msg.error(fileProvider, "Error occurred while traversing program functions.");
+				stashedException = e;
+				throw new NestedException();
+			}
+
+			try {
+				// Create and write to the file's JSON file
+				fileJson = Files.createTempFile("", ".json");
+				Files.write(fileJson, fileData.toJSONString().getBytes());
+			} catch (Exception e) {
+				// File error occurs, specify issue and escalate to highest try/catch block
+				Msg.error(fileProvider, "Error occurred while creating temp disassembly files.");
 				stashedException = e;
 				throw new NestedException();
 			}
@@ -390,7 +404,7 @@ public class Api {
 
 			try {
 				EnvelopedFileUploadResponse200 response = filesApi.uploadDisassembly(zip.getFile(),
-					fileType, fileProvider.getOriginalSha1(), "json", false, false, "", true, false, false);
+					"json", false, false, "", true, false, false);
 				String uploadHash = response.getResource().getSha1();
 				References.setUploadHash(uploadHash);
 				References.getFileButtonsPanel().getStatusButton().setEnabled(true);
@@ -506,14 +520,14 @@ public class Api {
 			Integer pageSize = 25;
 			Float maxThreshold = 1.0f;
 			Float minThreshold = 0.7f;
-			EnvelopedMatchList200 response = filesApi.listFileMatches(hash, "json", false, false, "",
+			EnvelopedFileMatchResponseList200 response = filesApi.listFileMatches(hash, "json", false, false, "",
 				true, false, pageCount, pageSize, 0, readMask, expandMask, maxThreshold, minThreshold);
 
-			List<Match> responseMatches = response.getResources();
+			List<FileMatchResponse> responseMatches = response.getResources();
 			MatchModel[] matchList = new MatchModel[responseMatches.size()];
 			
 			for(int i=0; i < responseMatches.size(); i++){
-				Match match = responseMatches.get(i);
+				FileMatchResponse match = responseMatches.get(i);
 				matchList[i] = new MatchModel(match.getSha1(), match.getMaxSimilarity());
 			}
 

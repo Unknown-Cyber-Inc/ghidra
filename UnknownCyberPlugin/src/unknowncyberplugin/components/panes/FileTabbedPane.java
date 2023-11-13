@@ -54,7 +54,17 @@ public class FileTabbedPane extends JTabbedPane {
             fcp.disableButtons();
             References.getFilePanel().getPageControls().setVisible(true);
             FileMatchesPaginationControls pc = References.getFileMatchesPaginationControls();
-            items = Api.listFileMatches(hash, pc.getCurrentPage());
+
+            // TODO: this always runs on startup, even when file is not accessible
+            // This try/catch will suppress ALL errors and set items to null until
+            // we can figure out a better way of handling this that doesn't involve
+            // vomiting an error on startup
+            try {
+                items = Api.listFileMatches(hash, pc.getCurrentPage());
+            } catch (Exception e) {
+                items = null;
+            }
+
             if (items != null){
                 pc.setCurrentPageSize(items.length);
             }

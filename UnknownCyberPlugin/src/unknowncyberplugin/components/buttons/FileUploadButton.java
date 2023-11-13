@@ -34,8 +34,8 @@ public class FileUploadButton extends BaseButton {
 				}
 			} else if (uploadType.equals("Disassembly")) {
 				// TODO: remove this for final release
-				//*
-				//Api.listFileMatches("b87a947f3e85701fcdadd733e9b055a65a3b1308");
+				/*
+				Api.updateProcedureName("b87a947f3e85701fcdadd733e9b055a65a3b1308", "0x1000", "test_NAME");
 				int dummy = 5;
 				if (dummy == 5) {
 					return;
