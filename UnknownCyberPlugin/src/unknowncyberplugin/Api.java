@@ -30,6 +30,7 @@ import org.json.simple.parser.JSONParser;
 import net.lingala.zip4j.ZipFile;
 
 import com.unknowncyber.magic.api.FilesApi;
+import com.unknowncyber.magic.api.ProceduresApi;
 import com.unknowncyber.magic.model.EnvelopedFileGenomicsResponse200;
 import com.google.gson.JsonObject;
 import com.unknowncyber.magic.model.EnvelopedFile200;
@@ -40,6 +41,7 @@ import com.unknowncyber.magic.model.EnvelopedNote200;
 import com.unknowncyber.magic.model.EnvelopedNote201;
 import com.unknowncyber.magic.model.EnvelopedNoteList200;
 import com.unknowncyber.magic.model.EnvelopedProcedureList200;
+import com.unknowncyber.magic.model.EnvelopedProcedureTagCreatedResponse201;
 import com.unknowncyber.magic.model.EnvelopedTagCreatedResponse200;
 import com.unknowncyber.magic.model.EnvelopedTagResponseList200;
 import com.unknowncyber.magic.model.ExtendedProcedureResponse;
@@ -48,6 +50,7 @@ import com.unknowncyber.magic.model.FilePipeline;
 import com.unknowncyber.magic.model.Match;
 import com.unknowncyber.magic.model.Note;
 import com.unknowncyber.magic.model.Procedure;
+import com.unknowncyber.magic.model.ProcedureTagCreatedResponse;
 import com.unknowncyber.magic.model.Tag;
 import com.unknowncyber.magic.model.TagResponse;
 import com.unknowncyber.magic.model.TagCreatedResponse;
@@ -1029,7 +1032,7 @@ public class Api {
 		}
 	}
 
-	public static NoteModel updateProcedureGroupNote(String hardHash, String noteId, String note){
+	public static boolean updateProcedureGroupNote(String hardHash, String noteId, String note){
 		Response response = null;
 		try {
 			String updateMask = "&update_mask=note";
@@ -1079,9 +1082,9 @@ public class Api {
 		try {
 			EnvelopedProcedureTagCreatedResponse201 response = procsApi.addProcedureTag(hardHash, name, "#329db6", "json", false, false, "", true, false, false);
 
-			TagCreatedResponse tag = response.getResource();
+			ProcedureTagCreatedResponse tag = response.getResource();
 
-			return new TagModel(tag.getName(), null, tag.getCreateTime(), tag.getId());
+			return new TagModel(tag.getName(), null, tag.getCreateTime().toString(), tag.getId());
 		} catch (Exception e) {
 			Msg.error(fileProvider, e);
 			return null;

@@ -8,6 +8,7 @@ import unknowncyberplugin.components.collections.CenterTree;
 import unknowncyberplugin.components.collections.ProcTable;
 import unknowncyberplugin.components.panels.CenterPanel;
 import unknowncyberplugin.components.panes.BaseCenterTabPane;
+import unknowncyberplugin.components.panes.CenterProcedureTabPane;
 import unknowncyberplugin.components.popups.CenterCRUDPopup;
 import unknowncyberplugin.models.responsedata.NoteModel;
 import unknowncyberplugin.models.responsedata.ProcedureModel;
@@ -17,6 +18,7 @@ import unknowncyberplugin.models.treenodes.roots.ProcedureRootNode;
 import unknowncyberplugin.models.treenodes.roots.NotesRootNode;
 import unknowncyberplugin.models.treenodes.roots.TagsRootNode;
 import unknowncyberplugin.models.treenodes.roots.SimilaritiesRootNode;
+import unknowncyberplugin.models.treenodes.roots.ProcGroupNotesRootNode;
 
 public class CenterEditButton extends BaseButton {
     private BaseCenterTabPane tabPane;
@@ -66,7 +68,7 @@ public class CenterEditButton extends BaseButton {
                 notesRoot = procRoot.getNoteRoot();
                 tagsRoot = procRoot.getTagsRootNode();
                 if (selectedNode.getParent() instanceof ProcGroupNotesRootNode){
-                    hardHash = (CenterProcedureTabPane) tabPane.getHardHash();
+                    hardHash = ((CenterProcedureTabPane)tabPane).getHardHash();
                 }
                 processProcedureTreeNode(procRoot);
             } else if (tabPane.getRootNode() instanceof DerivedFileRootNode) {
@@ -118,7 +120,7 @@ public class CenterEditButton extends BaseButton {
                     (String) table.getValueAt(rowNumber, 0), popupReturnedText,
                     Integer.parseInt((String)table.getValueAt(rowNumber, 2)), (String) table.getValueAt(rowNumber, 3),
                     Integer.parseInt((String)table.getValueAt(rowNumber, 4)), Integer.parseInt((String)table.getValueAt(rowNumber, 5)),
-                    binaryId
+                    binaryId, (String) table.getValueAt(rowNumber, 6)
                 ));
             }
             table.setValueAt(popupReturnedText, rowNumber, 1);

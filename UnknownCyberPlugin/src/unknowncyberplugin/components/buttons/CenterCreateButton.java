@@ -7,6 +7,7 @@ import unknowncyberplugin.References;
 import unknowncyberplugin.components.collections.CenterTree;
 import unknowncyberplugin.components.panels.CenterPanel;
 import unknowncyberplugin.components.panes.BaseCenterTabPane;
+import unknowncyberplugin.components.panes.CenterProcedureTabPane;
 import unknowncyberplugin.components.popups.CenterCRUDPopup;
 import unknowncyberplugin.models.responsedata.NoteModel;
 import unknowncyberplugin.models.responsedata.TagModel;
@@ -17,6 +18,8 @@ import unknowncyberplugin.models.treenodes.roots.NotesRootNode;
 import unknowncyberplugin.models.treenodes.roots.ProcedureRootNode;
 import unknowncyberplugin.models.treenodes.roots.SimilaritiesRootNode;
 import unknowncyberplugin.models.treenodes.roots.TagsRootNode;
+import unknowncyberplugin.models.treenodes.roots.ProcGroupNotesRootNode;
+import unknowncyberplugin.models.treenodes.roots.ProcGroupTagsRootNode;
 
 public class CenterCreateButton extends BaseButton {
     private BaseCenterTabPane tabPane;
@@ -73,6 +76,7 @@ public class CenterCreateButton extends BaseButton {
         ProcedureRootNode procRoot = (ProcedureRootNode) tabPane.getRootNode();
         DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) selectedNode.getParent();
         String startEA = procRoot.getStartEA();
+        String hardHash = ((CenterProcedureTabPane)tabPane).getHardHash();
 
         // If the selected node is NotesRootNode, TagsRootNode, ProcGroupNotesRootNode, or ProcGroupTagsRootNode
         if (selectedNode instanceof NotesRootNode){
@@ -80,17 +84,17 @@ public class CenterCreateButton extends BaseButton {
         } else if (selectedNode instanceof TagsRootNode){
             createProcedureTagNode(startEA, selectedNode);
         } else if (selectedNode instanceof ProcGroupNotesRootNode){
-            createProcedureGroupNoteNode(proc.getHardHash(), selectedNode);
+            createProcedureGroupNoteNode(hardHash, selectedNode);
         } else if (selectedNode instanceof ProcGroupTagsRootNode){
-            createProcedureGroupTagNode(proc.getHardHash(), selectedNode);
+            createProcedureGroupTagNode(hardHash, selectedNode);
         }else if (parentNode instanceof NotesRootNode){ // If the selected node is a Note/TagNode of a procedure
             createProcedureNoteNode(startEA, parentNode);
         } else if (parentNode instanceof TagsRootNode){
             createProcedureTagNode(startEA, parentNode);
         } else if (parentNode instanceof ProcGroupNotesRootNode){ // If the selected node is a Note/TagNode of a proc group
-            createProcedureGroupNoteNode(proc.getHardHash(), parentNode);
+            createProcedureGroupNoteNode(hardHash, parentNode);
         } else if (parentNode instanceof ProcGroupTagsRootNode){
-            createProcedureGroupTagNode(proc.getHardHash(), parentNode);
+            createProcedureGroupTagNode(hardHash, parentNode);
         }
     }
 

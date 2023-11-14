@@ -19,6 +19,8 @@ import unknowncyberplugin.models.treenodes.roots.ProcedureRootNode;
 import unknowncyberplugin.models.treenodes.roots.NotesRootNode;
 import unknowncyberplugin.models.treenodes.roots.TagsRootNode;
 import unknowncyberplugin.models.treenodes.roots.SimilaritiesRootNode;
+import unknowncyberplugin.models.treenodes.roots.ProcGroupNotesRootNode;
+import unknowncyberplugin.models.treenodes.roots.ProcGroupTagsRootNode;
 
 public class CenterDeleteButton extends BaseButton {
     private BaseCenterTabPane tabPane;
@@ -71,7 +73,7 @@ public class CenterDeleteButton extends BaseButton {
         }
         DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) selectedNode.getParent();
         String startEA = procRoot.getStartEA();
-        String hardHash = tabPane.getHardHash();
+        String hardHash = ((CenterProcedureTabPane)tabPane).getHardHash();
 
         if (parentNode instanceof NotesRootNode){ // If the selected node is a Note/TagNode of a procedure
             boolean successful = Api.deleteProcedureGenomicsNote(binaryId, startEA, ((NoteNode)selectedNode).getNodeData().getId());
