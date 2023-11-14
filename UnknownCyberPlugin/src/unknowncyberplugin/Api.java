@@ -41,8 +41,8 @@ import com.unknowncyber.magic.model.EnvelopedNote200;
 import com.unknowncyber.magic.model.EnvelopedNote201;
 import com.unknowncyber.magic.model.EnvelopedNoteList200;
 import com.unknowncyber.magic.model.EnvelopedProcedureList200;
-import com.unknowncyber.magic.model.EnvelopedProcedureTagCreatedResponse201;
 import com.unknowncyber.magic.model.EnvelopedTagCreatedResponse200;
+import com.unknowncyber.magic.model.EnvelopedTagCreatedResponse201;
 import com.unknowncyber.magic.model.EnvelopedTagResponseList200;
 import com.unknowncyber.magic.model.ExtendedProcedureResponse;
 import com.unknowncyber.magic.model.FileMatchResponse;
@@ -50,7 +50,6 @@ import com.unknowncyber.magic.model.FilePipeline;
 import com.unknowncyber.magic.model.Match;
 import com.unknowncyber.magic.model.Note;
 import com.unknowncyber.magic.model.Procedure;
-import com.unknowncyber.magic.model.ProcedureTagCreatedResponse;
 import com.unknowncyber.magic.model.Tag;
 import com.unknowncyber.magic.model.TagResponse;
 import com.unknowncyber.magic.model.TagCreatedResponse;
@@ -1080,9 +1079,9 @@ public class Api {
 
 	public static TagModel createProcedureGroupTag(String hardHash, String name){
 		try {
-			EnvelopedProcedureTagCreatedResponse201 response = procsApi.addProcedureTag(hardHash, name, "#329db6", "json", false, false, "", true, false, false);
+			EnvelopedTagCreatedResponse201 response = procsApi.addProcedureTag(hardHash, name, "#329db6", "json", false, false, "", true, false, false);
 
-			ProcedureTagCreatedResponse tag = response.getResource();
+			TagCreatedResponse tag = response.getResource();
 
 			return new TagModel(tag.getName(), null, tag.getCreateTime().toString(), tag.getId());
 		} catch (Exception e) {
