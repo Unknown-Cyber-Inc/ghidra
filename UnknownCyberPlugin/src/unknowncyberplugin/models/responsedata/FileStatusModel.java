@@ -28,10 +28,10 @@ public class FileStatusModel {
     }
 
     @Override
-    public String toString(){
-        StringBuilder str  = new StringBuilder("Upload status: ").append(status).append("\n");
-        if (pipelineStatus != null){
-            for (Map.Entry<String, String> entry : pipelineStatus.entrySet()){
+    public String toString() {
+        StringBuilder str = new StringBuilder("Upload status: ").append(status).append("\n");
+        if (pipelineStatus != null) {
+            for (Map.Entry<String, String> entry : pipelineStatus.entrySet()) {
                 str.append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
             }
         }
