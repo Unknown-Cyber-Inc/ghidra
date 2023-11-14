@@ -76,8 +76,14 @@ import io.swagger.client.ApiException;
  * Serves to hold easy-use wrappers for Unknown Cyber API calls.
  */
 public class Api {
-	private static String baseUrl = System.getenv("API_URI") + "/";
-	private static String apiKey = "&key=" + System.getenv("API_KEY");
+	// TODO: swap these out once the ENV VARS change
+	//private static final String API_HOST_ENV = "MAGIC_API_HOST";
+	//private static final String API_KEY_ENV = "MAGIC_API_KEY";
+	private static final String API_HOST_ENV = "API_URI";
+	private static final String API_KEY_ENV = "API_KEY";
+
+	private static String baseUrl = System.getenv(API_HOST_ENV) + "/";
+	private static String apiKey = "&key=" + System.getenv(API_KEY_ENV);
 
 	// Globally usable link disabler to clean up calls and inherently include the
 	// mandatory ? symbol needed for this and other parameters, for use with
@@ -478,8 +484,29 @@ public class Api {
 			EnvelopedFile200 response = filesApi.getFile(hash, "json", false, false, "", true, false,
 				readMask, expandMask, dynamicMask);
 			return true;
+		} catch (ApiException e) {
+			Msg.error(fileProvider, e);
+			if (e.getCode() == 401) {
+				fileProvider.announce(
+					"Invalid API Key",
+					"The API key set under the " + API_KEY_ENV + " environment variable does not match " +
+					"any API keys in your MAGIC system.  Please check to make sure you are using a valid " +
+					"MAGIC API key.",
+					true
+				);
+			}
+			return false;
 		} catch (Exception e) {
 			Msg.error(fileProvider, e);
+			Msg.error(fileProvider, e);
+			if (e.toString().contains("UnknownHostException")) {
+				fileProvider.announce(
+					"Invalid API Host",
+					"The API host set under the " + API_HOST_ENV + " environment variable cannot connect " +
+					"to the MAGIC system.  Please check to make sure you have set the API host correctly.",
+					true
+				);
+			}
 			return false;
 		}
 	}
