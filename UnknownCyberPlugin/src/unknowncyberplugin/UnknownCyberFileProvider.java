@@ -7,6 +7,7 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 import com.unknowncyber.magic.api.FilesApi;
+import com.unknowncyber.magic.api.ProceduresApi;
 
 import docking.WindowPosition;
 import ghidra.framework.plugintool.ComponentProviderAdapter;
@@ -23,6 +24,7 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 	// as opposed to being passed into functions as a local reference.
 	private ApiClient apiClient;
 	private FilesApi filesApi;
+	private ProceduresApi procsApi;
 
 	// GUI's main panel which holds all other panels
 	private JPanel mainPanel;
@@ -80,6 +82,7 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 		setVisible(true);
 		apiClient = new ApiClient();
 		filesApi = new FilesApi(apiClient);
+		procsApi = new ProceduresApi(apiClient);
 	}
 
 	public Program getProgram(){
@@ -92,6 +95,10 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 
 	public FilesApi getFilesApi() {
 		return filesApi;
+	}
+
+	public ProceduresApi getProcsApi() {
+		return procsApi;
 	}
 
 	public FunctionIterator getFunctionIterator(){
