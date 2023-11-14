@@ -57,7 +57,7 @@ redist: recompile
     #!/bin/bash
     cd UnknownCyberPlugin
     mkdir -p dist/unknowncyber
-    cp -r data extension.properties lib LICENSE.txt Module.manifest dist/unknowncyber/
+    cp -r extension.properties lib LICENSE.txt Module.manifest dist/unknowncyber/
     zip UnknownCyberPlugin-src.zip src/*
     mv UnknownCyberPlugin-src.zip dist/unknowncyber/lib/
     cd dist
@@ -79,7 +79,7 @@ redist-local: recompile-local
     #!/bin/bash
     cd UnknownCyberPlugin
     mkdir -p dist/unknowncyber
-    cp -r data extension.properties lib LICENSE.txt Module.manifest dist/unknowncyber/
+    cp -r extension.properties lib LICENSE.txt Module.manifest dist/unknowncyber/
     zip UnknownCyberPlugin-src.zip src/*
     mv UnknownCyberPlugin-src.zip dist/unknowncyber/lib/
     cd dist
