@@ -61,8 +61,30 @@ redist: recompile
     zip UnknownCyberPlugin-src.zip src/*
     mv UnknownCyberPlugin-src.zip dist/unknowncyber/lib/
     cd dist
-    tar czvf unknowncyberplugin.tgz unknowncyber
-    mv unknowncyberplugin.tgz ..
+    tar czvf unknowncyberghidraplugin.tgz unknowncyber
+    mv unknowncyberghidraplugin.tgz ..
+    cd ..
+    rm -rf dist
+
+# Recompiles the plugin
+recompile-local:
+    #!/bin/bash
+    cd UnknownCyberPlugin
+    /opt/gradle/gradlew clean build
+    mv ./build/libs/UnknownCyberPlugin.jar lib/
+    rm -rf build
+
+# Packages the dependencies for distribution
+redist-local: recompile-local
+    #!/bin/bash
+    cd UnknownCyberPlugin
+    mkdir -p dist/unknowncyber
+    cp -r data extension.properties lib LICENSE.txt Module.manifest dist/unknowncyber/
+    zip UnknownCyberPlugin-src.zip src/*
+    mv UnknownCyberPlugin-src.zip dist/unknowncyber/lib/
+    cd dist
+    tar czvf unknowncyberghidraplugin.tgz unknowncyber
+    mv unknowncyberghidraplugin.tgz ..
     cd ..
     rm -rf dist
 
