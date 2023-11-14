@@ -23,10 +23,12 @@ import unknowncyberplugin.models.treenodes.roots.TagsRootNode;
 public class CenterProcedureTabPane extends BaseCenterTabPane{
     private String startEa;
     private String binaryId;
+    private String hardHash;
 
-    public CenterProcedureTabPane(String startEa){
+    public CenterProcedureTabPane(String startEa, String hardHash){
         super(startEa, References.getFileProvider().getOriginalSha1(), "procedure");
         this.startEa = startEa;
+        this.hardHash = hardHash;
         binaryId = References.getFileProvider().getOriginalSha1();
 
         tree.addMouseListener(new MouseAdapter() {
@@ -45,6 +47,10 @@ public class CenterProcedureTabPane extends BaseCenterTabPane{
                 }
             }
         });
+    }
+
+    public String getHardHash(){
+        return hardHash;
     }
 
     @Override

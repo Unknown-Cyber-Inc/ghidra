@@ -74,16 +74,23 @@ public class CenterCreateButton extends BaseButton {
         DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) selectedNode.getParent();
         String startEA = procRoot.getStartEA();
 
-        // If the selected node is NotesRootNode or TagsRootNode
+        // If the selected node is NotesRootNode, TagsRootNode, ProcGroupNotesRootNode, or ProcGroupTagsRootNode
         if (selectedNode instanceof NotesRootNode){
             createProcedureNoteNode(startEA, selectedNode);
         } else if (selectedNode instanceof TagsRootNode){
             createProcedureTagNode(startEA, selectedNode);
-        // If the selected node is a NoteNode or a TagNode
-        } else if (parentNode instanceof NotesRootNode){
+        } else if (selectedNode instanceof ProcGroupNotesRootNode){
+            createProcedureGroupNoteNode(proc.getHardHash(), selectedNode);
+        } else if (selectedNode instanceof ProcGroupTagsRootNode){
+            createProcedureGroupTagNode(proc.getHardHash(), selectedNode);
+        }else if (parentNode instanceof NotesRootNode){ // If the selected node is a Note/TagNode of a procedure
             createProcedureNoteNode(startEA, parentNode);
         } else if (parentNode instanceof TagsRootNode){
             createProcedureTagNode(startEA, parentNode);
+        } else if (parentNode instanceof ProcGroupNotesRootNode){ // If the selected node is a Note/TagNode of a proc group
+            createProcedureGroupNoteNode(proc.getHardHash(), parentNode);
+        } else if (parentNode instanceof ProcGroupTagsRootNode){
+            createProcedureGroupTagNode(proc.getHardHash(), parentNode);
         }
     }
 
@@ -111,6 +118,20 @@ public class CenterCreateButton extends BaseButton {
 
     public void createProcedureTagNode(String startEA, DefaultMutableTreeNode rootNode){
         TagModel newTag = Api.createProcedureGenomicsTag(binaryId, startEA, popupReturnedText);
+        if(newTag != null){
+            tree.addNode(rootNode, new TagNode(newTag));
+        }
+    }
+
+    public void createProcedureGroupNoteNode(String hardHash, DefaultMutableTreeNode rootNode){
+        NoteModel newNote = Api.createProcedureGroupNote(hardHash, popupReturnedText);
+        if(newNote != null){
+            tree.addNode(rootNode, new NoteNode(newNote));
+        }
+    }
+
+    public void createProcedureGroupTagNode(String hardHash, DefaultMutableTreeNode rootNode){
+        TagModel newTag = Api.createProcedureGroupTag(hardHash, popupReturnedText);
         if(newTag != null){
             tree.addNode(rootNode, new TagNode(newTag));
         }

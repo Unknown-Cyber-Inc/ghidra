@@ -28,7 +28,7 @@ public class ProcRetrievalButton extends BaseButton {
 
         int index = 0;
         for (ProcedureModel proc : procs) {
-            procList[index] = new String[] { proc.getStartEA(), proc.getProcedureName(), proc.getCount(),
+            procList[index] = new String[] { proc.getStartEA(), proc.getProcedureName(), proc.getHardHash(), proc.getCount(),
                     proc.getStatus(), proc.getNotes(), proc.getTags()};
             index++;
         }

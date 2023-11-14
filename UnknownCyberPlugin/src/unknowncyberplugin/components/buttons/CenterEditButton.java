@@ -25,6 +25,7 @@ public class CenterEditButton extends BaseButton {
     private NotesRootNode notesRoot;
     private TagsRootNode tagsRoot;
     private SimilaritiesRootNode simRoot;
+    private String hardHash;
     private String binaryId;
     private String popupReturnedText;
     private ProcTable table;
@@ -64,6 +65,9 @@ public class CenterEditButton extends BaseButton {
                 binaryId = procRoot.getBinaryId();
                 notesRoot = procRoot.getNoteRoot();
                 tagsRoot = procRoot.getTagsRootNode();
+                if (selectedNode.getParent() instanceof ProcGroupNotesRootNode){
+                    hardHash = (CenterProcedureTabPane) tabPane.getHardHash();
+                }
                 processProcedureTreeNode(procRoot);
             } else if (tabPane.getRootNode() instanceof DerivedFileRootNode) {
                 DerivedFileRootNode filesRoot = (DerivedFileRootNode) tabPane.getRootNode();
@@ -76,8 +80,9 @@ public class CenterEditButton extends BaseButton {
     
     public void processProcedureTreeNode(ProcedureRootNode procRoot){
         String startEA = procRoot.getStartEA();
+        DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) selectedNode.getParent();
 
-        if (selectedNode instanceof NoteNode){
+        if (parentNode instanceof NotesRootNode){
             if (Api.updateProcedureGenomicsNote(binaryId, startEA, ((NoteNode)selectedNode).getNodeData().getId(), popupReturnedText)) {
                 NoteModel note = new NoteModel(
                     popupReturnedText, ((NoteNode)selectedNode).getNodeData().getId(),
@@ -92,6 +97,21 @@ public class CenterEditButton extends BaseButton {
                 );
             }
             clearSubRootNodes();
+        } else if (parentNode instanceof ProcGroupNotesRootNode){
+
+            if (Api.updateProcedureGroupNote(hardHash, ((NoteNode)selectedNode).getNodeData().getId(), popupReturnedText)) {
+                NoteModel note = new NoteModel(
+                    popupReturnedText, ((NoteNode)selectedNode).getNodeData().getId(),
+                    ((NoteNode)selectedNode).getNodeData().getUserName(),
+                    ((NoteNode)selectedNode).getNodeData().getTimeStamp());
+                tree.editNode(selectedNode, note);
+            } else {
+                References.getFileProvider().announce(
+                    "Failed to Update",
+                    "An error occurred while updating the procedure group note, see the User Log for more information.",
+                    true
+                );
+            }
         } else if (selectedNode instanceof ProcedureRootNode){
             if (Api.updateProcedureName(binaryId, startEA, popupReturnedText)) {
                 tree.editNode(selectedNode, new ProcedureModel(
