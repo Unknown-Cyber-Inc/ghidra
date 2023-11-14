@@ -28,6 +28,8 @@ public class CenterCreateButton extends BaseButton {
     private NotesRootNode notesRoot;
     private TagsRootNode tagsRoot;
     private SimilaritiesRootNode simRoot;
+    private ProcGroupNotesRootNode procGroupNotesRoot;
+    private ProcGroupTagsRootNode procGroupTagsRoot;
     private String binaryId;
     private String popupReturnedText;
 
@@ -77,6 +79,12 @@ public class CenterCreateButton extends BaseButton {
         DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) selectedNode.getParent();
         String startEA = procRoot.getStartEA();
         String hardHash = ((CenterProcedureTabPane)tabPane).getHardHash();
+
+        if (tabPane instanceof CenterProcedureTabPane){
+            simRoot = procRoot.getSimilaritiesRootNode();
+            procGroupNotesRoot = procRoot.getProcGroupNoteRoot();
+            procGroupTagsRoot = procRoot.getProcGroupTagsRootNode();
+        }
 
         // If the selected node is NotesRootNode, TagsRootNode, ProcGroupNotesRootNode, or ProcGroupTagsRootNode
         if (selectedNode instanceof NotesRootNode){
@@ -161,6 +169,14 @@ public class CenterCreateButton extends BaseButton {
         if (simRoot != null){
             simRoot.clearNode();
         }
+        if (procGroupNotesRoot != null){
+            procGroupNotesRoot.clearNode();
+        }
+        if (procGroupTagsRoot != null){
+            procGroupTagsRoot.clearNode();
+        }
         simRoot = null;
+        procGroupNotesRoot = null;
+        procGroupTagsRoot = null;
     }
 }

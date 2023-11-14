@@ -123,6 +123,14 @@ public class CenterDeleteButton extends BaseButton {
         if (simRoot != null){
             simRoot.clearNode();
         }
+        if (procGroupNotesRoot != null){
+            procGroupNotesRoot.clearNode();
+        }
+        if (procGroupTagsRoot != null){
+            procGroupTagsRoot.clearNode();
+        }
         simRoot = null;
+        procGroupNotesRoot = null;
+        procGroupTagsRoot = null;
     }
 }

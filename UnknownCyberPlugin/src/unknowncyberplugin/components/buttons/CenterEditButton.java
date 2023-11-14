@@ -19,6 +19,7 @@ import unknowncyberplugin.models.treenodes.roots.NotesRootNode;
 import unknowncyberplugin.models.treenodes.roots.TagsRootNode;
 import unknowncyberplugin.models.treenodes.roots.SimilaritiesRootNode;
 import unknowncyberplugin.models.treenodes.roots.ProcGroupNotesRootNode;
+import unknowncyberplugin.models.treenodes.roots.ProcGroupTagsRootNode;
 
 public class CenterEditButton extends BaseButton {
     private BaseCenterTabPane tabPane;
@@ -27,6 +28,8 @@ public class CenterEditButton extends BaseButton {
     private NotesRootNode notesRoot;
     private TagsRootNode tagsRoot;
     private SimilaritiesRootNode simRoot;
+    private ProcGroupNotesRootNode procGroupNotesRoot;
+    private ProcGroupTagsRootNode procGroupTagsRoot;
     private String hardHash;
     private String binaryId;
     private String popupReturnedText;
@@ -83,6 +86,11 @@ public class CenterEditButton extends BaseButton {
     public void processProcedureTreeNode(ProcedureRootNode procRoot){
         String startEA = procRoot.getStartEA();
         DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) selectedNode.getParent();
+        if (tabPane instanceof CenterProcedureTabPane){
+            simRoot = procRoot.getSimilaritiesRootNode();
+            procGroupNotesRoot = procRoot.getProcGroupNoteRoot();
+            procGroupTagsRoot = procRoot.getProcGroupTagsRootNode();
+        }
 
         if (parentNode instanceof NotesRootNode){
             if (Api.updateProcedureGenomicsNote(binaryId, startEA, ((NoteNode)selectedNode).getNodeData().getId(), popupReturnedText)) {
@@ -114,6 +122,7 @@ public class CenterEditButton extends BaseButton {
                     true
                 );
             }
+            clearSubRootNodes();
         } else if (selectedNode instanceof ProcedureRootNode){
             if (Api.updateProcedureName(binaryId, startEA, popupReturnedText)) {
                 tree.editNode(selectedNode, new ProcedureModel(
@@ -152,6 +161,14 @@ public class CenterEditButton extends BaseButton {
         if (simRoot != null){
             simRoot.clearNode();
         }
+        if (procGroupNotesRoot != null){
+            procGroupNotesRoot.clearNode();
+        }
+        if (procGroupTagsRoot != null){
+            procGroupTagsRoot.clearNode();
+        }
         simRoot = null;
+        procGroupNotesRoot = null;
+        procGroupTagsRoot = null;
     }
 }

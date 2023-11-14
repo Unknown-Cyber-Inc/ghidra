@@ -37,17 +37,20 @@ import com.unknowncyber.magic.model.EnvelopedFile200;
 import com.unknowncyber.magic.model.EnvelopedFileMatchResponseList200;
 import com.unknowncyber.magic.model.EnvelopedFileUploadResponse200;
 import com.unknowncyber.magic.model.EnvelopedFileUploadResponseList200;
+import com.unknowncyber.magic.model.EnvelopedNamelessNoteList200;
 import com.unknowncyber.magic.model.EnvelopedNote200;
 import com.unknowncyber.magic.model.EnvelopedNote201;
 import com.unknowncyber.magic.model.EnvelopedNoteList200;
 import com.unknowncyber.magic.model.EnvelopedProcedureList200;
 import com.unknowncyber.magic.model.EnvelopedTagCreatedResponse200;
 import com.unknowncyber.magic.model.EnvelopedTagCreatedResponse201;
+import com.unknowncyber.magic.model.EnvelopedTagList200;
 import com.unknowncyber.magic.model.EnvelopedTagResponseList200;
 import com.unknowncyber.magic.model.ExtendedProcedureResponse;
 import com.unknowncyber.magic.model.FileMatchResponse;
 import com.unknowncyber.magic.model.FilePipeline;
 import com.unknowncyber.magic.model.Match;
+import com.unknowncyber.magic.model.NamelessNote;
 import com.unknowncyber.magic.model.Note;
 import com.unknowncyber.magic.model.Procedure;
 import com.unknowncyber.magic.model.Tag;
@@ -520,7 +523,7 @@ public class Api {
 	 * Returns file status.
 	 */
 	public static FileStatusModel getFileStatus(String hash) {
-		String readMask = "status,pipeline";
+		String readMask = "sha1,status,pipeline";
 		String expandMask = "";
 		String dynamicMask = "";
 		try {
@@ -1039,7 +1042,7 @@ public class Api {
 			noteData.put("note", note);
 
 			RequestBody body = RequestBody.create(noteData.toString(), JSON);
-			Request request = new Request.Builder().url(baseUrl + "procedures/" + hardHash + "/notes/" + noteId
+			Request request = new Request.Builder().url(baseUrl + "/procedures/" + hardHash + "/notes/" + noteId
 				+ "/" + noLinks + updateMask + apiKey).patch(body).build();
 
 			response = client.newCall(request).execute();
@@ -1077,6 +1080,25 @@ public class Api {
 		}
 	}
 
+	public static NoteModel[] listProcedureGroupNotes(String hardHash){
+		try {
+			EnvelopedNamelessNoteList200 response = procsApi.listProcedureNotes(hardHash, "json", false, false, "", true, false, "notes");
+
+			List<NamelessNote> responseNotes = response.getResources();
+			NoteModel[] noteList = new NoteModel[responseNotes.size()];
+
+			for (int i=0; i < responseNotes.size(); i++) {
+					NamelessNote note = responseNotes.get(i);
+					noteList[i] = new NoteModel(note.getNote(), note.getId(), null, note.getCreateTime());
+				}
+
+				return noteList;
+		} catch (Exception e) {
+			Msg.error(fileProvider, e);
+			return null;
+		}
+	}
+
 	public static TagModel createProcedureGroupTag(String hardHash, String name){
 		try {
 			EnvelopedTagCreatedResponse201 response = procsApi.addProcedureTag(hardHash, name, "#329db6", "json", false, false, "", true, false, false);
@@ -1097,6 +1119,25 @@ public class Api {
 		} catch (Exception e) {
 			Msg.error(fileProvider, e);
 			return false;
+		}
+	}
+
+	public static TagModel[] listProcedureGroupTags(String hardHash){
+		try {
+			EnvelopedTagList200 response = procsApi.listProcedureTags(hardHash, "json", false, false, "", true, false, "tags", "");
+
+			List<Tag> responseTags = response.getResources();
+			TagModel[] tagList = new TagModel[responseTags.size()];
+
+			for (int i=0; i < responseTags.size(); i++) {
+					Tag tag = responseTags.get(i);
+					tagList[i] = new TagModel(tag.getName(), "", tag.getCreateTime(), tag.getId());
+				}
+
+				return tagList;
+		} catch (Exception e) {
+			Msg.error(fileProvider, e);
+			return null;
 		}
 	}
 
