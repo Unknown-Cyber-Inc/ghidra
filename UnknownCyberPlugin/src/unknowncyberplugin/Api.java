@@ -93,6 +93,7 @@ public class Api {
 
 	private static UnknownCyberFileProvider fileProvider = References.getFileProvider();
 	private static FilesApi filesApi = fileProvider.getFilesApi();
+	private static ProceduresApi procsApi = fileProvider.getProcsApi();
 	private static Program program = fileProvider.getProgram();
 	private static OkHttpClient client = new OkHttpClient();
 
@@ -573,7 +574,7 @@ public class Api {
 	public static ProcedureModel[] getFileGenomics(String hash) {
 		hash = hash.toLowerCase();
 		try {
-			String readMask = "binary_id,occurrence_count,procedure_name,start_ea,status,notes,tags";
+			String readMask = "binary_id,occurrence_count,procedure_hash,procedure_name,start_ea,status,notes,tags";
 			String orderBy = "start_ea";
 			Integer pageCount = 1;
 			Integer pageSize = 0;
@@ -586,7 +587,7 @@ public class Api {
 			for (int i=0; i < responseProcs.size(); i++){
 				ExtendedProcedureResponse proc = responseProcs.get(i);
 				procList[i] = new ProcedureModel(proc.getStartEA(), proc.getProcedureName(), proc.getOccurrenceCount(),
-					proc.getStatus(), proc.getNotes().size(), proc.getTags().size(), proc.getBinaryId());
+					proc.getStatus(), proc.getNotes().size(), proc.getTags().size(), proc.getBinaryId(), proc.getHardHash());
 			}
 
 			return procList;
@@ -786,7 +787,7 @@ public class Api {
 
 			for (int i=0; i < responseProcs.size(); i++) {
 				Procedure proc = responseProcs.get(i);
-				procList[i] = new ProcedureModel(proc.getStartEa(), proc.getProcedureName(), -1, null, 0, 0, proc.getBinaryId());
+				procList[i] = new ProcedureModel(proc.getStartEa(), proc.getProcedureName(), -1, null, 0, 0, proc.getBinaryId(), null);
 			}
 
 			return procList;
@@ -1014,4 +1015,88 @@ public class Api {
 			return false;
 		}
 	}
+
+	public static NoteModel createProcedureGroupNote(String hardHash, String note){
+		try {
+			EnvelopedNote200 response = procsApi.createProcedureNote(note, false, hardHash, "json", false, false, "", true, false, false);
+
+			Note newNote = response.getResource();
+
+			return new NoteModel(newNote.getNote(), newNote.getId(), newNote.getUsername(), newNote.getCreateTime());
+		} catch (Exception e) {
+			Msg.error(fileProvider, e);
+			return null;
+		}
+	}
+
+	public static NoteModel updateProcedureGroupNote(String hardHash, String noteId, String note){
+		Response response = null;
+		try {
+			String updateMask = "&update_mask=note";
+			JSONObject noteData = new JSONObject();
+			noteData.put("note", note);
+
+			RequestBody body = RequestBody.create(noteData.toString(), JSON);
+			Request request = new Request.Builder().url(baseUrl + "procedures/" + hardHash + "/notes/" + noteId
+				+ "/" + noLinks + updateMask + apiKey).patch(body).build();
+
+			response = client.newCall(request).execute();
+
+			if (response.isSuccessful()) {
+				response.close();
+				return true;
+			}
+			// Data returned via okhttp on failure does not exactly match "normal" swagger
+			// API fail responses
+			// Regardless, attempt to ape the error in a similar fashion for consistency's
+			// sake
+			throw new ApiException(response.code(), response.message());
+
+		} catch (Exception e) {
+			Msg.error(fileProvider, e);
+			if (response != null) {
+				try {
+					response.close();
+				} catch (Exception f) {
+					// Allow this to silently fail
+				}
+			}
+			return false;
+		}
+	}
+
+	public static boolean deleteProcedureGroupNote(String hardHash, String noteId){
+		try {
+			procsApi.deleteProcedureNote(hardHash, noteId, "json", false, false, "", true, false, true);
+			return true;
+		} catch (Exception e) {
+			Msg.error(fileProvider, e);
+			return false;
+		}
+	}
+
+	public static TagModel createProcedureGroupTag(String hardHash, String name){
+		try {
+			EnvelopedProcedureTagCreatedResponse201 response = procsApi.addProcedureTag(hardHash, name, "#329db6", "json", false, false, "", true, false, false);
+
+			TagCreatedResponse tag = response.getResource();
+
+			return new TagModel(tag.getName(), null, tag.getCreateTime(), tag.getId());
+		} catch (Exception e) {
+			Msg.error(fileProvider, e);
+			return null;
+		}
+	}
+
+	public static boolean deleteProcedureGroupTag(String hardHash, String tagId){
+		try {
+			procsApi.deleteProcedureTag(hardHash, tagId, "json", false, false, "", true, false, true);
+			return true;
+		} catch (Exception e) {
+			Msg.error(fileProvider, e);
+			return false;
+		}
+	}
+
+
 }
