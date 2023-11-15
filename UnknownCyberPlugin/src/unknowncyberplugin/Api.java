@@ -81,11 +81,8 @@ import io.swagger.client.ApiException;
  * Serves to hold easy-use wrappers for Unknown Cyber API calls.
  */
 public class Api {
-	// TODO: swap these out once the ENV VARS change
-	//private static final String API_HOST_ENV = "MAGIC_API_HOST";
-	//private static final String API_KEY_ENV = "MAGIC_API_KEY";
-	private static final String API_HOST_ENV = "API_URI";
-	private static final String API_KEY_ENV = "API_KEY";
+	private static final String API_HOST_ENV = "MAGIC_API_HOST";
+	private static final String API_KEY_ENV = "MAGIC_API_KEY";
 
 	private static String baseUrl = System.getenv(API_HOST_ENV) + "/";
 	private static String apiKey = "&key=" + System.getenv(API_KEY_ENV);
@@ -123,13 +120,13 @@ public class Api {
 	 * data.
 	 * Returns a boolean true/false to indicate success/failure.
 	 */
-	public static boolean submitFile() {
+	public static boolean submitFile(boolean skipUnpack) {
 		File myFile = new File(program.getExecutablePath());
 		List<File> files = Arrays.asList(myFile);
 		try {
 			EnvelopedFileUploadResponseList200 response = filesApi.uploadFile(files, "",
 				Arrays.asList(), Arrays.asList(), "json", false, false, "", true, false, false, false, false, false,
-				false, false);
+				skipUnpack, false);
 			String uploadHash = response.getResources().get(0).getSha1();
 			References.setUploadHash(uploadHash);
 			References.getFileButtonsPanel().getStatusButton().setEnabled(true);
