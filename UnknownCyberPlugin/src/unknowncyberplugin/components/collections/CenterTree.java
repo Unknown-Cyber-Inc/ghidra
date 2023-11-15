@@ -12,6 +12,8 @@ import unknowncyberplugin.models.treenodes.leaves.TagNode;
 import unknowncyberplugin.models.treenodes.roots.NotesRootNode;
 import unknowncyberplugin.models.treenodes.roots.ProcedureRootNode;
 import unknowncyberplugin.models.treenodes.roots.TagsRootNode;
+import unknowncyberplugin.models.treenodes.roots.ProcGroupNotesRootNode;
+import unknowncyberplugin.models.treenodes.roots.ProcGroupTagsRootNode;
 
 public class CenterTree extends JTree {
     private DefaultTreeModel centerTreeModel;
@@ -57,10 +59,14 @@ public class CenterTree extends JTree {
 
         if (selected instanceof NotesRootNode){
             ccp.notesRootSelected();
+        } else if (selected instanceof ProcGroupNotesRootNode){
+            ccp.procGroupNotesRootSelected();
         } else if (selected instanceof NoteNode){
             ccp.noteSelected();
         } else if (selected instanceof TagsRootNode){
             ccp.tagsRootSelected();
+        } else if (selected instanceof ProcGroupTagsRootNode){
+            ccp.procGroupTagsRootSelected();
         } else if (selected instanceof TagNode){
             ccp.tagSelected();
         } else if (selected instanceof ProcedureRootNode) {

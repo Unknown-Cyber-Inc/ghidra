@@ -205,15 +205,15 @@ public class Helpers {
     Map<String, String> pipelines = new LinkedHashMap<>();
 
     pipelines.put("dashboard_campaign", pipeline.getDashboardCampaign());
-    pipelines.put("dashboard_report", pipeline.getDashboardCampaign());
-    pipelines.put("ioc_handler", pipeline.getDashboardCampaign());
-    pipelines.put("proc_hash_signatures", pipeline.getDashboardCampaign());
-    pipelines.put("similarity_computation", pipeline.getDashboardCampaign());
-    pipelines.put("srlJuice", pipeline.getDashboardCampaign());
-    pipelines.put("srlScanners", pipeline.getDashboardCampaign());
-    pipelines.put("srlUnpacker", pipeline.getDashboardCampaign());
-    pipelines.put("variant_hash_signatures", pipeline.getDashboardCampaign());
-    pipelines.put("webRequestHandler", pipeline.getDashboardCampaign());
+    pipelines.put("Label Inference", pipeline.getDashboardReport());
+    pipelines.put("Ioc Extraction", pipeline.getIocHandler());
+    pipelines.put("Yara Generation", pipeline.getProcHashSignatures());
+    pipelines.put("Similarity Matching", pipeline.getSimilarityComputation());
+    pipelines.put("Genomic Juicing", pipeline.getSrlJuice());
+    pipelines.put("AV Scan Report", pipeline.getSrlScanners());
+    pipelines.put("Unpacking", pipeline.getSrlUnpacker());
+    pipelines.put("variant_hash_signatures", pipeline.getVariantHashSignatures());
+    pipelines.put("Filetype Discovery", pipeline.getWebRequestHandler());
 
     Iterator<Entry<String, String>> iter = pipelines.entrySet().iterator();
     while(iter.hasNext()) {

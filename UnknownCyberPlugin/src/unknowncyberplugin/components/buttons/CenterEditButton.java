@@ -8,6 +8,7 @@ import unknowncyberplugin.components.collections.CenterTree;
 import unknowncyberplugin.components.collections.ProcTable;
 import unknowncyberplugin.components.panels.CenterPanel;
 import unknowncyberplugin.components.panes.BaseCenterTabPane;
+import unknowncyberplugin.components.panes.CenterProcedureTabPane;
 import unknowncyberplugin.components.popups.CenterCRUDPopup;
 import unknowncyberplugin.models.responsedata.NoteModel;
 import unknowncyberplugin.models.responsedata.ProcedureModel;
@@ -17,6 +18,8 @@ import unknowncyberplugin.models.treenodes.roots.ProcedureRootNode;
 import unknowncyberplugin.models.treenodes.roots.NotesRootNode;
 import unknowncyberplugin.models.treenodes.roots.TagsRootNode;
 import unknowncyberplugin.models.treenodes.roots.SimilaritiesRootNode;
+import unknowncyberplugin.models.treenodes.roots.ProcGroupNotesRootNode;
+import unknowncyberplugin.models.treenodes.roots.ProcGroupTagsRootNode;
 
 public class CenterEditButton extends BaseButton {
     private BaseCenterTabPane tabPane;
@@ -25,6 +28,9 @@ public class CenterEditButton extends BaseButton {
     private NotesRootNode notesRoot;
     private TagsRootNode tagsRoot;
     private SimilaritiesRootNode simRoot;
+    private ProcGroupNotesRootNode procGroupNotesRoot;
+    private ProcGroupTagsRootNode procGroupTagsRoot;
+    private String hardHash;
     private String binaryId;
     private String popupReturnedText;
     private ProcTable table;
@@ -64,6 +70,9 @@ public class CenterEditButton extends BaseButton {
                 binaryId = procRoot.getBinaryId();
                 notesRoot = procRoot.getNoteRoot();
                 tagsRoot = procRoot.getTagsRootNode();
+                if (selectedNode.getParent() instanceof ProcGroupNotesRootNode){
+                    hardHash = ((CenterProcedureTabPane)tabPane).getHardHash();
+                }
                 processProcedureTreeNode(procRoot);
             } else if (tabPane.getRootNode() instanceof DerivedFileRootNode) {
                 DerivedFileRootNode filesRoot = (DerivedFileRootNode) tabPane.getRootNode();
@@ -76,8 +85,14 @@ public class CenterEditButton extends BaseButton {
     
     public void processProcedureTreeNode(ProcedureRootNode procRoot){
         String startEA = procRoot.getStartEA();
+        DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) selectedNode.getParent();
+        if (tabPane instanceof CenterProcedureTabPane){
+            simRoot = procRoot.getSimilaritiesRootNode();
+            procGroupNotesRoot = procRoot.getProcGroupNoteRoot();
+            procGroupTagsRoot = procRoot.getProcGroupTagsRootNode();
+        }
 
-        if (selectedNode instanceof NoteNode){
+        if (parentNode instanceof NotesRootNode){
             if (Api.updateProcedureGenomicsNote(binaryId, startEA, ((NoteNode)selectedNode).getNodeData().getId(), popupReturnedText)) {
                 NoteModel note = new NoteModel(
                     popupReturnedText, ((NoteNode)selectedNode).getNodeData().getId(),
@@ -92,13 +107,29 @@ public class CenterEditButton extends BaseButton {
                 );
             }
             clearSubRootNodes();
+        } else if (parentNode instanceof ProcGroupNotesRootNode){
+
+            if (Api.updateProcedureGroupNote(hardHash, ((NoteNode)selectedNode).getNodeData().getId(), popupReturnedText)) {
+                NoteModel note = new NoteModel(
+                    popupReturnedText, ((NoteNode)selectedNode).getNodeData().getId(),
+                    ((NoteNode)selectedNode).getNodeData().getUserName(),
+                    ((NoteNode)selectedNode).getNodeData().getTimeStamp());
+                tree.editNode(selectedNode, note);
+            } else {
+                References.getFileProvider().announce(
+                    "Failed to Update",
+                    "An error occurred while updating the procedure group note, see the User Log for more information.",
+                    true
+                );
+            }
+            clearSubRootNodes();
         } else if (selectedNode instanceof ProcedureRootNode){
             if (Api.updateProcedureName(binaryId, startEA, popupReturnedText)) {
                 tree.editNode(selectedNode, new ProcedureModel(
                     (String) table.getValueAt(rowNumber, 0), popupReturnedText,
                     Integer.parseInt((String)table.getValueAt(rowNumber, 2)), (String) table.getValueAt(rowNumber, 3),
                     Integer.parseInt((String)table.getValueAt(rowNumber, 4)), Integer.parseInt((String)table.getValueAt(rowNumber, 5)),
-                    binaryId
+                    binaryId, (String) table.getValueAt(rowNumber, 6)
                 ));
             }
             table.setValueAt(popupReturnedText, rowNumber, 1);
@@ -130,6 +161,14 @@ public class CenterEditButton extends BaseButton {
         if (simRoot != null){
             simRoot.clearNode();
         }
+        if (procGroupNotesRoot != null){
+            procGroupNotesRoot.clearNode();
+        }
+        if (procGroupTagsRoot != null){
+            procGroupTagsRoot.clearNode();
+        }
         simRoot = null;
+        procGroupNotesRoot = null;
+        procGroupTagsRoot = null;
     }
 }

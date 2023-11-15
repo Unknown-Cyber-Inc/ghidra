@@ -34,11 +34,19 @@ public class CenterCRUDPanel extends JPanel{
         updateButtons(true, false, false);
     }
 
+    public void procGroupNotesRootSelected(){
+        updateButtons(true, false, false);
+    }
+
     public void noteSelected(){
         updateButtons(true, true, true);
     }
 
     public void tagsRootSelected(){
+        updateButtons(true, false, false);
+    }
+
+    public void procGroupTagsRootSelected(){
         updateButtons(true, false, false);
     }
 

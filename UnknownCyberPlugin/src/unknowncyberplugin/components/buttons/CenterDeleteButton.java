@@ -19,6 +19,8 @@ import unknowncyberplugin.models.treenodes.roots.ProcedureRootNode;
 import unknowncyberplugin.models.treenodes.roots.NotesRootNode;
 import unknowncyberplugin.models.treenodes.roots.TagsRootNode;
 import unknowncyberplugin.models.treenodes.roots.SimilaritiesRootNode;
+import unknowncyberplugin.models.treenodes.roots.ProcGroupNotesRootNode;
+import unknowncyberplugin.models.treenodes.roots.ProcGroupTagsRootNode;
 
 public class CenterDeleteButton extends BaseButton {
     private BaseCenterTabPane tabPane;
@@ -27,6 +29,8 @@ public class CenterDeleteButton extends BaseButton {
     private NotesRootNode notesRoot;
     private TagsRootNode tagsRoot;
     private SimilaritiesRootNode simRoot;
+    private ProcGroupNotesRootNode procGroupNotesRoot;
+    private ProcGroupTagsRootNode procGroupTagsRoot;
     private String binaryId;
 
     public CenterDeleteButton() {
@@ -64,18 +68,32 @@ public class CenterDeleteButton extends BaseButton {
     public void processProcedureTreeNode(ProcedureRootNode procRoot){
         if (tabPane instanceof CenterProcedureTabPane){
             simRoot = procRoot.getSimilaritiesRootNode();
+            procGroupNotesRoot = procRoot.getProcGroupNoteRoot();
+            procGroupTagsRoot = procRoot.getProcGroupTagsRootNode();
         }
+        DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) selectedNode.getParent();
         String startEA = procRoot.getStartEA();
+        String hardHash = ((CenterProcedureTabPane)tabPane).getHardHash();
 
-        // If the selected node is NoteNode or TagNode
-        if (selectedNode instanceof NoteNode){
+        if (parentNode instanceof NotesRootNode){ // If the selected node is a Note/TagNode of a procedure
             boolean successful = Api.deleteProcedureGenomicsNote(binaryId, startEA, ((NoteNode)selectedNode).getNodeData().getId());
             if (successful) {
                 // Closes the tree's every subnode.
                 tree.removeNode(selectedNode);
             }
-        } else if (selectedNode instanceof TagNode){
+        } else if (parentNode instanceof TagsRootNode){
             boolean successful = Api.deleteProcedureGenomicsTagById(binaryId, startEA, ((TagNode)selectedNode).getNodeData().getId());
+            if (successful) {
+                tree.removeNode(selectedNode);
+            }
+        } else if (parentNode instanceof ProcGroupNotesRootNode){ // If the selected node is a Note/TagNode of a proc group
+            boolean successful = Api.deleteProcedureGroupNote(hardHash, ((NoteNode)selectedNode).getNodeData().getId());
+            if (successful) {
+                // Closes the tree's every subnode.
+                tree.removeNode(selectedNode);
+            }
+        } else if (parentNode instanceof ProcGroupTagsRootNode){
+            boolean successful = Api.deleteProcedureGroupTag(hardHash, ((TagNode)selectedNode).getNodeData().getId());
             if (successful) {
                 tree.removeNode(selectedNode);
             }
@@ -105,6 +123,14 @@ public class CenterDeleteButton extends BaseButton {
         if (simRoot != null){
             simRoot.clearNode();
         }
+        if (procGroupNotesRoot != null){
+            procGroupNotesRoot.clearNode();
+        }
+        if (procGroupTagsRoot != null){
+            procGroupTagsRoot.clearNode();
+        }
         simRoot = null;
+        procGroupNotesRoot = null;
+        procGroupTagsRoot = null;
     }
 }

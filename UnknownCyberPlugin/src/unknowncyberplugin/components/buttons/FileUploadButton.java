@@ -18,8 +18,9 @@ public class FileUploadButton extends BaseButton {
 		String uploadType = uploadPopup.displayAndGetResponse();
 
 		if (uploadType != null) {
-			if (uploadType.equals("Binary")) {
-				if (Api.submitFile()) {
+			if (uploadType.startsWith("Binary")) {
+				boolean skipUnpack = Boolean.parseBoolean(uploadType.split(",")[1]);
+				if (Api.submitFile(skipUnpack)) {
 					References.getFileProvider().announce(
 						"Upload Successful",
 						"Original file was successfully uploaded.",

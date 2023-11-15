@@ -31,8 +31,9 @@ public class UnknownCyberPlugin extends ProgramPlugin {
     public void programOpened(Program program) {
         if (fileProvider != null) {
             fileProvider.setProgram(program);
-            References.enableFullPlugin(Api.isFileAccessible(program.getExecutableMD5()));
-            References.getFilePanel().setMatchesTabToActive();
+            boolean fileAccessible = Api.isFileAccessible(program.getExecutableMD5());
+            References.enableFullPlugin(fileAccessible);
+            References.getFilePanel().setMatchesTabToActive(fileAccessible);
         }
     }
 

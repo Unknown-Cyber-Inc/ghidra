@@ -19,14 +19,18 @@ import unknowncyberplugin.models.treenodes.roots.NotesRootNode;
 import unknowncyberplugin.models.treenodes.roots.ProcedureRootNode;
 import unknowncyberplugin.models.treenodes.roots.SimilaritiesRootNode;
 import unknowncyberplugin.models.treenodes.roots.TagsRootNode;
+import unknowncyberplugin.models.treenodes.roots.ProcGroupNotesRootNode;
+import unknowncyberplugin.models.treenodes.roots.ProcGroupTagsRootNode;
 
 public class CenterProcedureTabPane extends BaseCenterTabPane{
     private String startEa;
     private String binaryId;
+    private String hardHash;
 
-    public CenterProcedureTabPane(String startEa){
+    public CenterProcedureTabPane(String startEa, String hardHash){
         super(startEa, References.getFileProvider().getOriginalSha1(), "procedure");
         this.startEa = startEa;
+        this.hardHash = hardHash;
         binaryId = References.getFileProvider().getOriginalSha1();
 
         tree.addMouseListener(new MouseAdapter() {
@@ -47,6 +51,10 @@ public class CenterProcedureTabPane extends BaseCenterTabPane{
         });
     }
 
+    public String getHardHash(){
+        return hardHash;
+    }
+
     @Override
     protected void callExpandAction(Object subRootNode){
         if (subRootNode instanceof NotesRootNode){
@@ -55,6 +63,12 @@ public class CenterProcedureTabPane extends BaseCenterTabPane{
         } else if (subRootNode instanceof TagsRootNode){
             TagModel[] tags = Api.listProcedureGenomicsTags(binaryId, startEa);
             ((ProcedureRootNode)getRootNode()).populateTags(tags);
+        } else if (subRootNode instanceof ProcGroupNotesRootNode){
+            NoteModel[] notes = Api.listProcedureGroupNotes(hardHash);
+            ((ProcedureRootNode)getRootNode()).populateProcGroupNotes(notes);
+        } else if (subRootNode instanceof ProcGroupTagsRootNode){
+            TagModel[] tags = Api.listProcedureGroupTags(hardHash);
+            ((ProcedureRootNode)getRootNode()).populateProcGroupTags(tags);
         } else if (subRootNode instanceof SimilaritiesRootNode){
             ProcedureModel[] response = Api.listProcedureSimilarities(binaryId, startEa);
             parseSimilarProcedures(response);

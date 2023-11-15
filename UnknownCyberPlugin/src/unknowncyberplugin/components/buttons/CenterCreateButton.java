@@ -7,6 +7,7 @@ import unknowncyberplugin.References;
 import unknowncyberplugin.components.collections.CenterTree;
 import unknowncyberplugin.components.panels.CenterPanel;
 import unknowncyberplugin.components.panes.BaseCenterTabPane;
+import unknowncyberplugin.components.panes.CenterProcedureTabPane;
 import unknowncyberplugin.components.popups.CenterCRUDPopup;
 import unknowncyberplugin.models.responsedata.NoteModel;
 import unknowncyberplugin.models.responsedata.TagModel;
@@ -17,6 +18,8 @@ import unknowncyberplugin.models.treenodes.roots.NotesRootNode;
 import unknowncyberplugin.models.treenodes.roots.ProcedureRootNode;
 import unknowncyberplugin.models.treenodes.roots.SimilaritiesRootNode;
 import unknowncyberplugin.models.treenodes.roots.TagsRootNode;
+import unknowncyberplugin.models.treenodes.roots.ProcGroupNotesRootNode;
+import unknowncyberplugin.models.treenodes.roots.ProcGroupTagsRootNode;
 
 public class CenterCreateButton extends BaseButton {
     private BaseCenterTabPane tabPane;
@@ -25,6 +28,8 @@ public class CenterCreateButton extends BaseButton {
     private NotesRootNode notesRoot;
     private TagsRootNode tagsRoot;
     private SimilaritiesRootNode simRoot;
+    private ProcGroupNotesRootNode procGroupNotesRoot;
+    private ProcGroupTagsRootNode procGroupTagsRoot;
     private String binaryId;
     private String popupReturnedText;
 
@@ -73,17 +78,31 @@ public class CenterCreateButton extends BaseButton {
         ProcedureRootNode procRoot = (ProcedureRootNode) tabPane.getRootNode();
         DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) selectedNode.getParent();
         String startEA = procRoot.getStartEA();
+        String hardHash = ((CenterProcedureTabPane)tabPane).getHardHash();
 
-        // If the selected node is NotesRootNode or TagsRootNode
+        if (tabPane instanceof CenterProcedureTabPane){
+            simRoot = procRoot.getSimilaritiesRootNode();
+            procGroupNotesRoot = procRoot.getProcGroupNoteRoot();
+            procGroupTagsRoot = procRoot.getProcGroupTagsRootNode();
+        }
+
+        // If the selected node is NotesRootNode, TagsRootNode, ProcGroupNotesRootNode, or ProcGroupTagsRootNode
         if (selectedNode instanceof NotesRootNode){
             createProcedureNoteNode(startEA, selectedNode);
         } else if (selectedNode instanceof TagsRootNode){
             createProcedureTagNode(startEA, selectedNode);
-        // If the selected node is a NoteNode or a TagNode
-        } else if (parentNode instanceof NotesRootNode){
+        } else if (selectedNode instanceof ProcGroupNotesRootNode){
+            createProcedureGroupNoteNode(hardHash, selectedNode);
+        } else if (selectedNode instanceof ProcGroupTagsRootNode){
+            createProcedureGroupTagNode(hardHash, selectedNode);
+        }else if (parentNode instanceof NotesRootNode){ // If the selected node is a Note/TagNode of a procedure
             createProcedureNoteNode(startEA, parentNode);
         } else if (parentNode instanceof TagsRootNode){
             createProcedureTagNode(startEA, parentNode);
+        } else if (parentNode instanceof ProcGroupNotesRootNode){ // If the selected node is a Note/TagNode of a proc group
+            createProcedureGroupNoteNode(hardHash, parentNode);
+        } else if (parentNode instanceof ProcGroupTagsRootNode){
+            createProcedureGroupTagNode(hardHash, parentNode);
         }
     }
 
@@ -116,6 +135,20 @@ public class CenterCreateButton extends BaseButton {
         }
     }
 
+    public void createProcedureGroupNoteNode(String hardHash, DefaultMutableTreeNode rootNode){
+        NoteModel newNote = Api.createProcedureGroupNote(hardHash, popupReturnedText);
+        if(newNote != null){
+            tree.addNode(rootNode, new NoteNode(newNote));
+        }
+    }
+
+    public void createProcedureGroupTagNode(String hardHash, DefaultMutableTreeNode rootNode){
+        TagModel newTag = Api.createProcedureGroupTag(hardHash, popupReturnedText);
+        if(newTag != null){
+            tree.addNode(rootNode, new TagNode(newTag));
+        }
+    }
+
     public void createFileNoteNode(DefaultMutableTreeNode rootNode){
         NoteModel newNote = Api.createFileNote(binaryId, popupReturnedText);
         if(newNote != null){
@@ -136,6 +169,14 @@ public class CenterCreateButton extends BaseButton {
         if (simRoot != null){
             simRoot.clearNode();
         }
+        if (procGroupNotesRoot != null){
+            procGroupNotesRoot.clearNode();
+        }
+        if (procGroupTagsRoot != null){
+            procGroupTagsRoot.clearNode();
+        }
         simRoot = null;
+        procGroupNotesRoot = null;
+        procGroupTagsRoot = null;
     }
 }

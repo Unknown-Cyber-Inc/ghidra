@@ -30,22 +30,27 @@ import org.json.simple.parser.JSONParser;
 import net.lingala.zip4j.ZipFile;
 
 import com.unknowncyber.magic.api.FilesApi;
+import com.unknowncyber.magic.api.ProceduresApi;
 import com.unknowncyber.magic.model.EnvelopedFileGenomicsResponse200;
 import com.google.gson.JsonObject;
 import com.unknowncyber.magic.model.EnvelopedFile200;
 import com.unknowncyber.magic.model.EnvelopedFileMatchResponseList200;
 import com.unknowncyber.magic.model.EnvelopedFileUploadResponse200;
 import com.unknowncyber.magic.model.EnvelopedFileUploadResponseList200;
+import com.unknowncyber.magic.model.EnvelopedNamelessNoteList200;
 import com.unknowncyber.magic.model.EnvelopedNote200;
 import com.unknowncyber.magic.model.EnvelopedNote201;
 import com.unknowncyber.magic.model.EnvelopedNoteList200;
 import com.unknowncyber.magic.model.EnvelopedProcedureList200;
 import com.unknowncyber.magic.model.EnvelopedTagCreatedResponse200;
+import com.unknowncyber.magic.model.EnvelopedTagCreatedResponse201;
+import com.unknowncyber.magic.model.EnvelopedTagList200;
 import com.unknowncyber.magic.model.EnvelopedTagResponseList200;
 import com.unknowncyber.magic.model.ExtendedProcedureResponse;
 import com.unknowncyber.magic.model.FileMatchResponse;
 import com.unknowncyber.magic.model.FilePipeline;
 import com.unknowncyber.magic.model.Match;
+import com.unknowncyber.magic.model.NamelessNote;
 import com.unknowncyber.magic.model.Note;
 import com.unknowncyber.magic.model.Procedure;
 import com.unknowncyber.magic.model.Tag;
@@ -76,11 +81,8 @@ import io.swagger.client.ApiException;
  * Serves to hold easy-use wrappers for Unknown Cyber API calls.
  */
 public class Api {
-	// TODO: swap these out once the ENV VARS change
-	//private static final String API_HOST_ENV = "MAGIC_API_HOST";
-	//private static final String API_KEY_ENV = "MAGIC_API_KEY";
-	private static final String API_HOST_ENV = "API_URI";
-	private static final String API_KEY_ENV = "API_KEY";
+	private static final String API_HOST_ENV = "MAGIC_API_HOST";
+	private static final String API_KEY_ENV = "MAGIC_API_KEY";
 
 	private static String baseUrl = System.getenv(API_HOST_ENV) + "/";
 	private static String apiKey = "&key=" + System.getenv(API_KEY_ENV);
@@ -93,6 +95,7 @@ public class Api {
 
 	private static UnknownCyberFileProvider fileProvider = References.getFileProvider();
 	private static FilesApi filesApi = fileProvider.getFilesApi();
+	private static ProceduresApi procsApi = fileProvider.getProcsApi();
 	private static Program program = fileProvider.getProgram();
 	private static OkHttpClient client = new OkHttpClient();
 
@@ -117,13 +120,13 @@ public class Api {
 	 * data.
 	 * Returns a boolean true/false to indicate success/failure.
 	 */
-	public static boolean submitFile() {
+	public static boolean submitFile(boolean skipUnpack) {
 		File myFile = new File(program.getExecutablePath());
 		List<File> files = Arrays.asList(myFile);
 		try {
 			EnvelopedFileUploadResponseList200 response = filesApi.uploadFile(files, "",
 				Arrays.asList(), Arrays.asList(), "json", false, false, "", true, false, false, false, false, false,
-				false, false);
+				skipUnpack, false);
 			String uploadHash = response.getResources().get(0).getSha1();
 			References.setUploadHash(uploadHash);
 			References.getFileButtonsPanel().getStatusButton().setEnabled(true);
@@ -517,7 +520,7 @@ public class Api {
 	 * Returns file status.
 	 */
 	public static FileStatusModel getFileStatus(String hash) {
-		String readMask = "status,pipeline";
+		String readMask = "sha1,status,pipeline";
 		String expandMask = "";
 		String dynamicMask = "";
 		try {
@@ -573,7 +576,7 @@ public class Api {
 	public static ProcedureModel[] getFileGenomics(String hash) {
 		hash = hash.toLowerCase();
 		try {
-			String readMask = "binary_id,occurrence_count,procedure_name,start_ea,status,notes,tags";
+			String readMask = "binary_id,occurrence_count,procedure_hash,procedure_name,start_ea,status,notes,tags";
 			String orderBy = "start_ea";
 			Integer pageCount = 1;
 			Integer pageSize = 0;
@@ -586,7 +589,7 @@ public class Api {
 			for (int i=0; i < responseProcs.size(); i++){
 				ExtendedProcedureResponse proc = responseProcs.get(i);
 				procList[i] = new ProcedureModel(proc.getStartEA(), proc.getProcedureName(), proc.getOccurrenceCount(),
-					proc.getStatus(), proc.getNotes().size(), proc.getTags().size(), proc.getBinaryId());
+					proc.getStatus(), proc.getNotes().size(), proc.getTags().size(), proc.getBinaryId(), proc.getHardHash());
 			}
 
 			return procList;
@@ -786,7 +789,7 @@ public class Api {
 
 			for (int i=0; i < responseProcs.size(); i++) {
 				Procedure proc = responseProcs.get(i);
-				procList[i] = new ProcedureModel(proc.getStartEa(), proc.getProcedureName(), -1, null, 0, 0, proc.getBinaryId());
+				procList[i] = new ProcedureModel(proc.getStartEa(), proc.getProcedureName(), -1, null, 0, 0, proc.getBinaryId(), null);
 			}
 
 			return procList;
@@ -1014,4 +1017,126 @@ public class Api {
 			return false;
 		}
 	}
+
+	public static NoteModel createProcedureGroupNote(String hardHash, String note){
+		try {
+			EnvelopedNote200 response = procsApi.createProcedureNote(note, false, hardHash, "json", false, false, "", true, false, false);
+
+			Note newNote = response.getResource();
+
+			return new NoteModel(newNote.getNote(), newNote.getId(), newNote.getUsername(), newNote.getCreateTime());
+		} catch (Exception e) {
+			Msg.error(fileProvider, e);
+			return null;
+		}
+	}
+
+	public static boolean updateProcedureGroupNote(String hardHash, String noteId, String note){
+		Response response = null;
+		try {
+			String updateMask = "&update_mask=note";
+			JSONObject noteData = new JSONObject();
+			noteData.put("note", note);
+
+			RequestBody body = RequestBody.create(noteData.toString(), JSON);
+			Request request = new Request.Builder().url(baseUrl + "/procedures/" + hardHash + "/notes/" + noteId
+				+ "/" + noLinks + updateMask + apiKey).patch(body).build();
+
+			response = client.newCall(request).execute();
+
+			if (response.isSuccessful()) {
+				response.close();
+				return true;
+			}
+			// Data returned via okhttp on failure does not exactly match "normal" swagger
+			// API fail responses
+			// Regardless, attempt to ape the error in a similar fashion for consistency's
+			// sake
+			throw new ApiException(response.code(), response.message());
+
+		} catch (Exception e) {
+			Msg.error(fileProvider, e);
+			if (response != null) {
+				try {
+					response.close();
+				} catch (Exception f) {
+					// Allow this to silently fail
+				}
+			}
+			return false;
+		}
+	}
+
+	public static boolean deleteProcedureGroupNote(String hardHash, String noteId){
+		try {
+			procsApi.deleteProcedureNote(hardHash, noteId, "json", false, false, "", true, false, true);
+			return true;
+		} catch (Exception e) {
+			Msg.error(fileProvider, e);
+			return false;
+		}
+	}
+
+	public static NoteModel[] listProcedureGroupNotes(String hardHash){
+		try {
+			EnvelopedNamelessNoteList200 response = procsApi.listProcedureNotes(hardHash, "json", false, false, "", true, false, "notes");
+
+			List<NamelessNote> responseNotes = response.getResources();
+			NoteModel[] noteList = new NoteModel[responseNotes.size()];
+
+			for (int i=0; i < responseNotes.size(); i++) {
+					NamelessNote note = responseNotes.get(i);
+					noteList[i] = new NoteModel(note.getNote(), note.getId(), null, note.getCreateTime());
+				}
+
+				return noteList;
+		} catch (Exception e) {
+			Msg.error(fileProvider, e);
+			return null;
+		}
+	}
+
+	public static TagModel createProcedureGroupTag(String hardHash, String name){
+		try {
+			EnvelopedTagCreatedResponse201 response = procsApi.addProcedureTag(hardHash, name, "#329db6", "json", false, false, "", true, false, false);
+
+			TagCreatedResponse tag = response.getResource();
+
+			return new TagModel(tag.getName(), null, tag.getCreateTime().toString(), tag.getId());
+		} catch (Exception e) {
+			Msg.error(fileProvider, e);
+			return null;
+		}
+	}
+
+	public static boolean deleteProcedureGroupTag(String hardHash, String tagId){
+		try {
+			procsApi.deleteProcedureTag(hardHash, tagId, "json", false, false, "", true, false, true);
+			return true;
+		} catch (Exception e) {
+			Msg.error(fileProvider, e);
+			return false;
+		}
+	}
+
+	public static TagModel[] listProcedureGroupTags(String hardHash){
+		try {
+			EnvelopedTagList200 response = procsApi.listProcedureTags(hardHash, "json", false, false, "", true, false, "tags", "");
+
+			List<Tag> responseTags = response.getResources();
+			TagModel[] tagList = new TagModel[responseTags.size()];
+
+			for (int i=0; i < responseTags.size(); i++) {
+					Tag tag = responseTags.get(i);
+					tagList[i] = new TagModel(tag.getName(), "", tag.getCreateTime(), tag.getId());
+				}
+
+				return tagList;
+		} catch (Exception e) {
+			Msg.error(fileProvider, e);
+			return null;
+		}
+	}
+
+
 }

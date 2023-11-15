@@ -8,29 +8,20 @@ import unknowncyberplugin.models.treenodes.leaves.NoteNode;
 import unknowncyberplugin.models.treenodes.leaves.SimilarProcedureNode;
 import unknowncyberplugin.models.treenodes.leaves.TagNode;
 
-public class ProcedureRootNode extends BaseRootNode<Object>{
+public class DerivedProcedureRootNode extends BaseRootNode<Object>{
     private NotesRootNode notesRoot;
     private TagsRootNode tagsRoot;
-    private SimilaritiesRootNode similaritiesRoot;
-    private ProcGroupNotesRootNode procGroupNotesRoot;
-    private ProcGroupTagsRootNode procGroupTagsRoot;
     private String startEA;
 
-    public ProcedureRootNode(Object nodeData, String binaryId, String startEA){
+    public DerivedProcedureRootNode(Object nodeData, String binaryId, String startEA){
         super(nodeData, binaryId);
         this.startEA = startEA;
 
         notesRoot = new NotesRootNode();
         tagsRoot = new TagsRootNode();
-        similaritiesRoot = new SimilaritiesRootNode();
-        procGroupNotesRoot = new ProcGroupNotesRootNode();
-        procGroupTagsRoot = new ProcGroupTagsRootNode();
 
         add(notesRoot);
         add(tagsRoot);
-        add(procGroupNotesRoot);
-        add(procGroupTagsRoot);
-        add(similaritiesRoot);
     }
 
     public String getStartEA(){
@@ -55,30 +46,6 @@ public class ProcedureRootNode extends BaseRootNode<Object>{
         for (TagModel tag : tags){
             tagsRoot.add(new TagNode(tag));
         }
-    }
-
-    public ProcGroupNotesRootNode getProcGroupNoteRoot(){
-        return procGroupNotesRoot;
-    }
-
-    public void populateProcGroupNotes(NoteModel[] notes){
-        for (NoteModel note : notes){
-            procGroupNotesRoot.add(new NoteNode(note));
-        }
-    }
-
-    public ProcGroupTagsRootNode getProcGroupTagsRootNode(){
-        return procGroupTagsRoot;
-    }
-
-    public void populateProcGroupTags(TagModel[] tags){
-        for (TagModel tag : tags){
-            procGroupTagsRoot.add(new TagNode(tag));
-        }
-    }
-
-    public SimilaritiesRootNode getSimilaritiesRootNode(){
-        return similaritiesRoot;
     }
     
 }

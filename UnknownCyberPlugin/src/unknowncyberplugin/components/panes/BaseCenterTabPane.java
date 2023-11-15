@@ -25,6 +25,8 @@ public abstract class BaseCenterTabPane extends JScrollPane{
             rootNode = new ProcedureRootNode(rootName, binaryId, rootName);
         } else if (paneType.equalsIgnoreCase("derived procedure")){
             rootNode = new ProcedureRootNode(rootName, binaryId, rootName);
+            rootNode.remove(4);
+            rootNode.remove(3);
             rootNode.remove(2);
         } else if (paneType.equalsIgnoreCase("file")){
             rootNode = new DerivedFileRootNode(new FileModel(rootName, null, null), rootName);

@@ -29,20 +29,22 @@ public class FileUploadPopup extends JOptionPane {
 
         // Check to make sure the file upload button doesn't function when the
         // file to upload doesn't exist.
-        if (References.getFileProvider().getOriginalSha1() == null) {
-            binaryButton.setEnabled(false);
-        } else {
-            binaryButton.setEnabled(true);
-        }
+        binaryButton.setEnabled(References.getFileProvider().getOriginalSha1() != null);
     }
 
     public String displayAndGetResponse() {
         dialog = createDialog("File Upload");
         dialog.setVisible(true);
 
-        Object response = getValue();
+        String response = (String) getValue();
         dialog.dispose();
 
-        return (String) response;
+        if (response.equals("Binary")){
+            SkipUnpackPopup skipUnpackPopup = new SkipUnpackPopup();
+            boolean skip = skipUnpackPopup.checkUnpack();
+            return response + "," + skip;
+        }
+
+        return response;
     }
 }
