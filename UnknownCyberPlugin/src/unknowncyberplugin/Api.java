@@ -126,7 +126,7 @@ public class Api {
 		try {
 			EnvelopedFileUploadResponseList200 response = filesApi.uploadFile(files, "",
 				Arrays.asList(), Arrays.asList(), "json", false, false, "", true, false, false, false, false, false,
-				skipUnpack, false);
+				skipUnpack, false, false, false);
 			String uploadHash = response.getResources().get(0).getSha1();
 			References.setUploadHash(uploadHash);
 			References.getFileButtonsPanel().getStatusButton().setEnabled(true);
