@@ -37,6 +37,12 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 	String originalSha1 = null;
 	String originalSha512 = null;
 	public void setProgram(Program programIn) {
+		// TODO: testing
+		//program = null;
+		//originalFile = null;
+		//if (programIn != null) {
+		//	program = programIn;
+
 		program = programIn;
 		if (program != null) {
 			// Set up program-dependent function iterator

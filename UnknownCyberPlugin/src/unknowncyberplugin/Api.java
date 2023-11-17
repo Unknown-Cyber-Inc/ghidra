@@ -17,6 +17,7 @@ import ghidra.program.model.listing.Program;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
@@ -84,7 +85,7 @@ public class Api {
 	private static final String API_HOST_ENV = "MAGIC_API_HOST";
 	private static final String API_KEY_ENV = "MAGIC_API_KEY";
 
-	private static String baseUrl = System.getenv(API_HOST_ENV) + "/";
+	private static String baseUrl = System.getenv(API_HOST_ENV) + "/v2/";
 	private static String apiKey = "&key=" + System.getenv(API_KEY_ENV);
 
 	// Globally usable link disabler to clean up calls and inherently include the
@@ -147,8 +148,13 @@ public class Api {
 	public static boolean submitDisassembly() {
 		// Declare important paths here so they can be deleted in the finally clause
 		Path procDirectory = null;
-		Path fileJson = null;
+		File fileJson = null;
 		ZipFile zip = null;
+
+
+		// Grab the temporary directory
+		final String tempDir = System.getProperty("java.io.tmpdir");
+		final String altDir = "/zipStorage/";
 
 		// Output boolean to denote success/failure
 		boolean toReturn = false;
@@ -162,7 +168,7 @@ public class Api {
 
 			// Generate the file's JSON data
 			JSONObject fileData = new JSONObject();
-			fileData.put("image_base", program.getImageBase());
+			fileData.put("image_base", Integer.parseInt(program.getImageBase().toString()));
 			fileData.put("md5", program.getExecutableMD5());
 			fileData.put("sha1", fileProvider.getOriginalSha1());
 			fileData.put("sha256", program.getExecutableSHA256());
@@ -190,7 +196,7 @@ public class Api {
 
 			try {
 				// Create the procedure's subdirectory
-				procDirectory = Files.createTempDirectory("");
+				procDirectory = Files.createDirectory(Paths.get(tempDir + "/procedures/"));
 			} catch (Exception e) {
 				// File error occurs, specify issue and escalate to highest try/catch block
 				Msg.error(fileProvider, "Error occurred while creating temp disassembly files.");
@@ -249,6 +255,13 @@ public class Api {
 									// Iterate over operands
 									try {
 										for (int i = 0; i < currentLine.getNumOperands(); i++) {
+											// Edge case catch for bizzare non-operand that was found
+											// If Ghidra spits out a non-operand, perform no action with
+											// it and continue to next iteration.
+											if (currentLine.getDefaultOperandRepresentation(i).toLowerCase() == "") {
+												continue;
+											}
+
 											if (currentLine.getExternalReference(i) != null) {
 												apiCallName = currentLine.getExternalReference(i).getLabel();
 												isCall = true;
@@ -268,13 +281,13 @@ public class Api {
 
 									// Create each JSON line object
 									JSONObject lineJson = new JSONObject();
-									lineJson.put("startEA", Helpers.formatEA(currentLine.getMinAddress()));
-									lineJson.put("endEA", Helpers.formatEA(currentLine.getMaxAddress()));
-									// TODO: figure out type
+									lineJson.put("startEA", Integer.parseInt(Helpers.formatEA(currentLine.getMinAddress())));
+									lineJson.put("endEA", Integer.parseInt(Helpers.formatEA(currentLine.getMaxAddress())));
+									// TODO: v2 figure out type
 									lineJson.put("type", "code");
 									lineJson.put("bytes", byteString);
 									lineJson.put("mnem", currentLine.getMnemonicString().toLowerCase());
-									// TODO: operands come out of ghidra with 0x-format hexes; we prefer h-format
+									// TODO: v2 operands come out of ghidra with 0x-format hexes; we prefer h-format
 									// hexes except sometimes, because jumps tend to be off. For now, I'll leave
 									// operands as they natively appear; it will be easier to adjust the backend
 									// to account for 0x- and h-format hexes, than try to brute force acceptable
@@ -297,8 +310,8 @@ public class Api {
 
 							// Create each JSON block object
 							JSONObject blockJson = new JSONObject();
-							blockJson.put("startEA", Helpers.formatEA(currentBlock.getMinAddress()));
-							blockJson.put("endEA", Helpers.formatEA(currentBlock.getMaxAddress()));
+							blockJson.put("startEA", Integer.parseInt(Helpers.formatEA(currentBlock.getMinAddress())));
+							blockJson.put("endEA", Integer.parseInt(Helpers.formatEA(currentBlock.getMaxAddress())));
 
 							// Populate the JSON block's lines field with the line array
 							blockJson.put("lines", lineArray);
@@ -311,7 +324,7 @@ public class Api {
 							CodeBlockReferenceIterator destinationIterator = currentBlock
 								.getDestinations(TaskMonitor.DUMMY);
 
-							// TODO: these values are mosly in hex, but prepend 0040 instead of 0x
+							// TODO: v2 these values are mosly in hex, but prepend 0040 instead of 0x
 							// likely to do with a need to normalize for image base or something
 							// Ghidra addresses do not use 0x-format; cleanAddress cleans all non-hex
 							// digits.
@@ -347,22 +360,21 @@ public class Api {
 					procData.put("blocks", blockArray);
 					procData.put("is_library", (f.isExternal() ? 128 : 0));
 					procData.put("is_thunk", (f.isThunk() ? 128 : 0));
-					procData.put("startEA", Helpers.formatEA(f.getBody().getMinAddress()));
-					procData.put("endEA", Helpers.formatEA(f.getBody().getMaxAddress()));
+					procData.put("startEA", Integer.parseInt(Helpers.formatEA(f.getBody().getMinAddress())));
+					procData.put("endEA", Integer.parseInt(Helpers.formatEA(f.getBody().getMaxAddress())));
 					procData.put("procedure_name", f.getName());
 					procData.put("segment_name",
 						program.getMemory().getBlock(f.getBody().getMinAddress()).getName());
-					// TODO: Strings are the likely-string values held in referenced memory
+					// TODO: v2 Strings are the likely-string values held in referenced memory
 					// addresses
-					procData.put("strings", new String[0]);
+					procData.put("strings", new JSONArray());
 					procData.put("api_calls", apiCallArray);
 					procData.put("cfg", cfgObject);
 
 					// Create and write to the temporary file containing this procedure's JSON data
 					try {
-						Path procJson = Files.createTempFile(procDirectory,
-							f.getBody().getMinAddress().toString() + "_", ".json");
-						Files.write(procJson, procData.toJSONString().getBytes());
+						File procJson = new File(procDirectory.toString(), f.getBody().getMinAddress().toString() + ".json");
+						Files.write(procJson.toPath(), procData.toJSONString().getBytes());
 					} catch (Exception e) {
 						// Unexpected error occurrs while writing procedure file, specify location and
 						// escalate
@@ -389,8 +401,8 @@ public class Api {
 
 			try {
 				// Create and write to the file's JSON file
-				fileJson = Files.createTempFile("", ".json");
-				Files.write(fileJson, fileData.toJSONString().getBytes());
+				fileJson = new File(tempDir, "binary.json");
+				Files.write(fileJson.toPath(), fileData.toJSONString().getBytes());
 			} catch (Exception e) {
 				// File error occurs, specify issue and escalate to highest try/catch block
 				Msg.error(fileProvider, "Error occurred while creating temp disassembly files.");
@@ -401,8 +413,12 @@ public class Api {
 			// Create zip file in temp directory, load in the file.json and procedure
 			// directory
 			try {
-				zip = new ZipFile(Files.createTempFile(fileProvider.getOriginalSha1() + "_", ".zip").toFile());
-				zip.addFile(fileJson.toFile());
+				if (fileProvider.getOriginalSha1() != null) {
+					zip = new ZipFile(new File(altDir, fileProvider.getOriginalSha1() + ".zip"));
+				} else {
+					zip = new ZipFile(new File(altDir, program.getExecutableMD5() + ".zip"));
+				}
+				zip.addFile(fileJson);
 				zip.addFolder(procDirectory.toFile());
 			} catch (Exception e) {
 				// Unexpected error occurrs while zipping data, specify location and escalate
@@ -439,26 +455,35 @@ public class Api {
 			// Wrapped separately to ensure each one is tried
 			try {
 				if (fileJson != null) {
-					if (fileJson.toFile().exists()) {
-						fileJson.toFile().delete();
+					if (fileJson.exists()) {
+						fileJson.delete();
 					}
 				}
 			} catch (Exception e) {
 				Msg.error(fileProvider, "Error occurred when attempting to delete temporary File JSON.");
 				Msg.error(fileProvider, e);
+			} finally {
+				fileJson = null;
 			}
 
 			try {
 				if (procDirectory != null) {
 					if (procDirectory.toFile().exists()) {
+						File[] contents = procDirectory.toFile().listFiles();
+						for (File file : contents) {
+							file.delete();
+						}
 						procDirectory.toFile().delete();
 					}
 				}
 			} catch (Exception e) {
 				Msg.error(fileProvider, "Error occurred when attempting to delete temporary Procedure Directory.");
 				Msg.error(fileProvider, e);
+			} finally {
+				procDirectory = null;
 			}
 
+			/*
 			try {
 				if (zip != null) {
 					if (zip.getFile().exists()) {
@@ -468,7 +493,12 @@ public class Api {
 			} catch (Exception e) {
 				Msg.error(fileProvider, "Error occurred when attempting to delete temporary Disassembly ZIP.");
 				Msg.error(fileProvider, e);
+			} finally {
+				zip = null;
 			}
+			//*/
+			// TODO: temp
+			zip = null;
 
 			return toReturn;
 		}

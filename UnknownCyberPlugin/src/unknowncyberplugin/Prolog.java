@@ -12,10 +12,6 @@ public class Prolog {
     throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
   }
 
-  public static void handleSign() {
-
-  }
-
   public static String[] dtype2ptr(String input) {
     /**
      * Converts a pointer-containing operand string into an array.
@@ -77,8 +73,24 @@ public class Prolog {
       // Convert any pointers present via dtype2ptr(), take the full cleaned operand,
       //   and recursively convert all 0x- and h-formatted hex values via hexToDecimal().
       //   If the operand is somehow just an unformatted hex, that will also be converted to decimal.
-      cleanedOps.add(Helpers.hexToDecimal(dtype2ptr(op.toString())[1]));
+      String cleanedOp = Helpers.hexToDecimal(dtype2ptr(op.toString())[1]);
+
+      // TODO: This is dummy patch code to handle oddball issues that arise in prolog
+      // Specifically, this is to cleanse leading/trailing colons when Ghidra spits
+      // out an operand as such.
+      cleanedOp = cleanedOp.replaceAll("^:", "");
+      cleanedOp = cleanedOp.replaceAll(":$", "");
+
+      // Add cleaned operand to list
+      cleanedOps.add(cleanedOp);
     }
-    return mnemonic.toLowerCase() + "(" + String.join(",", cleanedOps) + ")";
+    // TODO: This is dummy patch code to handle oddball issues that arise in prolog.
+  
+    // Specifially, this is done in the absence of time and the ability to create
+    // a fully-functional anthing-to-prolog parser at the drop of a hat.
+    String cleanString = "(" + String.join(",", cleanedOps) + ")";
+    cleanString = cleanString.replaceAll("--+", "-");
+
+    return mnemonic.toLowerCase() + cleanString;
   }
 }
