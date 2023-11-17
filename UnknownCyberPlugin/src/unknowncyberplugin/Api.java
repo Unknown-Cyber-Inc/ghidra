@@ -94,10 +94,14 @@ public class Api {
 	private static String noLinks = "?no_links=true";
 	private static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
 
-	private static UnknownCyberFileProvider fileProvider = References.getFileProvider();
-	private static FilesApi filesApi = fileProvider.getFilesApi();
-	private static ProceduresApi procsApi = fileProvider.getProcsApi();
-	private static Program program = fileProvider.getProgram();
+	// DO NOT SET THESE AT THE TOP LEVEL.  THEY MUST BE SET IN EACH ENDPOINT.
+	// Otherwise, data will "stick" between different code browsers and lead to
+	// silent, hard-to-detect cross-file contamination.
+	private static UnknownCyberFileProvider fileProvider = null;
+	private static FilesApi filesApi = null;
+	private static ProceduresApi procsApi = null;
+	private static Program program = null;
+
 	private static OkHttpClient client = new OkHttpClient();
 
 	private Api() {
@@ -122,6 +126,10 @@ public class Api {
 	 * Returns a boolean true/false to indicate success/failure.
 	 */
 	public static boolean submitFile(boolean skipUnpack) {
+		fileProvider = References.getFileProvider();
+		program = fileProvider.getProgram();
+		filesApi = fileProvider.getFilesApi();
+
 		File myFile = new File(program.getExecutablePath());
 		List<File> files = Arrays.asList(myFile);
 		try {
@@ -146,11 +154,14 @@ public class Api {
 	 * Returns a boolean true/false to indicate success/failure.
 	 */
 	public static boolean submitDisassembly() {
+		fileProvider = References.getFileProvider();
+		program = fileProvider.getProgram();
+		filesApi = fileProvider.getFilesApi();
+
 		// Declare important paths here so they can be deleted in the finally clause
 		Path procDirectory = null;
 		File fileJson = null;
 		ZipFile zip = null;
-
 
 		// Grab the temporary directory
 		final String tempDir = System.getProperty("java.io.tmpdir");
@@ -168,7 +179,7 @@ public class Api {
 
 			// Generate the file's JSON data
 			JSONObject fileData = new JSONObject();
-			fileData.put("image_base", Integer.parseInt(program.getImageBase().toString()));
+			fileData.put("image_base", Integer.parseInt(Helpers.formatEA(program.getImageBase())));
 			fileData.put("md5", program.getExecutableMD5());
 			fileData.put("sha1", fileProvider.getOriginalSha1());
 			fileData.put("sha256", program.getExecutableSHA256());
@@ -510,6 +521,9 @@ public class Api {
 	 * Returns boolean true/false to denote whether a user can access a file
 	 */
 	public static boolean isFileAccessible(String hash) {
+		fileProvider = References.getFileProvider();
+		filesApi = fileProvider.getFilesApi();
+
 		String readMask = "";
 		String expandMask = "";
 		String dynamicMask = "";
@@ -550,6 +564,9 @@ public class Api {
 	 * Returns file status.
 	 */
 	public static FileStatusModel getFileStatus(String hash) {
+		fileProvider = References.getFileProvider();
+		filesApi = fileProvider.getFilesApi();
+
 		String readMask = "sha1,status,pipeline";
 		String expandMask = "";
 		String dynamicMask = "";
@@ -574,6 +591,9 @@ public class Api {
 	 * - Takes a hash string to query the API with.
 	 */
 	public static MatchModel[] listFileMatches(String hash, int pageCount) {
+		fileProvider = References.getFileProvider();
+		filesApi = fileProvider.getFilesApi();
+
 		try {
 			String readMask = "";
 			String expandMask = "matches";
@@ -604,6 +624,9 @@ public class Api {
 	 * Returns an array of Unknown Cyber Plugin Procedure objects.
 	 */
 	public static ProcedureModel[] getFileGenomics(String hash) {
+		fileProvider = References.getFileProvider();
+		filesApi = fileProvider.getFilesApi();
+
 		hash = hash.toLowerCase();
 		try {
 			String readMask = "binary_id,occurrence_count,procedure_hash,procedure_name,start_ea,status,notes,tags";
@@ -635,6 +658,9 @@ public class Api {
 	 * Returns an array of Unknown Cyber Plugin Note objects.
 	 */
 	public static NoteModel[] listFileNotes(String hash) {
+		fileProvider = References.getFileProvider();
+		filesApi = fileProvider.getFilesApi();
+
 		try {
 			EnvelopedNoteList200 response = filesApi.listFileNotes(hash, "json", false, false, "",
 				true, false);
@@ -661,6 +687,9 @@ public class Api {
 	 * Returns an Unknown Cyber Plugin Note object.
 	 */
 	public static NoteModel createFileNote(String hash, String note) {
+		fileProvider = References.getFileProvider();
+		filesApi = fileProvider.getFilesApi();
+
 		try {
 			EnvelopedNote201 response = filesApi.createFileNote(note, false, hash, "json", false,
 				false, "", true, false, false);
@@ -682,6 +711,8 @@ public class Api {
 	 * Uses okhttp to manage PATCH behavior.
 	 */
 	public static boolean updateFileNote(String hash, String noteId, String note) {
+		fileProvider = References.getFileProvider();
+
 		Response response = null;
 		try {
 			String updateMask = "&update_mask=note";
@@ -725,6 +756,9 @@ public class Api {
 	 * Returns boolean true/false to indicate success/failure.
 	 */
 	public static boolean deleteFileNote(String hash, String noteId) {
+		fileProvider = References.getFileProvider();
+		filesApi = fileProvider.getFilesApi();
+
 		try {
 			// This does not return a response
 			filesApi.deleteFileNote(hash, noteId, "json", false, false, "", true, false, true);
@@ -741,6 +775,9 @@ public class Api {
 	 * Returns an array of Unknown Cyber Plugin Tag objects.
 	 */
 	public static TagModel[] listFileTags(String hash) {
+		fileProvider = References.getFileProvider();
+		filesApi = fileProvider.getFilesApi();
+
 		try {
 			String expandMask = "tags";
 			EnvelopedTagResponseList200 response = filesApi.listFileTags(hash, "json", false, false,
@@ -767,6 +804,9 @@ public class Api {
 	 * Returns an Unknown Cyber Plugin Tag object.
 	 */
 	public static TagModel createFileTag(String hash, String name) {
+		fileProvider = References.getFileProvider();
+		filesApi = fileProvider.getFilesApi();
+
 		try {
 			// Color is set to null to use default color
 			EnvelopedTagCreatedResponse200 response = filesApi.createFileTag(hash, name, null, "json",
@@ -788,6 +828,9 @@ public class Api {
 	 * Returns boolean true/false to indicate success/failure.
 	 */
 	public static boolean removeFileTag(String hash, String tagId) {
+		fileProvider = References.getFileProvider();
+		filesApi = fileProvider.getFilesApi();
+
 		try {
 			// This does not return a response
 			filesApi.removeFileTag(hash, tagId, "json", false, false, "", true, false, true);
@@ -805,6 +848,9 @@ public class Api {
 	 * Returns an array of Unknown Cyber Procedure Plugin objects.
 	 */
 	public static ProcedureModel[] listProcedureSimilarities(String hash, String address) {
+		fileProvider = References.getFileProvider();
+		filesApi = fileProvider.getFilesApi();
+
 		try {
 			String method = "semantic_similarity";
 			Integer pageCount = 1;
@@ -836,6 +882,9 @@ public class Api {
 	 * Returns an array of Unknown Cyber Plugin Note objects.
 	 */
 	public static NoteModel[] listProcedureGenomicsNotes(String hash, String address) {
+		fileProvider = References.getFileProvider();
+		filesApi = fileProvider.getFilesApi();
+
 		try {
 			EnvelopedNoteList200 response = filesApi.listProcedureGenomicsNotes(hash, address, "json",
 				false, false, "", true, false);
@@ -862,6 +911,9 @@ public class Api {
 	 * Returns an Unknown Cyber Plugin Note object.
 	 */
 	public static NoteModel createProcedureGenomicsNote(String hash, String address, String note) {
+		fileProvider = References.getFileProvider();
+		filesApi = fileProvider.getFilesApi();
+
 		try {
 			EnvelopedNote200 response = filesApi.createProcedureGenomicsNote(note, false, hash,
 				address, "json", false, false, "", true, false);
@@ -885,6 +937,8 @@ public class Api {
 	 * Uses okhttp to manage PATCH behavior.
 	 */
 	public static boolean updateProcedureGenomicsNote(String hash, String address, String noteId, String note) {
+		fileProvider = References.getFileProvider();
+
 		Response response = null;
 		try {
 			String updateMask = "&update_mask=note";
@@ -928,6 +982,9 @@ public class Api {
 	 * Returns a boolean true/false to indicate success/failure
 	 */
 	public static boolean deleteProcedureGenomicsNote(String hash, String address, String noteId) {
+		fileProvider = References.getFileProvider();
+		filesApi = fileProvider.getFilesApi();
+
 		try {
 			// This does not return a response
 			filesApi.deleteProcedureGenomicsNote(hash, address, noteId, "json", false, false, "",
@@ -946,6 +1003,9 @@ public class Api {
 	 * Returns an array of Unknown Cyber Plugin Tag objects.
 	 */
 	public static TagModel[] listProcedureGenomicsTags(String hash, String address) {
+		fileProvider = References.getFileProvider();
+		filesApi = fileProvider.getFilesApi();
+
 		try {
 			EnvelopedTagResponseList200 response = filesApi.listProcedureGenomicsTags(hash, address,
 				"json", false, false, "", true, false);
@@ -973,6 +1033,9 @@ public class Api {
 	 * Returns an Unknown Cyber Plugin Tag object.
 	 */
 	public static TagModel createProcedureGenomicsTag(String hash, String address, String name) {
+		fileProvider = References.getFileProvider();
+		filesApi = fileProvider.getFilesApi();
+
 		try {
 			EnvelopedTagCreatedResponse200 response = filesApi.createProcedureGenomicsTag(name, hash,
 				address, "json", false, false, "", true, false, false);
@@ -994,6 +1057,9 @@ public class Api {
 	 * Returns a boolean true/false to indicate success/failure.
 	 */
 	public static boolean deleteProcedureGenomicsTagById(String hash, String address, String tagId) {
+		fileProvider = References.getFileProvider();
+		filesApi = fileProvider.getFilesApi();
+
 		try {
 			// This does not return a response
 			filesApi.deleteProcedureGenomicsTagById(hash, address, tagId, "json", false, false, "",
@@ -1013,6 +1079,8 @@ public class Api {
 	 * Returns a boolean true/false to indicate success/failure.
 	 */
 	public static boolean updateProcedureName(String hash, String address, String name) {
+		fileProvider = References.getFileProvider();
+
 		Response response = null;
 		try {
 			String updateMask = "&update_mask=procedure_name";
@@ -1031,9 +1099,8 @@ public class Api {
 				return true;
 			}
 			// Data returned via okhttp on failure does not exactly match "normal" swagger
-			// API fail responses
-			// Regardless, attempt to ape the error in a similar fashion for consistency's
-			// sake
+			// API fail responses.  Regardless, attempt to ape the error in a similar fashion
+			// for consistency's sake
 			throw new ApiException(response.code(), response.message());
 		} catch (Exception e) {
 			Msg.error(fileProvider, e);
@@ -1049,6 +1116,9 @@ public class Api {
 	}
 
 	public static NoteModel createProcedureGroupNote(String hardHash, String note){
+		fileProvider = References.getFileProvider();
+		procsApi = fileProvider.getProcsApi();
+
 		try {
 			EnvelopedNote200 response = procsApi.createProcedureNote(note, false, hardHash, "json", false, false, "", true, false, false);
 
@@ -1062,6 +1132,8 @@ public class Api {
 	}
 
 	public static boolean updateProcedureGroupNote(String hardHash, String noteId, String note){
+		fileProvider = References.getFileProvider();
+
 		Response response = null;
 		try {
 			String updateMask = "&update_mask=note";
@@ -1098,6 +1170,9 @@ public class Api {
 	}
 
 	public static boolean deleteProcedureGroupNote(String hardHash, String noteId){
+		fileProvider = References.getFileProvider();
+		procsApi = fileProvider.getProcsApi();
+
 		try {
 			procsApi.deleteProcedureNote(hardHash, noteId, "json", false, false, "", true, false, true);
 			return true;
@@ -1108,6 +1183,9 @@ public class Api {
 	}
 
 	public static NoteModel[] listProcedureGroupNotes(String hardHash){
+		fileProvider = References.getFileProvider();
+		procsApi = fileProvider.getProcsApi();
+
 		try {
 			EnvelopedNamelessNoteList200 response = procsApi.listProcedureNotes(hardHash, "json", false, false, "", true, false, "notes");
 
@@ -1127,6 +1205,9 @@ public class Api {
 	}
 
 	public static TagModel createProcedureGroupTag(String hardHash, String name){
+		fileProvider = References.getFileProvider();
+		procsApi = fileProvider.getProcsApi();
+
 		try {
 			EnvelopedTagCreatedResponse201 response = procsApi.addProcedureTag(hardHash, name, "#329db6", "json", false, false, "", true, false, false);
 
@@ -1140,6 +1221,9 @@ public class Api {
 	}
 
 	public static boolean deleteProcedureGroupTag(String hardHash, String tagId){
+		fileProvider = References.getFileProvider();
+		procsApi = fileProvider.getProcsApi();
+
 		try {
 			procsApi.deleteProcedureTag(hardHash, tagId, "json", false, false, "", true, false, true);
 			return true;
@@ -1150,6 +1234,9 @@ public class Api {
 	}
 
 	public static TagModel[] listProcedureGroupTags(String hardHash){
+		fileProvider = References.getFileProvider();
+		procsApi = fileProvider.getProcsApi();
+
 		try {
 			EnvelopedTagList200 response = procsApi.listProcedureTags(hardHash, "json", false, false, "", true, false, "tags", "");
 

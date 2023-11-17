@@ -85,7 +85,6 @@ public class Prolog {
       cleanedOps.add(cleanedOp);
     }
     // TODO: This is dummy patch code to handle oddball issues that arise in prolog.
-  
     // Specifially, this is done in the absence of time and the ability to create
     // a fully-functional anthing-to-prolog parser at the drop of a hat.
     String cleanString = "(" + String.join(",", cleanedOps) + ")";

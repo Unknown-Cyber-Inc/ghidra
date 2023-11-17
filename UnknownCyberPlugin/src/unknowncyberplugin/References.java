@@ -176,34 +176,10 @@ public class References {
     }
 
     public static void setUploadHash(String uHash){
-        // TODO: testing
-        // if (uHash == null) {
-        //     uploadHash = null;
-        // } else {
-        //    uploadHash = uHash.toLowerCase(); 
-        // }
-        uploadHash = uHash.toLowerCase(); 
+        if (uHash == null) {
+            uploadHash = null;
+        } else {
+           uploadHash = uHash.toLowerCase(); 
+        }
     }
-
-    // TODO: testing
-    // public static void cleanUp() {
-    //     fileProvider.setVisible(false);
-    //     enableFullPlugin(false);
-    //     setUploadHash(null);
-    //     setCenterTabbedPane(null);
-    //     setProcTablePane(null);
-    //     setFileMatchesPane(null);
-    //     setFileTagsPane(null);
-    //     setFileNotesPane(null);
-    //     setFileMatchesPaginationControls(null);
-    //     setProcTablePane(null);
-    //     setProcButtonsPanel(null);
-    //     setCenterCRUDPanel(null);
-    //     setCenterPanel(null);
-    //     setFileCRUDPanel(null);
-    //     setFilePanel(null);
-    //     setFileButtonsPanel(null);
-    //     fileProvider.setProgram(null);
-    //     setFileProvider(null);
-    // }
 }

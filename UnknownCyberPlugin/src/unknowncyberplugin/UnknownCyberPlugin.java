@@ -7,9 +7,6 @@ import ghidra.framework.plugintool.PluginTool;
 import ghidra.framework.plugintool.util.PluginStatus;
 import ghidra.program.model.listing.Program;
 
-// TODO: remove after testing
-import ghidra.util.Msg;
-
 //@formatter:off
 @PluginInfo(
     status = PluginStatus.RELEASED,
@@ -33,22 +30,12 @@ public class UnknownCyberPlugin extends ProgramPlugin {
     @Override
     public void programOpened(Program program) {
         if (fileProvider != null) {
-            // TODO: testing
-            //References.setFileProvider(fileProvider);
             fileProvider.setProgram(program);
             boolean fileAccessible = Api.isFileAccessible(program.getExecutableMD5());
             References.enableFullPlugin(fileAccessible);
             References.getFilePanel().setMatchesTabToActive(fileAccessible);
         }
     }
-    // TODO: testing
-    // @Override
-    // public void programClosed(Program program) {
-    //     fileProvider.setProgram(null);
-    //     References.enableFullPlugin(false);
-    //     References.getFilePanel().setMatchesTabToActive(false);
-    //     References.setFileProvider(null);
-    // }
 
     /**
      * Plugin constructor.
@@ -64,7 +51,5 @@ public class UnknownCyberPlugin extends ProgramPlugin {
     @Override
     public void dispose() {
         fileProvider.setVisible(false);
-        // TODO: testing
-        // References.cleanUp();
     }
 }
