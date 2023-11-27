@@ -84,7 +84,8 @@ redist-local: recompile-local
     mv UnknownCyberPlugin-src.zip dist/unknowncyber/lib/
     cd dist
     tar czvf unknowncyberghidraplugin.tgz unknowncyber
-    mv unknowncyberghidraplugin.tgz ..
+    zip -r unknowncyberghidraplugin.zip unknowncyber
+    mv *.tgz *.zip ..
     cd ..
     rm -rf dist
 
