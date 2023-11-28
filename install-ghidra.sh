@@ -5,6 +5,7 @@
 export PATH=/opt/java/bin/:/opt/gradle/gradle-8.4/bin:$PATH
 export GHIDRA_HOME=/opt/ghidra/
 export GHIDRA_INSTALL_DIR=/opt/ghidra/
+export JAVA_HOME=/opt/java/
 
 set -x
 
@@ -28,7 +29,6 @@ sudo apt install -y --no-install-recommends \
     openjdk-11-jre-headless
 
 # Install the Java JDK
-JAVA_HOME=/opt/java
 wget -O /tmp/openjdk.tar.gz 'https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.7%2B7/OpenJDK17U-jdk_x64_linux_hotspot_17.0.7_7.tar.gz' \
     && sudo mkdir -p $JAVA_HOME \
     && sudo tar --extract --file /tmp/openjdk.tar.gz --directory $JAVA_HOME --strip-components 1 --no-same-owner \
@@ -52,3 +52,7 @@ wget https://services.gradle.org/distributions/gradle-8.4-bin.zip \
     && sudo mv gradle-8.4 gradle \
     && sudo ./gradle/bin/gradle init \
     && sudo ./gradle/bin/gradle wrapper
+
+echo alias ghidra=\'/opt/ghidra/support/launch.sh fg jdk Ghidra 768M \"\" ghidra.GhidraRun\' >> ~/.bashrc
+echo export JAVA_HOME=$JAVA_HOME >> ~/.bashrc
+source ~/.bashrc
