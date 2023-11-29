@@ -53,6 +53,7 @@ public class FileMatchesPaginationControls extends JPanel {
 
     public void setCurrentPageSize(int size){
         currentPageSize = size;
+        updateButtons();
     }
 
     private void firstPage(){
