@@ -93,9 +93,13 @@ public class CenterProcedureTabPane extends BaseCenterTabPane{
     
         for (ProcedureModel proc : procs) {
             String binId = proc.getBinaryId();
+            String ea = proc.getStartEA();
+            String block = proc.getBlockCount();
+            String code = proc.getCodeCount();
             FilesRootNode fileRootNode = filesRootNodeMap.get(binId);
     
             SimilarProcedureNode similarProcNode = new SimilarProcedureNode(proc);
+            similarProcNode.setNodeDisplayName("EA:" + ea + ", Blocks:" + block + ", Code:" + code);
             fileRootNode.add(similarProcNode);
         }
 
