@@ -10,11 +10,11 @@ public class ProcedureModel {
     private String hardHash;
     private int tags;
     private int notes;
-    private int block_count;
-    private int code_count;
+    private int blockCount;
+    private int codeCount;
 
     public ProcedureModel(String startEA, String procedureName, int count, String status, int notes, int tags,
-            String binaryId, String hardHash, int block_count, int code_count) {
+            String binaryId, String hardHash, int blockCount, int codeCount) {
         this.count = count;
         this.status = status;
         this.startEA = startEA;
@@ -23,8 +23,8 @@ public class ProcedureModel {
         this.hardHash = hardHash;
         this.tags = tags;
         this.notes = notes;
-        this.block_count = block_count;
-        this.code_count = code_count;
+        this.blockCount = blockCount;
+        this.codeCount = codeCount;
     }
 
     public String getCount() {
@@ -64,11 +64,11 @@ public class ProcedureModel {
     }
 
     public String getBlockCount() {
-        return String.valueOf(block_count);
+        return String.valueOf(blockCount);
     }
 
     public String getCodeCount() {
-        return String.valueOf(code_count);
+        return String.valueOf(codeCount);
     }
 
     @Override

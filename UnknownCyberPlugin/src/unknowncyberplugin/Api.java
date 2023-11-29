@@ -872,6 +872,7 @@ public class Api {
 		filesApi = fileProvider.getFilesApi();
 
 		try {
+			String readMask = "block_count,code_count,binary_id,start_ea";
 			String method = "semantic_similarity";
 			String readMask = "binary_id";
 			Integer pageCount = 1;
@@ -882,6 +883,7 @@ public class Api {
 				"json", false, false, "", true, false, pageCount, pageSize, 0, readMask, maxThreshold, method, minThreshold);
 
 			List<Procedure> responseProcs = response.getResources();
+			System.out.println(responseProcs);
 			ProcedureModel[] procList = new ProcedureModel[responseProcs.size()];
 
 			for (int i=0; i < responseProcs.size(); i++) {
