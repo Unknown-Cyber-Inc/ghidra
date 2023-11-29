@@ -653,7 +653,7 @@ public class Api {
 			Integer pageCount = 1;
 			Integer pageSize = 0;
 			EnvelopedFileGenomicsResponse200 response = filesApi.listFileGenomics(hash, "json", false,
-				false, "", true, false, pageCount, pageSize, 0, readMask, orderBy, false);
+				false, "", true, false, pageCount, pageSize, 0, readMask, false, orderBy);
 
 			List<ExtendedProcedureResponse> responseProcs = response.getResource().getProcedures();
 			ProcedureModel[] procList = new ProcedureModel[responseProcs.size()];
@@ -872,12 +872,13 @@ public class Api {
 
 		try {
 			String method = "semantic_similarity";
+			String readMask = "binary_id";
 			Integer pageCount = 1;
 			Integer pageSize = 25;
 			Float minThreshold = 0.7f;
 			Float maxThreshold = 1.0f;
 			EnvelopedProcedureList200 response = filesApi.listProcedureSimilarities(hash, address,
-				"json", false, false, "", true, false, pageCount, pageSize, 0, maxThreshold, method, minThreshold);
+				"json", false, false, "", true, false, pageCount, pageSize, 0, readMask, maxThreshold, method, minThreshold);
 
 			List<Procedure> responseProcs = response.getResources();
 			ProcedureModel[] procList = new ProcedureModel[responseProcs.size()];
