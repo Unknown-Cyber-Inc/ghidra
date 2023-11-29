@@ -12,9 +12,19 @@ public class ProcRetrievalButton extends BaseButton {
 
     @Override
     protected void runClickedAction() {
-        String binaryId = References.getFileProvider().getOriginalSha1();
+        String binaryId = References.getFileProvider().getProgram().getExecutableMD5();
 
         ProcedureModel[] procs = Api.getFileGenomics(binaryId);
+
+        // Inform user that the query returned 0 hits; the alternative is to do
+        // nothing and make it look like the button is broken.
+        if (procs.length == 0) {
+            References.getFileProvider().announce(
+                "No Procedures Found",
+                "No procedures were found for this file.",
+                false   
+            );
+        }
         String[][] procList = procsToStrings(procs);
 
         References.getProcTablePane().populate(procList);

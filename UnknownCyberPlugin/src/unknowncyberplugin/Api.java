@@ -15,6 +15,7 @@ import ghidra.util.task.TaskMonitor;
 import ghidra.program.model.listing.Program;
 
 import java.io.File;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -165,7 +166,6 @@ public class Api {
 
 		// Grab the temporary directory
 		final String tempDir = System.getProperty("java.io.tmpdir");
-		final String altDir = "/zipStorage/";
 
 		// Output boolean to denote success/failure
 		boolean toReturn = false;
@@ -179,7 +179,7 @@ public class Api {
 
 			// Generate the file's JSON data
 			JSONObject fileData = new JSONObject();
-			fileData.put("image_base", Integer.parseInt(Helpers.formatEA(program.getImageBase())));
+			fileData.put("image_base", Long.parseLong(Helpers.formatEA(program.getImageBase())));
 			fileData.put("md5", program.getExecutableMD5());
 			fileData.put("sha1", fileProvider.getOriginalSha1());
 			fileData.put("sha256", program.getExecutableSHA256());
@@ -205,14 +205,31 @@ public class Api {
 				fileData.put("filename", null);
 			}
 
-			try {
-				// Create the procedure's subdirectory
-				procDirectory = Files.createDirectory(Paths.get(tempDir + "/procedures/"));
-			} catch (Exception e) {
-				// File error occurs, specify issue and escalate to highest try/catch block
-				Msg.error(fileProvider, "Error occurred while creating temp disassembly files.");
-				stashedException = e;
-				throw new NestedException();
+			boolean retryProcDirectory = true;
+			while (retryProcDirectory) {
+				try {
+					// Create the procedure's subdirectory
+					procDirectory = Files.createDirectory(Paths.get(tempDir + "/procedures/"));
+					retryProcDirectory = false;
+				} catch (FileAlreadyExistsException e) {
+					// Failstate reset; if a temporary file was created but the process was
+					// killed before it could be deleted, delete here and retry
+					File tempReference = new File(tempDir + "/procedures/");
+					if (tempReference.exists()) {
+						File[] contents = tempReference.listFiles();
+						for (File file : contents) {
+							file.delete();
+						}
+						tempReference.delete();
+						retryProcDirectory = true;
+					}
+				} catch (Exception e) {
+					// File error occurs, specify issue and escalate to highest try/catch block
+					Msg.error(fileProvider, "Error occurred while creating temp disassembly files.");
+					stashedException = e;
+					retryProcDirectory = false;
+					throw new NestedException();
+				}
 			}
 
 			try {
@@ -290,14 +307,16 @@ public class Api {
 										throw new NestedException();
 									}
 
+									String mnemonic = Prolog.cleanMnemonic(currentLine.getMnemonicString().toLowerCase());
+
 									// Create each JSON line object
 									JSONObject lineJson = new JSONObject();
-									lineJson.put("startEA", Integer.parseInt(Helpers.formatEA(currentLine.getMinAddress())));
-									lineJson.put("endEA", Integer.parseInt(Helpers.formatEA(currentLine.getMaxAddress())));
+									lineJson.put("startEA", Long.parseLong(Helpers.formatEA(currentLine.getMinAddress())));
+									lineJson.put("endEA", Long.parseLong(Helpers.formatEA(currentLine.getMaxAddress())));
 									// TODO: v2 figure out type
 									lineJson.put("type", "code");
 									lineJson.put("bytes", byteString);
-									lineJson.put("mnem", currentLine.getMnemonicString().toLowerCase());
+									lineJson.put("mnem", mnemonic);
 									// TODO: v2 operands come out of ghidra with 0x-format hexes; we prefer h-format
 									// hexes except sometimes, because jumps tend to be off. For now, I'll leave
 									// operands as they natively appear; it will be easier to adjust the backend
@@ -305,7 +324,7 @@ public class Api {
 									// decision logic here
 									lineJson.put("operands", operandArray);
 									lineJson.put("prolog_format",
-										Prolog.formatInstruction(currentLine.getMnemonicString(), operandArray));
+										Prolog.formatInstruction(mnemonic, operandArray));
 									lineJson.put("api_call_name", apiCallName);
 									lineJson.put("is_call", isCall);
 
@@ -321,8 +340,8 @@ public class Api {
 
 							// Create each JSON block object
 							JSONObject blockJson = new JSONObject();
-							blockJson.put("startEA", Integer.parseInt(Helpers.formatEA(currentBlock.getMinAddress())));
-							blockJson.put("endEA", Integer.parseInt(Helpers.formatEA(currentBlock.getMaxAddress())));
+							blockJson.put("startEA", Long.parseLong(Helpers.formatEA(currentBlock.getMinAddress())));
+							blockJson.put("endEA", Long.parseLong(Helpers.formatEA(currentBlock.getMaxAddress())));
 
 							// Populate the JSON block's lines field with the line array
 							blockJson.put("lines", lineArray);
@@ -371,8 +390,8 @@ public class Api {
 					procData.put("blocks", blockArray);
 					procData.put("is_library", (f.isExternal() ? 128 : 0));
 					procData.put("is_thunk", (f.isThunk() ? 128 : 0));
-					procData.put("startEA", Integer.parseInt(Helpers.formatEA(f.getBody().getMinAddress())));
-					procData.put("endEA", Integer.parseInt(Helpers.formatEA(f.getBody().getMaxAddress())));
+					procData.put("startEA", Long.parseLong(Helpers.formatEA(f.getBody().getMinAddress())));
+					procData.put("endEA", Long.parseLong(Helpers.formatEA(f.getBody().getMaxAddress())));
 					procData.put("procedure_name", f.getName());
 					procData.put("segment_name",
 						program.getMemory().getBlock(f.getBody().getMinAddress()).getName());
@@ -425,9 +444,9 @@ public class Api {
 			// directory
 			try {
 				if (fileProvider.getOriginalSha1() != null) {
-					zip = new ZipFile(new File(altDir, fileProvider.getOriginalSha1() + ".zip"));
+					zip = new ZipFile(new File(tempDir, fileProvider.getOriginalSha1() + ".zip"));
 				} else {
-					zip = new ZipFile(new File(altDir, program.getExecutableMD5() + ".zip"));
+					zip = new ZipFile(new File(tempDir, program.getExecutableMD5() + ".zip"));
 				}
 				zip.addFile(fileJson);
 				zip.addFolder(procDirectory.toFile());
@@ -436,6 +455,11 @@ public class Api {
 				Msg.error(fileProvider, "Error occurred while generating temporary zip file for disassembly upload.");
 				stashedException = e;
 				throw new NestedException();
+			}
+			int dummy = 5;
+			if (dummy == 5) {
+				toReturn = true;
+				return true;
 			}
 
 			try {
@@ -494,7 +518,6 @@ public class Api {
 				procDirectory = null;
 			}
 
-			/*
 			try {
 				if (zip != null) {
 					if (zip.getFile().exists()) {
@@ -507,8 +530,6 @@ public class Api {
 			} finally {
 				zip = null;
 			}
-			//*/
-			// TODO: temp
 			zip = null;
 
 			return toReturn;
@@ -532,7 +553,6 @@ public class Api {
 				readMask, expandMask, dynamicMask);
 			return true;
 		} catch (ApiException e) {
-			Msg.error(fileProvider, e);
 			if (e.getCode() == 401) {
 				fileProvider.announce(
 					"Invalid API Key",
@@ -544,8 +564,6 @@ public class Api {
 			}
 			return false;
 		} catch (Exception e) {
-			Msg.error(fileProvider, e);
-			Msg.error(fileProvider, e);
 			if (e.toString().contains("UnknownHostException")) {
 				fileProvider.announce(
 					"Invalid API Host",
@@ -572,7 +590,7 @@ public class Api {
 		String dynamicMask = "";
 		try {
 			EnvelopedFile200 response = filesApi.getFile(hash, "json", false, false, "", true, false,
-					readMask, expandMask, dynamicMask);
+				readMask, expandMask, dynamicMask);
 	
 			FilePipeline pipeStatus = response.getResource().getPipeline();
 
@@ -589,6 +607,7 @@ public class Api {
 	/**
 	 * Wraps the listFileMatches endpoint.
 	 * - Takes a hash string to query the API with.
+	 * - Takes a pageCount int to specify which page to query.
 	 */
 	public static MatchModel[] listFileMatches(String hash, int pageCount) {
 		fileProvider = References.getFileProvider();
@@ -1254,6 +1273,4 @@ public class Api {
 			return null;
 		}
 	}
-
-
 }

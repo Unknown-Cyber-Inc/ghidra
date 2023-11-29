@@ -29,7 +29,23 @@ public class UnknownCyberPlugin extends ProgramPlugin {
 	 */
     @Override
     public void programOpened(Program program) {
-        if (fileProvider != null) {
+        if (fileProvider != null && program != null) {
+            fileProvider.setProgram(program);
+            boolean fileAccessible = Api.isFileAccessible(program.getExecutableMD5());
+            References.enableFullPlugin(fileAccessible);
+            References.getFilePanel().setMatchesTabToActive(fileAccessible);
+        }
+    }
+
+    /**
+     * Fallback override for when a program is opened.  When first loading a program
+     *   into Ghidra with the plugin active, the plugin will fail to load the program
+     *   data because the code editor has to be open first, thus causing the plugin
+     *   to run through initial setup and "miss" the file data.
+     */
+    @Override
+    public void programActivated(Program program) {
+        if (fileProvider != null && program != null) {
             fileProvider.setProgram(program);
             boolean fileAccessible = Api.isFileAccessible(program.getExecutableMD5());
             References.enableFullPlugin(fileAccessible);

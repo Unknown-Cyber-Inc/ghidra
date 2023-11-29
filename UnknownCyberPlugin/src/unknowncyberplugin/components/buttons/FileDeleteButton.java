@@ -24,7 +24,7 @@ public class FileDeleteButton extends BaseButton {
         UnknownCyberFileProvider fileProvider = References.getFileProvider();
         DeleteConfirmationPopup delPopup = new DeleteConfirmationPopup();
 
-        binaryId = fileProvider.getOriginalSha1();
+        binaryId = fileProvider.getProgram().getExecutableMD5();
         int response = delPopup.displayAndGetResponse();
 
         if (response == 0){

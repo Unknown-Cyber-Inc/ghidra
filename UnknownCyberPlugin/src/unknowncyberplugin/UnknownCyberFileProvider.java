@@ -45,8 +45,8 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 			// Attempt to hash file locally, alert user on failure
 			try {
 				originalFile = new File(program.getExecutablePath());
-				originalSha1 = Helpers.hashFile(originalFile, "SHA-1");
-				originalSha512 = Helpers.hashFile(originalFile, "SHA-512");
+				originalSha1 = Helpers.hashFile(originalFile, "SHA-1").toLowerCase();
+				originalSha512 = Helpers.hashFile(originalFile, "SHA-512").toLowerCase();
 			} catch (FileNotFoundException e) {
 				originalSha1 = null;
 				originalSha512 = null;

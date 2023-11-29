@@ -50,6 +50,84 @@ public class Prolog {
     return new String[]{operand, operand};
   }
 
+  // TODO: This is dummy patch code to handle oddball issues that arise with menmonics
+  public static String cleanMnemonic(String input) {
+    String output;
+
+    // Specifically, this is to cleanse leading underscores that prolog can't handle,
+    // now on mnemonics as well as operands
+    output = input.replaceAll("^_+", "").trim();
+    
+    return output;
+  }
+
+  // TODO: This is dummy patch code to handle oddball issues that arise in prolog
+  public static String dummyPatch(String input, String mnemonic) {
+    String cleanedOp;
+    
+    // Specifically, this is to cleanse # symbols from operands, as this is apparently
+    // something that prolog cannot handle
+    cleanedOp = input.replaceAll("#+", "").trim();
+
+    // Specifically, this is to condense mutliple negative symbols into a single one
+    cleanedOp = cleanedOp.replaceAll("--+", "-").trim();
+
+    // Specifically, this is to cleanse leading/trailing colons when Ghidra spits
+    // out an operand as such.
+    cleanedOp = cleanedOp.replaceAll("^:+", "").trim();
+    cleanedOp = cleanedOp.replaceAll(":+$", "").trim();
+
+    // Specifically, this is to cleanse leading underscores that prolog can't handle
+    cleanedOp = cleanedOp.replaceAll("^_+", "").trim();
+
+    // Specifically, this is to cleanse trailing exclamations that prolog can't handle
+    cleanedOp = cleanedOp.replaceAll("!+$", "").trim();
+    // This sub-fix handles conjoined operands
+    cleanedOp = cleanedOp.replaceAll("!+,", ",").trim();
+
+    // Specifically, this is to cleanse trailing + signs that prolog can't handle
+    cleanedOp = cleanedOp.replaceAll("[+]+$", "").trim();
+
+    // Specifically, this is to cleanse weird leading commas
+    cleanedOp = cleanedOp.replaceAll("^,+", "").trim();
+
+    // Specifically, this is to fix a weird issue in which an operand appears such
+    // as "lbl 8" where the space is a problem.  Actual IDA code visible through the
+    // site has it as lbl#8, but that doesn't parse so who knows what's going on.
+    // This only checks for "[a-z] [0-9]" because there are legitimate cases where
+    // other configurations are permissible, it seems.
+    cleanedOp = cleanedOp.replaceAll("([a-z]) +([0-9])", "$1$2").trim();
+
+    // Specifically, this cleans up some weird trailing .l (lowercase L) on operands
+    // and a similar .w
+    cleanedOp = cleanedOp.replaceAll("([)])[.][lw](,|$)", "$1$2").trim();
+
+    // Specifically, this is to guesstimate pointers in architectures that Ghidra is
+    // unable to discern pointers for, which also produces prolog-incompatible code
+    // I.e. what should be xptr(r1, + 20) gets misread as 20(r1).
+    // Pointer type can be partially inferred based on the mnemonic instruction
+    if (cleanedOp.matches("^-?[0-9]+[(]-?[a-z0-9]+[)]$")) {
+      String[] rebuild = cleanedOp.split("[(]");
+      cleanedOp = ("(" + rebuild[0] + " + " + rebuild[1]).trim();
+      if (mnemonic.toLowerCase().contains("b")) {
+        cleanedOp = "bptr" + cleanedOp;
+      } else if (mnemonic.toLowerCase().contains("w")) {
+        cleanedOp = "dptr" + cleanedOp;
+      } else {
+        // Fallback, not guaranteed to work, but better than being broken
+        cleanedOp = "dptr" + cleanedOp;
+      }
+    }
+
+    // Due to multiple patches interacting with starting/ending characters,
+    // it is necessarily to recursively patch until no changes can be made.
+    if (cleanedOp == input) {
+      return cleanedOp;
+    } else {
+      return dummyPatch(cleanedOp, mnemonic);
+    }
+  }
+
   /**
    * Converts a mnemonic assembly instruction and an array of operands into a prolog atom or function.
    * 
@@ -73,16 +151,10 @@ public class Prolog {
       // Convert any pointers present via dtype2ptr(), take the full cleaned operand,
       //   and recursively convert all 0x- and h-formatted hex values via hexToDecimal().
       //   If the operand is somehow just an unformatted hex, that will also be converted to decimal.
-      String cleanedOp = Helpers.hexToDecimal(dtype2ptr(op.toString())[1]);
-
-      // TODO: This is dummy patch code to handle oddball issues that arise in prolog
-      // Specifically, this is to cleanse leading/trailing colons when Ghidra spits
-      // out an operand as such.
-      cleanedOp = cleanedOp.replaceAll("^:", "");
-      cleanedOp = cleanedOp.replaceAll(":$", "");
+      String cleanedOp = Helpers.hexToDecimal(dtype2ptr(op.toString())[1], true);
 
       // Add cleaned operand to list
-      cleanedOps.add(cleanedOp);
+      cleanedOps.add(dummyPatch(cleanedOp, mnemonic));
     }
     // TODO: This is dummy patch code to handle oddball issues that arise in prolog.
     // Specifially, this is done in the absence of time and the ability to create

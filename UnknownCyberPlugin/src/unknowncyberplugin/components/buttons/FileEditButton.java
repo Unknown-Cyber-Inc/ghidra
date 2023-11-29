@@ -7,6 +7,8 @@ import unknowncyberplugin.components.panels.FilePanel;
 import unknowncyberplugin.components.popups.FileCRUDPopup;
 import unknowncyberplugin.models.responsedata.NoteModel;
 
+import ghidra.util.Msg;
+
 public class FileEditButton extends BaseButton {
     private String popupReturnedText;
     private String binaryId;
@@ -22,7 +24,7 @@ public class FileEditButton extends BaseButton {
         UnknownCyberFileProvider fileProvider = References.getFileProvider();
         FileCRUDPopup popup = new FileCRUDPopup();
 
-        binaryId = fileProvider.getOriginalSha1();
+        binaryId = fileProvider.getProgram().getExecutableMD5();
         popupReturnedText = null;
         popupReturnedText = popup.displayAndGetResponse(currentDisplayName);
 

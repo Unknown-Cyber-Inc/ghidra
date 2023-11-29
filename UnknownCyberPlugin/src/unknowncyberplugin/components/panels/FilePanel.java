@@ -53,7 +53,7 @@ public class FilePanel extends JPanel{
 
     private void changeMatchesPage(int pageCount){
         MatchModel[] matchList= Api.listFileMatches(
-            References.getFileProvider().getOriginalSha1(), pageCount);
+            References.getFileProvider().getProgram().getExecutableMD5(), pageCount);
         FileMatchesPane matchesPane = (FileMatchesPane)fileTabs.getMatchesPane();
         matchesPane.populate(matchList);
         pageControls.setCurrentPageSize(matchList.length);

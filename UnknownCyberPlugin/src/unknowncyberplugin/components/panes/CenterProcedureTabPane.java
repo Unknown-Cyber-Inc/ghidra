@@ -28,10 +28,10 @@ public class CenterProcedureTabPane extends BaseCenterTabPane{
     private String hardHash;
 
     public CenterProcedureTabPane(String startEa, String hardHash){
-        super(startEa, References.getFileProvider().getOriginalSha1(), "procedure");
+        super(startEa, References.getFileProvider().getProgram().getExecutableMD5(), "procedure");
         this.startEa = startEa;
         this.hardHash = hardHash;
-        binaryId = References.getFileProvider().getOriginalSha1();
+        binaryId = References.getFileProvider().getProgram().getExecutableMD5();
 
         tree.addMouseListener(new MouseAdapter() {
             @Override

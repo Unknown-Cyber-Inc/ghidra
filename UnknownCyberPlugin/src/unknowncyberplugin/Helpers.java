@@ -20,6 +20,8 @@ import javax.xml.bind.DatatypeConverter;
 
 import com.unknowncyber.magic.model.FilePipeline;
 
+import ghidra.util.Msg;
+
 public class Helpers {
 
   private Helpers() {
@@ -70,6 +72,14 @@ public class Helpers {
     } else {
       return hex;
     }
+  }
+
+  /**
+   * Converts a hex value to a decimal directly.  Alternative to two's
+   *   complement to troubleshoot certain specific overflow issues.
+   */
+  public static String convertToDecimal(String hex) {
+    return Long.toString(Long.parseLong(hex, 16));
   }
 
   /** 
@@ -131,7 +141,7 @@ public class Helpers {
    * Expected hex formats include 0x... and ...h 
    * Unformatted hex values are returned directly without attempting to recurse
    */
-  public static String hexToDecimal(String input) {
+  public static String hexToDecimal(String input, boolean useTwos) {
     Matcher xMatcher = Pattern.compile("0x[0-9a-fA-F]+").matcher(input);
     Matcher hMatcher = Pattern.compile("[0-9a-fA-F]+h").matcher(input);
     Matcher matcher = Pattern.compile("^[0-9a-fA-F]+$").matcher(input);
@@ -140,11 +150,17 @@ public class Helpers {
       // Extract the first hex value, removing the 0x prefix
       String hex = xMatcher.group().substring(2);
 
-      String result = xMatcher.replaceFirst(twosComplement(hex));
+      String result;
+      if (useTwos) {
+        result = xMatcher.replaceFirst(twosComplement(hex));
+      } else {
+        result = xMatcher.replaceFirst(convertToDecimal(hex));
+      }
+      
 
       if (xMatcher.find() || hMatcher.find()) {
         // If there are more matches, recurse for next potential match
-        return hexToDecimal(result);
+        return hexToDecimal(result, useTwos);
       }
 
       // Else return
@@ -154,11 +170,16 @@ public class Helpers {
       // Extract the first hex value, removing the h suffix
       String hex = hMatcher.group().substring(0, hMatcher.group().length() - 1);
 
-      String result = hMatcher.replaceFirst(twosComplement(hex));
+      String result;
+      if (useTwos) {
+        result = hMatcher.replaceFirst(twosComplement(hex));
+      } else {
+        result = hMatcher.replaceFirst(convertToDecimal(hex));
+      }
 
       if (hMatcher.find()) {
         // If there are more matches, recurse for next potential match
-        return hexToDecimal(result);
+        return hexToDecimal(result, useTwos);
       }
 
       // Else return
@@ -166,7 +187,11 @@ public class Helpers {
 
     } else if (matcher.find()) {
       // If the string is just a full hex value with no formatting, convert and return immediately
-      return twosComplement(matcher.group());
+      if (useTwos) {
+        return twosComplement(matcher.group());
+      } else {
+        return convertToDecimal(matcher.group());
+      }
     }
 
     // If no match is found, return original input
@@ -177,7 +202,7 @@ public class Helpers {
    * Convenience function to cut down on long lines and function calling spam
    */
   public static String formatEA(Address input) {
-    return hexToDecimal(cleanAddress(input.toString()));
+    return hexToDecimal(cleanAddress(input.toString()), false);
   }
 
   /**

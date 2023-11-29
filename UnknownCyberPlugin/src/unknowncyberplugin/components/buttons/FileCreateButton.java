@@ -25,7 +25,7 @@ public class FileCreateButton extends BaseButton {
         UnknownCyberFileProvider fileProvider = References.getFileProvider();
         FileCRUDPopup popup = new FileCRUDPopup();
 
-        binaryId = fileProvider.getOriginalSha1();
+        binaryId = fileProvider.getProgram().getExecutableMD5();
         popupReturnedText = null;
         popupReturnedText = popup.displayAndGetResponse("");
 
