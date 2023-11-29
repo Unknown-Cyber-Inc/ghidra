@@ -648,7 +648,7 @@ public class Api {
 
 		hash = hash.toLowerCase();
 		try {
-			String readMask = "binary_id,occurrence_count,procedure_hash,procedure_name,start_ea,status,notes,tags";
+			String readMask = "binary_id,occurrence_count,code_count,block_count,procedure_hash,procedure_name,start_ea,status,notes,tags";
 			String orderBy = "start_ea";
 			Integer pageCount = 1;
 			Integer pageSize = 0;
@@ -661,7 +661,8 @@ public class Api {
 			for (int i=0; i < responseProcs.size(); i++){
 				ExtendedProcedureResponse proc = responseProcs.get(i);
 				procList[i] = new ProcedureModel(proc.getStartEA(), proc.getProcedureName(), proc.getOccurrenceCount(),
-					proc.getStatus(), proc.getNotes().size(), proc.getTags().size(), proc.getBinaryId(), proc.getHardHash());
+					proc.getStatus(), proc.getNotes().size(), proc.getTags().size(), proc.getBinaryId(), proc.getHardHash(),
+					proc.getBlockCount(), proc.getCodeCount());
 			}
 
 			return procList;
@@ -885,7 +886,7 @@ public class Api {
 
 			for (int i=0; i < responseProcs.size(); i++) {
 				Procedure proc = responseProcs.get(i);
-				procList[i] = new ProcedureModel(proc.getStartEa(), proc.getProcedureName(), -1, null, 0, 0, proc.getBinaryId(), null);
+				procList[i] = new ProcedureModel(proc.getStartEa(), proc.getProcedureName(), -1, null, 0, 0, proc.getBinaryId(), null, proc.getBlockCount(), proc.getCodeCount());
 			}
 
 			return procList;

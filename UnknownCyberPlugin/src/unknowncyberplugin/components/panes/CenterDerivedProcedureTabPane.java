@@ -4,7 +4,6 @@ import javax.swing.tree.MutableTreeNode;
 
 import unknowncyberplugin.Api;
 import unknowncyberplugin.models.responsedata.NoteModel;
-import unknowncyberplugin.models.responsedata.ProcedureModel;
 import unknowncyberplugin.models.responsedata.TagModel;
 import unknowncyberplugin.models.responsedata.FileModel;
 import unknowncyberplugin.models.treenodes.roots.FilesRootNode;

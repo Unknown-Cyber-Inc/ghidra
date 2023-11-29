@@ -16,18 +16,20 @@ public class ProcRetrievalButton extends BaseButton {
 
         ProcedureModel[] procs = Api.getFileGenomics(binaryId);
 
-        // Inform user that the query returned 0 hits; the alternative is to do
-        // nothing and make it look like the button is broken.
-        if (procs.length == 0) {
-            References.getFileProvider().announce(
-                "No Procedures Found",
-                "No procedures were found for this file.",
-                false   
-            );
-        }
-        String[][] procList = procsToStrings(procs);
+        if(procs != null){
+            // Inform user that the query returned 0 hits; the alternative is to do
+            // nothing and make it look like the button is broken.
+            if (procs.length == 0) {
+                References.getFileProvider().announce(
+                    "No Procedures Found",
+                    "No procedures were found for this file.",
+                    false   
+                );
+            }
+            String[][] procList = procsToStrings(procs);
 
-        References.getProcTablePane().populate(procList);
+            References.getProcTablePane().populate(procList);
+        }
     }
 
     private String[][] procsToStrings(ProcedureModel[] procs) {
@@ -39,7 +41,7 @@ public class ProcRetrievalButton extends BaseButton {
         int index = 0;
         for (ProcedureModel proc : procs) {
             procList[index] = new String[] { proc.getStartEA(), proc.getProcedureName(), proc.getHardHash(), proc.getCount(),
-                    proc.getStatus(), proc.getNotes(), proc.getTags()};
+                     proc.getBlockCount(), proc.getCodeCount(), proc.getStatus(), proc.getNotes(), proc.getTags()};
             index++;
         }
 

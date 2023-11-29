@@ -10,9 +10,11 @@ public class ProcedureModel {
     private String hardHash;
     private int tags;
     private int notes;
+    private int block_count;
+    private int code_count;
 
     public ProcedureModel(String startEA, String procedureName, int count, String status, int notes, int tags,
-            String binaryId, String hardHash) {
+            String binaryId, String hardHash, int block_count, int code_count) {
         this.count = count;
         this.status = status;
         this.startEA = startEA;
@@ -21,6 +23,8 @@ public class ProcedureModel {
         this.hardHash = hardHash;
         this.tags = tags;
         this.notes = notes;
+        this.block_count = block_count;
+        this.code_count = code_count;
     }
 
     public String getCount() {
@@ -57,6 +61,14 @@ public class ProcedureModel {
 
     public String getTags() {
         return String.valueOf(tags);
+    }
+
+    public String getBlockCount() {
+        return String.valueOf(block_count);
+    }
+
+    public String getCodeCount() {
+        return String.valueOf(code_count);
     }
 
     @Override
