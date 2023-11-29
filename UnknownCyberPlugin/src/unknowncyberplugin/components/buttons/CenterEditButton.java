@@ -126,13 +126,17 @@ public class CenterEditButton extends BaseButton {
         } else if (selectedNode instanceof ProcedureRootNode){
             if (Api.updateProcedureName(binaryId, startEA, popupReturnedText)) {
                 tree.editNode(selectedNode, new ProcedureModel(
-                    (String) table.getValueAt(rowNumber, 0), popupReturnedText,
-                    Integer.parseInt((String)table.getValueAt(rowNumber, 2)), (String) table.getValueAt(rowNumber, 3),
-                    Integer.parseInt((String)table.getValueAt(rowNumber, 4)), Integer.parseInt((String)table.getValueAt(rowNumber, 5)),
-                    binaryId, (String) table.getValueAt(rowNumber, 6)
+                    (String) table.getValueAt(rowNumber, 0),
+                    popupReturnedText,
+                    Integer.parseInt((String)table.getValueAt(rowNumber, 3)),
+                    (String) table.getValueAt(rowNumber, 4),
+                    Integer.parseInt((String)table.getValueAt(rowNumber, 5)),
+                    Integer.parseInt((String)table.getValueAt(rowNumber, 6)),
+                    binaryId,
+                    (String) table.getValueAt(rowNumber, 2)
                 ));
+                table.setValueAt(popupReturnedText, rowNumber, 1);
             }
-            table.setValueAt(popupReturnedText, rowNumber, 1);
         }
     }
 
