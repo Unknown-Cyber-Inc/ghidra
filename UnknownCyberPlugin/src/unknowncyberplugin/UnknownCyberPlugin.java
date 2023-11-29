@@ -30,10 +30,13 @@ public class UnknownCyberPlugin extends ProgramPlugin {
     @Override
     public void programOpened(Program program) {
         if (fileProvider != null && program != null) {
-            fileProvider.setProgram(program);
-            boolean fileAccessible = Api.isFileAccessible(program.getExecutableMD5());
-            References.enableFullPlugin(fileAccessible);
-            References.getFilePanel().setMatchesTabToActive(fileAccessible);
+            if (fileProvider.getProgram() == null) {
+                fileProvider.setProgram(program);
+                boolean fileAccessible = Api.isFileAccessible(program.getExecutableMD5());
+                References.enableFullPlugin(fileAccessible);
+                References.getFilePanel().setMatchesTabToActive(fileAccessible);
+            }
+            
         }
     }
 
@@ -46,10 +49,12 @@ public class UnknownCyberPlugin extends ProgramPlugin {
     @Override
     public void programActivated(Program program) {
         if (fileProvider != null && program != null) {
-            fileProvider.setProgram(program);
-            boolean fileAccessible = Api.isFileAccessible(program.getExecutableMD5());
-            References.enableFullPlugin(fileAccessible);
-            References.getFilePanel().setMatchesTabToActive(fileAccessible);
+            if (fileProvider.getProgram() == null) {
+                fileProvider.setProgram(program);
+                boolean fileAccessible = Api.isFileAccessible(program.getExecutableMD5());
+                References.enableFullPlugin(fileAccessible);
+                References.getFilePanel().setMatchesTabToActive(fileAccessible);
+            }
         }
     }
 
