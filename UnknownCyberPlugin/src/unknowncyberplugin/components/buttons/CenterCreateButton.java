@@ -8,6 +8,7 @@ import unknowncyberplugin.components.collections.CenterTree;
 import unknowncyberplugin.components.panels.CenterPanel;
 import unknowncyberplugin.components.panes.BaseCenterTabPane;
 import unknowncyberplugin.components.panes.CenterProcedureTabPane;
+import unknowncyberplugin.components.panes.CenterDerivedProcedureTabPane;
 import unknowncyberplugin.components.popups.CenterCRUDPopup;
 import unknowncyberplugin.models.responsedata.NoteModel;
 import unknowncyberplugin.models.responsedata.TagModel;
@@ -78,9 +79,17 @@ public class CenterCreateButton extends BaseButton {
         ProcedureRootNode procRoot = (ProcedureRootNode) tabPane.getRootNode();
         DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) selectedNode.getParent();
         String startEA = procRoot.getStartEA();
-        String hardHash = ((CenterProcedureTabPane)tabPane).getHardHash();
+        String hardHash = null;
+
+        // Leaving the conditional below in place for when we add proc group notes/tags
+        // to derived procedure tabs.
+        // 
+        // if (tabPane instanceof CenterDerivedProcedureTabPane) {
+        //     hardHash = ((CenterDerivedProcedureTabPane)tabPane).getHardHash();
+        // }
 
         if (tabPane instanceof CenterProcedureTabPane){
+            hardHash = ((CenterProcedureTabPane)tabPane).getHardHash();
             simRoot = procRoot.getSimilaritiesRootNode();
             procGroupNotesRoot = procRoot.getProcGroupNoteRoot();
             procGroupTagsRoot = procRoot.getProcGroupTagsRootNode();
