@@ -4,12 +4,16 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ChangeEvent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
+import unknowncyberplugin.References;
 import unknowncyberplugin.components.panels.CenterTabSubPanel;
+import unknowncyberplugin.components.buttons.CenterCompareButton;
 
 public class CenterTabbedPane extends JTabbedPane{
     private static final int DEFAULT_TAB_INDEX = 0;
@@ -19,6 +23,25 @@ public class CenterTabbedPane extends JTabbedPane{
         super();
         setPreferredSize(new Dimension(getPreferredSize().width, 200));
         generateDefaultTab();
+
+        addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                tabChanged();
+            }
+        });
+    }
+
+    private void tabChanged() {
+        BaseCenterTabPane selectedTab = getActiveTabComponent();
+        if (selectedTab != null) {
+            CenterCompareButton ccp = References.getCenterPanel().getCompareButton();
+            if (selectedTab instanceof CenterDerivedProcedureTabPane) {
+                ccp.showButton();
+            } else {
+                ccp.hideButton();
+            }
+        }
     }
 
     private void generateDefaultTab(){
