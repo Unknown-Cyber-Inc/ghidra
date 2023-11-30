@@ -29,7 +29,14 @@ public class CenterCompareButton extends BaseButton {
         String origCode = getCodeString(origProc);
         String derivedCode = getCodeString(derivedProc);
 
-        CenterComparePopup popup = new CenterComparePopup(origCode, derivedCode);
+        CenterComparePopup popup = new CenterComparePopup(
+            origCode,
+            tab.getOriginBinaryId(),
+            tab.getOriginStartEa(),
+            derivedCode,
+            tab.getBinaryId(),
+            tab.getStartEa()
+            );
         popup.display();
     }
 

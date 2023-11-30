@@ -7,11 +7,13 @@ import javax.swing.JScrollBar;
 import javax.swing.JButton;
 import javax.swing.JSplitPane;
 import javax.swing.JPanel;
+import javax.swing.JLabel;
 import java.awt.event.AdjustmentListener;
 import java.awt.event.AdjustmentEvent;
 import java.awt.Dimension;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.GridLayout;
 
 import unknowncyberplugin.models.responsedata.ProcedureModel;
 
@@ -24,7 +26,14 @@ public class CenterComparePopup extends JDialog {
     private JSplitPane splitPane;
     private boolean scrollLocked = false;
 
-    public CenterComparePopup(String origCode, String derivedCode) {
+    public CenterComparePopup(
+        String origCode,
+        String origBinaryId,
+        String origStartEa,
+        String derivedCode,
+        String derivedBinaryId,
+        String derivedStartEa
+        ) {
         setTitle("Procedure Comparison");
         setSize(600, 400);
         setLocationRelativeTo(null);
@@ -39,9 +48,16 @@ public class CenterComparePopup extends JDialog {
         origScrollPane = new JScrollPane(origCodeArea);
         derivedScrollPane = new JScrollPane(derivedCodeArea);
 
-        splitPane = new JSplitPane(
-            JSplitPane.HORIZONTAL_SPLIT, origScrollPane, derivedScrollPane
-        );
+        JPanel origPanel = new JPanel(new BorderLayout());
+        JPanel derivedPanel = new JPanel(new BorderLayout());
+
+        origPanel.add(createInfoPanel("Original", origBinaryId, origStartEa), BorderLayout.NORTH);
+        origPanel.add(origScrollPane, BorderLayout.CENTER);
+
+        derivedPanel.add(createInfoPanel("Similar", derivedBinaryId, derivedStartEa), BorderLayout.NORTH);
+        derivedPanel.add(derivedScrollPane, BorderLayout.CENTER);
+
+        splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, origPanel, derivedPanel);
         add(splitPane, BorderLayout.CENTER);
 
         JPanel topPanel = new JPanel(new FlowLayout());
@@ -62,6 +78,21 @@ public class CenterComparePopup extends JDialog {
         if (visible) {
             splitPane.setDividerLocation(0.5);
         }
+    }
+
+    private JPanel createInfoPanel(String title, String binaryId, String startEa) {
+        JPanel panel = new JPanel(new BorderLayout());
+        JLabel titleLabel = new JLabel(title);
+        JLabel fileHashLabel = new JLabel("File Hash: " + binaryId);
+        JLabel addressLabel = new JLabel("Address: " + startEa);
+
+        JPanel infoPanel = new JPanel(new GridLayout(3, 1));
+        infoPanel.add(titleLabel);
+        infoPanel.add(fileHashLabel);
+        infoPanel.add(addressLabel);
+
+        panel.add(infoPanel, BorderLayout.NORTH);
+        return panel;
     }
 
     private void setupTextArea(JTextArea textArea) {
