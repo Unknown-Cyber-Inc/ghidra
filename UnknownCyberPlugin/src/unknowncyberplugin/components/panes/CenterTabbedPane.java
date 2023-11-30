@@ -33,13 +33,17 @@ public class CenterTabbedPane extends JTabbedPane{
     }
 
     private void tabChanged() {
-        BaseCenterTabPane selectedTab = getActiveTabComponent();
-        if (selectedTab != null) {
-            CenterCompareButton ccp = References.getCenterPanel().getCompareButton();
-            if (selectedTab instanceof CenterDerivedProcedureTabPane) {
-                ccp.showButton();
-            } else {
-                ccp.hideButton();
+        CenterCompareButton ccp = References.getCenterPanel().getCompareButton();
+        if(getComponentAt(getSelectedIndex()) instanceof CenterDefaultTabPane){
+            ccp.hideButton();
+        } else {
+            BaseCenterTabPane selectedTab =  getActiveTabComponent();
+            if (selectedTab != null) {
+                if (selectedTab instanceof CenterDerivedProcedureTabPane) {
+                    ccp.showButton();
+                } else {
+                    ccp.hideButton();
+                }
             }
         }
     }
@@ -47,22 +51,7 @@ public class CenterTabbedPane extends JTabbedPane{
     private void generateDefaultTab(){
         setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 
-        JPanel defaultPanel = new JPanel(new BorderLayout());
-        defaultPanel.setBackground(Color.WHITE);
-        
-        JLabel instructionLabel = new JLabel(
-            "<html>Double-click an address in the table below to create a new tab.<br><br>" +
-            "Within a procedure tab's \"Similar Procedure Locations\" tree,<br>" +
-            "double-click a file or procedure to create a tab for that item.</html>"
-        );
-        instructionLabel.setOpaque(true);
-        instructionLabel.setBackground(Color.WHITE);
-
-        JScrollPane defaultTab = new JScrollPane();
-
-        defaultPanel.add(instructionLabel);
-        defaultTab.setViewportView(defaultPanel);
-        defaultTab.getViewport().setBackground(Color.WHITE);
+        CenterDefaultTabPane defaultTab = new CenterDefaultTabPane();
         
         addTab("Get Started", defaultTab);
         defaultTabExists = true;
@@ -81,12 +70,12 @@ public class CenterTabbedPane extends JTabbedPane{
     }
 
     public void removeTabAndCheckTabCount(int index){
-        remove(index);
         // may need to update tab colors here
-        if (getTabCount() == 0){
+        if (getTabCount() == 1){
             generateDefaultTab();
             defaultTabExists = true;
         }
+        remove(index);
     }
 
     public BaseCenterTabPane getActiveTabComponent(){
