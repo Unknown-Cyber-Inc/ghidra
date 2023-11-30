@@ -29,7 +29,7 @@ public class FileTabbedPane extends JTabbedPane {
         References.setFileMatchesPane((FileMatchesPane)matchesPane);
 
         this.addChangeListener(ev -> {
-            shownList = getActiveTabComponent().getList();
+            this.shownList = getActiveTabComponent().getList();
             DefaultListModel<Object> listModel = (DefaultListModel<Object>)shownList.getModel();
             listModel.clear();
             if (listModel != null){
@@ -46,9 +46,11 @@ public class FileTabbedPane extends JTabbedPane {
 
         if (tabComponent instanceof FileNotesPane){
             fcp.notesTabSelected();
+            References.getFilePanel().getPageControls().setVisible(false);
             items = Api.listFileNotes(hash);
         } else if (tabComponent instanceof FileTagsPane){
             fcp.tagsTabSelected();
+            References.getFilePanel().getPageControls().setVisible(false);
             items = Api.listFileTags(hash);
         } else if (tabComponent instanceof FileMatchesPane){
             fcp.disableButtons();
