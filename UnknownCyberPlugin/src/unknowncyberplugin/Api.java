@@ -874,7 +874,6 @@ public class Api {
 		try {
 			String readMask = "block_count,code_count,binary_id,start_ea";
 			String method = "semantic_similarity";
-			String readMask = "binary_id";
 			Integer pageCount = 1;
 			Integer pageSize = 25;
 			Float minThreshold = 0.7f;

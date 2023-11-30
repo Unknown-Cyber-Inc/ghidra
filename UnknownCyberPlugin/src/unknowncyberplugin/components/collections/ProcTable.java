@@ -17,7 +17,7 @@ public class ProcTable extends JTable {
     // into an array of arrays.
     private DefaultTableModel tableModel;
     private static final String[] COLUMN_NAMES = {
-        "Address", "Name", "Group Hash", "Occurrence #",
+        "Address", "Name", "Group Hash", "Occurrences",
         "Blocks", "Code", "Type", "Notes", "Tags"
     };
 
@@ -28,6 +28,19 @@ public class ProcTable extends JTable {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
+            }
+            @Override
+            public Class<?> getColumnClass(int columnIndex) {
+                switch (columnIndex) {
+                    case 3: // Occurrences
+                    case 4: // Blocks
+                    case 5: // Code
+                    case 7: // Notes
+                    case 8: // Tags
+                        return Integer.class;
+                    default:
+                        return String.class;
+                }
             }
         };
         setModel(tableModel);
@@ -53,7 +66,17 @@ public class ProcTable extends JTable {
     }
 
     public void addTableRow(Object[] rowData) {
-        tableModel.addRow(rowData);
+        Object[] newRowData = new Object[rowData.length];
+        for (int i = 0; i < rowData.length; i++) {
+            if (i == 3 || i == 4 || i == 5 || i == 7 || i == 8) {
+                // Convert to Integer for specific columns
+                newRowData[i] = Integer.parseInt(rowData[i].toString());
+            } else {
+                // Keep original data for other columns
+                newRowData[i] = rowData[i];
+            }
+        }
+        tableModel.addRow(newRowData);
     }
 
     public void handleDoubleClick(Object startEa, Object hardHash) {
