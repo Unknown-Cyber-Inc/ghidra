@@ -124,7 +124,9 @@ public class CenterProcedureTabPane extends BaseCenterTabPane{
                 nodeName,
                 new CenterDerivedProcedureTabPane(
                     nodeName,
-                    parentNode.toString()
+                    parentNode.toString(),
+                    startEa,
+                    binaryId
                 )
             );
         }

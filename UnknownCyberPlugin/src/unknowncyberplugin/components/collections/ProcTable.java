@@ -31,14 +31,12 @@ public class ProcTable extends JTable {
             }
             @Override
             public Class<?> getColumnClass(int columnIndex) {
-                // Assuming "Occurrences", "Blocks", "Code", "Notes", and "Tags" 
-                // should be treated as integers.
                 switch (columnIndex) {
-                    case 3: // "Occurrences"
-                    case 4: // "Blocks"
-                    case 5: // "Code"
-                    case 7: // "Notes"
-                    case 8: // "Tags"
+                    case 3: // Occurrences
+                    case 4: // Blocks
+                    case 5: // Code
+                    case 7: // Notes
+                    case 8: // Tags
                         return Integer.class;
                     default:
                         return String.class;

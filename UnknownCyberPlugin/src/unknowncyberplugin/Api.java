@@ -44,6 +44,7 @@ import com.unknowncyber.magic.model.EnvelopedNote200;
 import com.unknowncyber.magic.model.EnvelopedNote201;
 import com.unknowncyber.magic.model.EnvelopedNoteList200;
 import com.unknowncyber.magic.model.EnvelopedProcedureList200;
+import com.unknowncyber.magic.model.EnvelopedProcedureResponse200;
 import com.unknowncyber.magic.model.EnvelopedTagCreatedResponse200;
 import com.unknowncyber.magic.model.EnvelopedTagCreatedResponse201;
 import com.unknowncyber.magic.model.EnvelopedTagList200;
@@ -55,6 +56,7 @@ import com.unknowncyber.magic.model.Match;
 import com.unknowncyber.magic.model.NamelessNote;
 import com.unknowncyber.magic.model.Note;
 import com.unknowncyber.magic.model.Procedure;
+import com.unknowncyber.magic.model.ProcedureResponse;
 import com.unknowncyber.magic.model.Tag;
 import com.unknowncyber.magic.model.TagResponse;
 import com.unknowncyber.magic.model.TagCreatedResponse;
@@ -662,7 +664,7 @@ public class Api {
 				ExtendedProcedureResponse proc = responseProcs.get(i);
 				procList[i] = new ProcedureModel(proc.getStartEA(), proc.getProcedureName(), proc.getOccurrenceCount(),
 					proc.getStatus(), proc.getNotes().size(), proc.getTags().size(), proc.getBinaryId(), proc.getHardHash(),
-					proc.getBlockCount(), proc.getCodeCount());
+					proc.getBlockCount(), proc.getCodeCount(), null);
 			}
 
 			return procList;
@@ -882,15 +884,34 @@ public class Api {
 				"json", false, false, "", true, false, pageCount, pageSize, 0, readMask, maxThreshold, method, minThreshold);
 
 			List<Procedure> responseProcs = response.getResources();
-			System.out.println(responseProcs);
 			ProcedureModel[] procList = new ProcedureModel[responseProcs.size()];
 
 			for (int i=0; i < responseProcs.size(); i++) {
 				Procedure proc = responseProcs.get(i);
-				procList[i] = new ProcedureModel(proc.getStartEa(), proc.getProcedureName(), -1, null, 0, 0, proc.getBinaryId(), null, proc.getBlockCount(), proc.getCodeCount());
+				procList[i] = new ProcedureModel(proc.getStartEa(), proc.getProcedureName(), -1, null, 0, 0, proc.getBinaryId(), null, proc.getBlockCount(), proc.getCodeCount(), null);
 			}
 
 			return procList;
+		} catch (Exception e) {
+			Msg.error(fileProvider, e);
+			return null;
+		}
+	}
+
+	/**
+	 * Wraps the listFileProcedureGenomics endpoint.
+	 * - Takes a hash string to reference the file.
+	 * - Takes an address string to reference the procedure.
+	 * Returns an instance of Unknown Cyber Plugin Procedure object.
+	 */
+	public static ProcedureModel listFileProcedureGenomics(String hash, String address) {
+		fileProvider = References.getFileProvider();
+		filesApi = fileProvider.getFilesApi();
+
+		try {
+			EnvelopedProcedureResponse200 response = filesApi.listFileProcedureGenomics(hash, address, "json", false, false, "", true, false);
+			ProcedureResponse proc = response.getResource();
+			return new ProcedureModel(proc.getStartEA(), proc.getProcedureName(), -1, null, -1, -1, proc.getBinaryId(), proc.getHardHash(), -1, -1, proc.getBlocks());
 		} catch (Exception e) {
 			Msg.error(fileProvider, e);
 			return null;

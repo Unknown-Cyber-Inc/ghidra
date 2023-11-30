@@ -135,7 +135,8 @@ public class CenterEditButton extends BaseButton {
                     binaryId,
                     (String) table.getValueAt(rowNumber, 2),
                     Integer.parseInt((String)table.getValueAt(rowNumber, 4)),
-                    Integer.parseInt((String)table.getValueAt(rowNumber, 5))
+                    Integer.parseInt((String)table.getValueAt(rowNumber, 5)),
+                    null
                 ));
                 table.setValueAt(popupReturnedText, rowNumber, 1);
             }

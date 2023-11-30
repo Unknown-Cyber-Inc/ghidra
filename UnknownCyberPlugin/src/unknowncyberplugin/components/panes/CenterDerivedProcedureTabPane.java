@@ -15,11 +15,15 @@ import unknowncyberplugin.models.treenodes.roots.TagsRootNode;
 public class CenterDerivedProcedureTabPane extends BaseCenterTabPane{
     private String startEa;
     private String binaryId;
+    private String originStartEa;
+    private String originBinaryId;
 
-    public CenterDerivedProcedureTabPane(String startEa, String binaryId){
+    public CenterDerivedProcedureTabPane(String startEa, String binaryId, String originStartEa, String originBinaryId){
         super(startEa, binaryId, "derived procedure");
         this.startEa = startEa;
         this.binaryId = binaryId;
+        this.originStartEa = originStartEa;
+        this.originBinaryId = originBinaryId;
     }
 
     @Override
@@ -32,5 +36,21 @@ public class CenterDerivedProcedureTabPane extends BaseCenterTabPane{
             TagModel[] tags = Api.listProcedureGenomicsTags(binaryId, startEa);
             ((ProcedureRootNode)getRootNode()).populateTags(tags);
         }
+    }
+
+    public String getStartEa() {
+        return startEa;
+    }
+
+    public String getBinaryId() {
+        return binaryId;
+    }
+
+    public String getOriginStartEa() {
+        return originStartEa;
+    }
+
+    public String getOriginBinaryId() {
+        return originBinaryId;
     }
 }
