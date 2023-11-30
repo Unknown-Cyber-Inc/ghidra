@@ -48,7 +48,10 @@ public class CenterCompareButton extends BaseButton {
     }
 
     public void showButton(){
-        this.setVisible(true);
+        this.setVisible(false);
+        // TODO: Remove the line above and uncomment the line below when
+        // the comparison feature is desired.
+        // this.setVisible(true);
     }
 
     public void hideButton(){
