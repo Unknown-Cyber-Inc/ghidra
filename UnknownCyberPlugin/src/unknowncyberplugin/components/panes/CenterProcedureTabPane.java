@@ -118,12 +118,12 @@ public class CenterProcedureTabPane extends BaseCenterTabPane{
                 new CenterDerivedFileTabPane(selectedNode.toString())
             );
         } else if (selectedNode instanceof SimilarProcedureNode){
-            nodeName = ((SimilarProcedureNode)selectedNode).getNodeDisplayName();
+            nodeName = ((SimilarProcedureNode)selectedNode).getNodeData().toString();
             FilesRootNode parentNode = (FilesRootNode) selectedNode.getParent();
             ctp.addClosableTab(
                 nodeName,
                 new CenterDerivedProcedureTabPane(
-                    ((SimilarProcedureNode)selectedNode).getNodeDisplayName(),
+                    nodeName,
                     parentNode.toString()
                 )
             );
