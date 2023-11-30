@@ -31,12 +31,14 @@ public class ProcTable extends JTable {
             }
             @Override
             public Class<?> getColumnClass(int columnIndex) {
+                // Assuming "Occurrences", "Blocks", "Code", "Notes", and "Tags" 
+                // should be treated as integers.
                 switch (columnIndex) {
-                    case 3: // Occurrences
-                    case 4: // Blocks
-                    case 5: // Code
-                    case 7: // Notes
-                    case 8: // Tags
+                    case 3: // "Occurrences"
+                    case 4: // "Blocks"
+                    case 5: // "Code"
+                    case 7: // "Notes"
+                    case 8: // "Tags"
                         return Integer.class;
                     default:
                         return String.class;
@@ -66,17 +68,7 @@ public class ProcTable extends JTable {
     }
 
     public void addTableRow(Object[] rowData) {
-        Object[] newRowData = new Object[rowData.length];
-        for (int i = 0; i < rowData.length; i++) {
-            if (i == 3 || i == 4 || i == 5 || i == 7 || i == 8) {
-                // Convert to Integer for specific columns
-                newRowData[i] = Integer.parseInt(rowData[i].toString());
-            } else {
-                // Keep original data for other columns
-                newRowData[i] = rowData[i];
-            }
-        }
-        tableModel.addRow(newRowData);
+        tableModel.addRow(rowData);
     }
 
     public void handleDoubleClick(Object startEa, Object hardHash) {

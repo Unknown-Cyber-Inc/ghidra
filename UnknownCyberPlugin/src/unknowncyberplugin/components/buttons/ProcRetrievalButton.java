@@ -25,21 +25,30 @@ public class ProcRetrievalButton extends BaseButton {
                 false   
             );
         }
-        String[][] procList = procsToStrings(procs);
+        Object[][] procList = procsToStrings(procs);
 
         References.getProcTablePane().populate(procList);
     }
 
-    private String[][] procsToStrings(ProcedureModel[] procs) {
+    private Object[][] procsToStrings(ProcedureModel[] procs) {
         if (procs == null) {
-            return new String[0][];
+            return new Object[0][];
         }
-        String[][] procList = new String[procs.length][];
+        Object[][] procList = new Object[procs.length][];
 
         int index = 0;
         for (ProcedureModel proc : procs) {
-            procList[index] = new String[] { proc.getStartEA(), proc.getProcedureName(), proc.getHardHash(), proc.getCount(),
-                    proc.getBlockCount(), proc.getCodeCount(), proc.getStatus(), proc.getNotes(), proc.getTags()};
+            procList[index] = new Object[] {
+                proc.getStartEA(),
+                proc.getProcedureName(),
+                proc.getHardHash(),
+                Integer.parseInt(proc.getCount()),
+                Integer.parseInt(proc.getBlockCount()),
+                Integer.parseInt(proc.getCodeCount()),
+                proc.getStatus(),
+                Integer.parseInt(proc.getNotes()),
+                Integer.parseInt(proc.getTags())
+            };
             index++;
         }
 
