@@ -95,4 +95,12 @@ public class FileMatchesPaginationControls extends JPanel {
         currentPage = 1;
         updateButtons();
     }
+
+    public void showControls(){
+        this.setVisible(true);
+    }
+
+    public void hideControls(){
+        this.setVisible(false);
+    }
 }

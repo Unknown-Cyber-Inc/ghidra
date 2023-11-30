@@ -29,7 +29,7 @@ public class FileTabbedPane extends JTabbedPane {
         References.setFileMatchesPane((FileMatchesPane)matchesPane);
 
         this.addChangeListener(ev -> {
-            shownList = getActiveTabComponent().getList();
+            this.shownList = getActiveTabComponent().getList();
             DefaultListModel<Object> listModel = (DefaultListModel<Object>)shownList.getModel();
             listModel.clear();
             if (listModel != null){
@@ -40,20 +40,22 @@ public class FileTabbedPane extends JTabbedPane {
 
     private void fetchAndPopulateList(){
         FileCRUDPanel fcp = References.getFileCRUDPanel();
+        FileMatchesPaginationControls pc = References.getFileMatchesPaginationControls();
         String hash = References.getFileProvider().getProgram().getExecutableMD5();
         BaseFileListPane tabComponent = getActiveTabComponent();
         Object[] items = null;
 
         if (tabComponent instanceof FileNotesPane){
             fcp.notesTabSelected();
+            pc.hideControls();
             items = Api.listFileNotes(hash);
         } else if (tabComponent instanceof FileTagsPane){
             fcp.tagsTabSelected();
+            pc.hideControls();
             items = Api.listFileTags(hash);
         } else if (tabComponent instanceof FileMatchesPane){
             fcp.disableButtons();
-            References.getFilePanel().getPageControls().setVisible(true);
-            FileMatchesPaginationControls pc = References.getFileMatchesPaginationControls();
+            pc.showControls();
             items = Api.listFileMatches(hash, pc.getCurrentPage());
 
             if (items != null){
