@@ -12,7 +12,7 @@ public class ProcRetrievalButton extends BaseButton {
 
     @Override
     protected void runClickedAction() {
-        String binaryId = References.getFileProvider().getOriginalSha1();
+        String binaryId = References.getFileProvider().getProgram().getExecutableMD5();
 
         ProcedureModel[] procs = Api.getFileGenomics(binaryId);
 
