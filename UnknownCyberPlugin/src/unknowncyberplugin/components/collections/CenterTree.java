@@ -23,6 +23,7 @@ public class CenterTree extends JTree {
         super(model);
         centerTreeModel = model;
         setEditable(false);
+        setToggleClickCount(0);
 
         TreeSelectionModel centerSelectionModel = getSelectionModel();
         centerSelectionModel.setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);

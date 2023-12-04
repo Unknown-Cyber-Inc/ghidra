@@ -1,5 +1,9 @@
 package unknowncyberplugin.models.responsedata;
 
+import java.util.List;
+
+import com.unknowncyber.magic.model.BlockSchema;
+
 public class ProcedureModel {
     private int count;
     private String status;
@@ -10,9 +14,12 @@ public class ProcedureModel {
     private String hardHash;
     private int tags;
     private int notes;
+    private int blockCount;
+    private int codeCount;
+    private List<BlockSchema> blocks;
 
     public ProcedureModel(String startEA, String procedureName, int count, String status, int notes, int tags,
-            String binaryId, String hardHash) {
+            String binaryId, String hardHash, int blockCount, int codeCount, List<BlockSchema> blocks) {
         this.count = count;
         this.status = status;
         this.startEA = startEA;
@@ -21,6 +28,9 @@ public class ProcedureModel {
         this.hardHash = hardHash;
         this.tags = tags;
         this.notes = notes;
+        this.blockCount = blockCount;
+        this.codeCount = codeCount;
+        this.blocks = blocks;
     }
 
     public String getCount() {
@@ -57,6 +67,18 @@ public class ProcedureModel {
 
     public String getTags() {
         return String.valueOf(tags);
+    }
+
+    public String getBlockCount() {
+        return String.valueOf(blockCount);
+    }
+
+    public String getCodeCount() {
+        return String.valueOf(codeCount);
+    }
+
+    public List<BlockSchema> getBlocks() {
+        return blocks;
     }
 
     @Override

@@ -6,6 +6,8 @@ import javax.swing.tree.TreePath;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Map;
+import java.util.HashMap;
 
 import unknowncyberplugin.Api;
 import unknowncyberplugin.References;
@@ -76,22 +78,33 @@ public class CenterProcedureTabPane extends BaseCenterTabPane{
     }
 
     public void parseSimilarProcedures(ProcedureModel[] procs){
-        String currentBinaryId = "";
-        FilesRootNode currentFileRootNode = null;
         SimilaritiesRootNode simRootNode = ((ProcedureRootNode)getRootNode()).getSimilaritiesRootNode();
+        simRootNode.clearNode();
+        Map<String, FilesRootNode> filesRootNodeMap = new HashMap<>();
 
-        for (ProcedureModel proc : procs){
-            if (currentBinaryId.equals(proc.getBinaryId())){
-                currentFileRootNode.add(new SimilarProcedureNode(proc));
-            } else {
-                currentBinaryId = proc.getBinaryId();
-                FileModel newFile = new FileModel(proc.getBinaryId(), null, proc.getBinaryId());
-                currentFileRootNode = new FilesRootNode(newFile, proc.getBinaryId());
-                currentFileRootNode.setBinaryId(proc.getBinaryId());
-
-                currentFileRootNode.add(new SimilarProcedureNode(proc));
-                simRootNode.add(currentFileRootNode);
+        for (ProcedureModel proc : procs) {
+            String binId = proc.getBinaryId();
+            if (!filesRootNodeMap.containsKey(binId)) {
+                FileModel fileModel = new FileModel(binId, null, binId);
+                FilesRootNode fileRootNode = new FilesRootNode(fileModel, binId);
+                filesRootNodeMap.put(binId, fileRootNode);
             }
+        }
+    
+        for (ProcedureModel proc : procs) {
+            String binId = proc.getBinaryId();
+            String ea = proc.getStartEA();
+            String block = proc.getBlockCount();
+            String code = proc.getCodeCount();
+            FilesRootNode fileRootNode = filesRootNodeMap.get(binId);
+    
+            SimilarProcedureNode similarProcNode = new SimilarProcedureNode(proc);
+            similarProcNode.setNodeDisplayName("EA:" + ea + ", Blocks:" + block + ", Code:" + code);
+            fileRootNode.add(similarProcNode);
+        }
+
+        for (FilesRootNode rootNode : filesRootNodeMap.values()) {
+            simRootNode.add(rootNode);
         }
     }
 
@@ -105,13 +118,15 @@ public class CenterProcedureTabPane extends BaseCenterTabPane{
                 new CenterDerivedFileTabPane(selectedNode.toString())
             );
         } else if (selectedNode instanceof SimilarProcedureNode){
-            nodeName = ((SimilarProcedureNode)selectedNode).getNodeDisplayName();
+            nodeName = ((SimilarProcedureNode)selectedNode).getNodeData().toString();
             FilesRootNode parentNode = (FilesRootNode) selectedNode.getParent();
             ctp.addClosableTab(
                 nodeName,
                 new CenterDerivedProcedureTabPane(
-                    ((SimilarProcedureNode)selectedNode).getNodeDisplayName(),
-                    parentNode.toString()
+                    nodeName,
+                    parentNode.toString(),
+                    startEa,
+                    binaryId
                 )
             );
         }
