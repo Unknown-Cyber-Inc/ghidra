@@ -95,7 +95,8 @@ public class CenterEditButton extends BaseButton {
         if (parentNode instanceof NotesRootNode){
             if (Api.updateProcedureGenomicsNote(binaryId, startEA, ((NoteNode)selectedNode).getNodeData().getId(), popupReturnedText)) {
                 NoteModel note = new NoteModel(
-                    popupReturnedText, ((NoteNode)selectedNode).getNodeData().getId(),
+                    popupReturnedText,
+                    ((NoteNode)selectedNode).getNodeData().getId(),
                     ((NoteNode)selectedNode).getNodeData().getUserName(),
                     ((NoteNode)selectedNode).getNodeData().getTimeStamp());
                 tree.editNode(selectedNode, note);
@@ -111,7 +112,8 @@ public class CenterEditButton extends BaseButton {
 
             if (Api.updateProcedureGroupNote(hardHash, ((NoteNode)selectedNode).getNodeData().getId(), popupReturnedText)) {
                 NoteModel note = new NoteModel(
-                    popupReturnedText, ((NoteNode)selectedNode).getNodeData().getId(),
+                    popupReturnedText,
+                    ((NoteNode)selectedNode).getNodeData().getId(),
                     ((NoteNode)selectedNode).getNodeData().getUserName(),
                     ((NoteNode)selectedNode).getNodeData().getTimeStamp());
                 tree.editNode(selectedNode, note);
@@ -128,14 +130,14 @@ public class CenterEditButton extends BaseButton {
                 tree.editNode(selectedNode, new ProcedureModel(
                     (String) table.getValueAt(rowNumber, 0),
                     popupReturnedText,
-                    Integer.parseInt((String)table.getValueAt(rowNumber, 3)),
+                    (Integer) table.getValueAt(rowNumber, 3),
                     (String) table.getValueAt(rowNumber, 6),
-                    Integer.parseInt((String)table.getValueAt(rowNumber, 7)),
-                    Integer.parseInt((String)table.getValueAt(rowNumber, 8)),
+                    (Integer) table.getValueAt(rowNumber, 7),
+                    (Integer) table.getValueAt(rowNumber, 8),
                     binaryId,
                     (String) table.getValueAt(rowNumber, 2),
-                    Integer.parseInt((String)table.getValueAt(rowNumber, 4)),
-                    Integer.parseInt((String)table.getValueAt(rowNumber, 5)),
+                    (Integer) table.getValueAt(rowNumber, 4),
+                    (Integer) table.getValueAt(rowNumber, 5),
                     null
                 ));
                 table.setValueAt(popupReturnedText, rowNumber, 1);

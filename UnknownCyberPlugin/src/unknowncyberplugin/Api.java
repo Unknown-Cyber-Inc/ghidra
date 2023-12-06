@@ -1184,8 +1184,9 @@ public class Api {
 			noteData.put("note", note);
 
 			RequestBody body = RequestBody.create(noteData.toString(), JSON);
-			Request request = new Request.Builder().url(baseUrl + "/procedures/" + hardHash + "/notes/" + noteId
-				+ "/" + noLinks + updateMask + apiKey).patch(body).build();
+			Request request = new Request.Builder()
+				.url(baseUrl + "procedures/" + hardHash + "/notes/" + noteId + "/" + noLinks + updateMask + apiKey)
+				.patch(body).build();
 
 			response = client.newCall(request).execute();
 

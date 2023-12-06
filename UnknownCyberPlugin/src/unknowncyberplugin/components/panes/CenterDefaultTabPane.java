@@ -22,9 +22,9 @@ public class CenterDefaultTabPane extends JPanel {
         setBackground(Color.WHITE);
 
         JLabel instructionLabel = new JLabel(
-            "<html>Double-click an address in the table below to create a new tab.<br><br>" +
+            "<html>Double-click a procedure in the table below to create a new tab.<br><br>" +
             "Within a procedure tab's \"Similar Procedure Locations\" tree,<br>" +
-            "double-click a file or procedure to create a tab for that item.</html>"
+            "Double-click a file or procedure to create a tab for that item.</html>"
         );
         instructionLabel.setOpaque(true);
         instructionLabel.setBackground(Color.WHITE);

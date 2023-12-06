@@ -34,10 +34,12 @@ public class CenterTabbedPane extends JTabbedPane{
 
     private void tabChanged() {
         CenterCompareButton ccp = References.getCenterPanel().getCompareButton();
+        References.getCenterCRUDPanel().disableButtons();
         if(getComponentAt(getSelectedIndex()) instanceof CenterDefaultTabPane){
             ccp.hideButton();
         } else {
-            BaseCenterTabPane selectedTab =  getActiveTabComponent();
+            BaseCenterTabPane selectedTab = getActiveTabComponent();
+            selectedTab.getTree().clearSelection();
             if (selectedTab != null) {
                 if (selectedTab instanceof CenterDerivedProcedureTabPane) {
                     ccp.showButton();

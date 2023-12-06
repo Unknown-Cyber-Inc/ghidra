@@ -39,6 +39,10 @@ public class FileUploadPopup extends JOptionPane {
         String response = (String) getValue();
         dialog.dispose();
 
+        if (response == null) {
+            return null;
+        }
+
         if (response.equals("Binary")){
             SkipUnpackPopup skipUnpackPopup = new SkipUnpackPopup();
             boolean skip = skipUnpackPopup.checkUnpack();

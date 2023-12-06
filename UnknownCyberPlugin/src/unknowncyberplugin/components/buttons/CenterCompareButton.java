@@ -36,7 +36,7 @@ public class CenterCompareButton extends BaseButton {
             derivedCode,
             tab.getBinaryId(),
             tab.getStartEa()
-            );
+        );
         popup.display();
     }
 

@@ -63,17 +63,19 @@ public class CenterDeleteButton extends BaseButton {
         }
         // Clear node to prevent duplicates upon reopening the tree.
         clearSubRootNodes();
+        References.getCenterCRUDPanel().disableButtons();
     }
 
     public void processProcedureTreeNode(ProcedureRootNode procRoot){
+        String hardHash = null;
         if (tabPane instanceof CenterProcedureTabPane){
             simRoot = procRoot.getSimilaritiesRootNode();
             procGroupNotesRoot = procRoot.getProcGroupNoteRoot();
             procGroupTagsRoot = procRoot.getProcGroupTagsRootNode();
+            hardHash = ((CenterProcedureTabPane)tabPane).getHardHash();
         }
         DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) selectedNode.getParent();
         String startEA = procRoot.getStartEA();
-        String hardHash = ((CenterProcedureTabPane)tabPane).getHardHash();
 
         if (parentNode instanceof NotesRootNode){ // If the selected node is a Note/TagNode of a procedure
             boolean successful = Api.deleteProcedureGenomicsNote(binaryId, startEA, ((NoteNode)selectedNode).getNodeData().getId());

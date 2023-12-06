@@ -46,25 +46,33 @@ public class FileTabbedPane extends JTabbedPane {
         Object[] items = null;
 
         if (tabComponent instanceof FileNotesPane){
-            fcp.notesTabSelected();
             pc.hideControls();
             items = Api.listFileNotes(hash);
+
+            if (items != null){
+                tabComponent.populate(items);
+                shownList.clearSelection();
+            }
+            fcp.notesTabSelected();
         } else if (tabComponent instanceof FileTagsPane){
-            fcp.tagsTabSelected();
             pc.hideControls();
             items = Api.listFileTags(hash);
+
+            if (items != null){
+                tabComponent.populate(items);
+                shownList.clearSelection();
+            }
+            fcp.tagsTabSelected();
         } else if (tabComponent instanceof FileMatchesPane){
-            fcp.disableButtons();
             pc.showControls();
             items = Api.listFileMatches(hash, pc.getCurrentPage());
 
             if (items != null){
                 pc.setCurrentPageSize(items.length);
+                tabComponent.populate(items);
+                shownList.clearSelection();
             }
-        }
-
-        if (items != null){
-            tabComponent.populate(items);
+            fcp.disableButtons();
         }
     }
 

@@ -30,6 +30,7 @@ public class FileDeleteButton extends BaseButton {
         if (response == 0){
             processItem(fp.getActiveTabComponent(), fp.getSelectedListItem());
         }
+        References.getFileCRUDPanel().updateButtons(true, false, false);
     }
 
     public void processItem(BaseFileListPane tabPane, Object selectedItem){
