@@ -50,3 +50,6 @@ Thumbs.db
 
 *.gradle
 build/
+
+unknowncyber*plugin.tgz
+unknowncyber*plugin.zip
