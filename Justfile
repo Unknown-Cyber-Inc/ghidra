@@ -63,7 +63,7 @@ redist: recompile
     cd dist
     tar czvf unknowncyberghidraplugin.tgz unknowncyber
     zip -r unknowncyberghidraplugin.zip unknowncyber
-    mv *.tgz *.zip ..
+    mv *.tgz *.zip ../..
     cd ..
     rm -rf dist
 
@@ -86,7 +86,7 @@ redist-local: recompile-local
     cd dist
     tar czvf unknowncyberghidraplugin.tgz unknowncyber
     zip -r unknowncyberghidraplugin.zip unknowncyber
-    mv *.tgz *.zip ..
+    mv *.tgz *.zip ../..
     cd ..
     rm -rf dist
 
