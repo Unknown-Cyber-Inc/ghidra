@@ -80,6 +80,7 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 
 import io.swagger.client.ApiException;
+import io.github.cdimascio.dotenv.Dotenv;
 
 /**
  * Serves to hold easy-use wrappers for Unknown Cyber API calls.
@@ -88,8 +89,10 @@ public class Api {
 	private static final String API_HOST_ENV = "MAGIC_API_HOST";
 	private static final String API_KEY_ENV = "MAGIC_API_KEY";
 
-	private static String baseUrl = System.getenv(API_HOST_ENV) + "/v2/";
-	private static String apiKey = "&key=" + System.getenv(API_KEY_ENV);
+	private static Dotenv dotenv = Dotenv.configure().directory(System.getProperty("user.home")).ignoreIfMalformed().ignoreIfMissing().load();
+
+	private static String baseUrl = dotenv.get(API_HOST_ENV) + "/v2/";
+	private static String apiKey = "&key=" + dotenv.get(API_KEY_ENV);
 
 	// Globally usable link disabler to clean up calls and inherently include the
 	// mandatory ? symbol needed for this and other parameters, for use with
