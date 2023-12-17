@@ -9,6 +9,8 @@ import javax.swing.JPanel;
 import com.unknowncyber.magic.api.FilesApi;
 import com.unknowncyber.magic.api.ProceduresApi;
 
+import io.github.cdimascio.dotenv.Dotenv;
+
 import docking.WindowPosition;
 import ghidra.framework.plugintool.ComponentProviderAdapter;
 import ghidra.framework.plugintool.PluginTool;
@@ -25,6 +27,7 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 	private ApiClient apiClient;
 	private FilesApi filesApi;
 	private ProceduresApi procsApi;
+	private static Dotenv dotenv = Dotenv.configure().directory(System.getProperty("user.home")).ignoreIfMalformed().ignoreIfMissing().load();
 
 	// GUI's main panel which holds all other panels
 	private JPanel mainPanel;
@@ -81,6 +84,8 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 		setTitle("Unknown Cyber");
 		setVisible(true);
 		apiClient = new ApiClient();
+		apiClient.setApiKey(dotenv.get("MAGIC_API_KEY"));
+		apiClient.setBasePath(dotenv.get("MAGIC_API_HOST"));
 		filesApi = new FilesApi(apiClient);
 		procsApi = new ProceduresApi(apiClient);
 	}
