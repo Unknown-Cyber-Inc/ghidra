@@ -64,8 +64,9 @@ redist: recompile
     tar czvf unknowncyberghidraplugin.tgz unknowncyber
     zip -r unknowncyberghidraplugin.zip unknowncyber
     mv *.tgz *.zip ../..
-    cd ..
-    rm -rf dist
+    rm -rf ../dist
+    cd ../..
+    sha256sum unknowncyberghidraplugin.* > checksum
 
 # Recompiles the plugin
 recompile-local:
@@ -87,8 +88,9 @@ redist-local: recompile-local
     tar czvf unknowncyberghidraplugin.tgz unknowncyber
     zip -r unknowncyberghidraplugin.zip unknowncyber
     mv *.tgz *.zip ../..
-    cd ..
-    rm -rf dist
+    rm -rf ../dist
+    cd ../..
+    sha256sum unknowncyberghidraplugin.* > checksum
 
 # Kills Ghidra
 kill:
