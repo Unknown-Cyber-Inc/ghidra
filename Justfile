@@ -112,7 +112,7 @@ build V=GHIDRA_VERSION D=GHIDRA_DATE:
         && docker-buildx build \
             --build-arg version={{V}} \
             --build-arg date={{D}} \
-            -t unknowncyber/ghidra:{{V}} .
+            -t virusbattleacr.azurecr.io/unknowncyber/ghidra:{{V}} .
 
 # Builds the Ghidra docker image, ignoring cache
 rebuild V=GHIDRA_VERSION D=GHIDRA_DATE:
@@ -122,14 +122,14 @@ rebuild V=GHIDRA_VERSION D=GHIDRA_DATE:
         && docker-buildx build --no-cache \
             --build-arg version={{V}} \
             --build-arg date={{D}} \
-            -t unknowncyber/ghidra:{{V}} .
+            -t virusbattleacr.azurecr.io/unknowncyber/ghidra:{{V}} .
 
 # Tags the versioned ghidra to the latest
 latest +V=GHIDRA_VERSION:
-    docker tag unknowncyber/ghidra:{{V}} unknowncyber/ghidra:latest
+    docker tag virusbattleacr.azurecr.io/unknowncyber/ghidra:{{V}} virusbattleacr.azurecr.io/unknowncyber/ghidra:latest
 
 # Pushes the ghidra docker image to dockerhub
 push +V=GHIDRA_VERSION:
-    docker push unknowncyber/ghidra:{{V}}
+    docker push virusbattleacr.azurecr.io/unknowncyber/ghidra:{{V}}
 
 # }}}

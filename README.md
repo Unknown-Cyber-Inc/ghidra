@@ -3,7 +3,7 @@
 ## How to run the docker container
 
  * Make sure to download the latest ghidra docker image
-   * `docker pull unknowncyber/ghidra`
+   * `docker pull virusbattleacr.azurecr.io/unknowncyber/ghidra`
 
  * Start your ghidra container from within your development repository
    * `just dev-up ghidra`
