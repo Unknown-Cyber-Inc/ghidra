@@ -1,0 +1,38 @@
+name: Create unknowncyberghidraplugin.tgz Production Release
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+    createrelease:
+      name: Build
+      runs-on: [ubuntu-latest]
+      steps:
+        - name: Checkout Development Repo
+          uses: actions/checkout@v4
+
+        - name: Create unknowncyberghidraplugin.tgz File
+          run: |
+            cd UnknownCyberPlugin
+            mkdir -p dist/unknowncyber
+            cp -r extension.properties lib LICENSE.txt Module.manifest dist/unknowncyber/
+            zip UnknownCyberPlugin-src.zip src/*
+            mv UnknownCyberPlugin-src.zip dist/unknowncyber/lib/
+            cd dist
+            tar czvf unknowncyberghidraplugin.tgz unknowncyber
+            zip -r unknowncyberghidraplugin.zip unknowncyber
+            mv *.tgz *.zip ../..
+            rm -rf ../dist
+            cd ../..
+            sha256sum unknowncyberghidraplugin.* > checksum
+
+        - name: Release
+          uses: softprops/action-gh-release@v2
+          with:
+            files: unknowncyberghidraplugin.tgz
+            name: "UnknownCyber Prod unknowncyberghidraplugin.tgz Package"
+            tag_name: "1.0"
+
