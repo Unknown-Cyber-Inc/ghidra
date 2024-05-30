@@ -21,7 +21,7 @@ jobs:
           uses: actions/checkout@v4
 
         - name: Create unknowncyberghidraplugin.tgz File
-          working_directory: ./UnknownCyberPlugin
+          working-directory: ./UnknownCyberPlugin
           run: |
             mkdir unknowncyber
             cp -r extension.properties lib LICENSE.txt Module.manifest ./unknowncyber/
