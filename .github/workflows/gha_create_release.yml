@@ -27,10 +27,15 @@ jobs:
             cp -r extension.properties lib LICENSE.txt Module.manifest ./unknowncyber/
             zip ./unknowncyber/lib/UnknownCyberPlugin-src.zip src/*
             tar czvf ../unknowncyberghidraplugin.tgz unknowncyber
+            zip -r ../unknowncyberghidraplugin.zip unknowncyber
+            sha256sum ../unknowncyberghidraplugin.* > ../checksum
 
         - name: Release
           uses: softprops/action-gh-release@v2
           with:
-            files: unknowncyberghidraplugin.tgz
             name: "UnknownCyber Ghidra Plugin"
             tag_name: ${{github.event.inputs.version}}
+            files: |
+              unknowncyberghidraplugin.tgz
+              unknowncyberghidraplugin.zip
+              checksum
