@@ -26,8 +26,7 @@ jobs:
             mkdir unknowncyber
             cp -r extension.properties lib LICENSE.txt Module.manifest ./unknowncyber/
             zip ./unknowncyber/lib/UnknownCyberPlugin-src.zip src/*
-            tar czvf unknowncyberghidraplugin.tgz unknowncyber
-            sha256sum unknowncyberghidraplugin.* > checksum
+            tar czvf ../unknowncyberghidraplugin.tgz unknowncyber
 
         - name: Release
           uses: softprops/action-gh-release@v2
