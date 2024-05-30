@@ -1,7 +1,13 @@
-name: Create unknowncyberghidraplugin.tgz Production Release
+name: Create Ghidra plugin Release
 
 on:
   workflow_dispatch:
+    inputs:
+      version:
+        description: "Release Version"
+        required: true
+        type: string
+        pattern: '^\d+\.\d+\.\d+$'
 
 permissions:
   contents: write
@@ -15,24 +21,17 @@ jobs:
           uses: actions/checkout@v4
 
         - name: Create unknowncyberghidraplugin.tgz File
+          working_directory: ./UnknownCyberPlugin
           run: |
-            cd UnknownCyberPlugin
-            mkdir -p dist/unknowncyber
-            cp -r extension.properties lib LICENSE.txt Module.manifest dist/unknowncyber/
-            zip UnknownCyberPlugin-src.zip src/*
-            mv UnknownCyberPlugin-src.zip dist/unknowncyber/lib/
-            cd dist
+            mkdir unknowncyber
+            cp -r extension.properties lib LICENSE.txt Module.manifest ./unknowncyber/
+            zip ./unknowncyber/lib/UnknownCyberPlugin-src.zip src/*
             tar czvf unknowncyberghidraplugin.tgz unknowncyber
-            zip -r unknowncyberghidraplugin.zip unknowncyber
-            mv *.tgz *.zip ../..
-            rm -rf ../dist
-            cd ../..
             sha256sum unknowncyberghidraplugin.* > checksum
 
         - name: Release
           uses: softprops/action-gh-release@v2
           with:
             files: unknowncyberghidraplugin.tgz
-            name: "UnknownCyber Prod unknowncyberghidraplugin.tgz Package"
-            tag_name: "1.0"
-
+            name: "UnknownCyber Ghidra Plugin"
+            tag_name: ${{github.event.inputs.version}}
