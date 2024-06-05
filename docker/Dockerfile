@@ -1,15 +1,15 @@
 FROM ubuntu:22.04 AS base
-ARG version=10.4
-ARG date=20230928
+ARG version=11.0.3
+ARG date=20240410
 EXPOSE 13100/tcp 13101/tcp 13102/tcp
 ENV LANG=en_US.UTF-8 LANGUAGE=en_US:en LC_ALL=en_US.UTF-8
 ENV DEBIAN_FRONTEND=noninteractive
-ENV PATH /opt/java/bin/:/opt/gradle/gradle-8.4/bin:$PATH
+ENV PATH /opt/java/bin/:/opt/gradle/gradle-8.8/bin:$PATH
 ENV GHIDRA_HOME /opt/ghidra/
 ENV GHIDRA_INSTALL_DIR /opt/ghidra/
 ENV PGHIDRA_INSTALL_DIR /opt/ghidra/
 ENV JAVA_HOME /opt/java/
-ENV JAVA_VERSION=jdk-17.0.7+7
+ENV JAVA_VERSION=jdk-17.0.9+9
 ENV MAXMEM=768M
 
 COPY ca.crt .
@@ -18,7 +18,7 @@ RUN set -x \
     && apt update \
     && apt install -y --no-install-recommends \
         wget \
-    && wget --no-check-certificate -O /tmp/openjdk.tar.gz 'https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.7%2B7/OpenJDK17U-jdk_x64_linux_hotspot_17.0.7_7.tar.gz' \
+    && wget --no-check-certificate -O /tmp/openjdk.tar.gz 'https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.9%2B9/OpenJDK17U-jdk_x64_linux_hotspot_17.0.9_9.tar.gz' \
     && mkdir -p $JAVA_HOME \
     && tar --extract --file /tmp/openjdk.tar.gz --directory $JAVA_HOME --strip-components 1 --no-same-owner \
     && rm -f /tmp/openjdk.tar.gz $JAVA_HOME/src.zip \
@@ -54,11 +54,11 @@ RUN apt-get update \
     && unzip ghidra_${version}_PUBLIC_${date}.zip -d /opt/ \
     && mv /opt/ghidra_${version}_PUBLIC /opt/ghidra \
     && rm -rf ghidra_${version}_PUBLIC_${date}.zip \
-    && wget https://services.gradle.org/distributions/gradle-8.4-bin.zip \
-    && unzip gradle-8.4-bin.zip -d /opt/gradle \
-    && rm -rf gradle-8.4-bin.zip \
+    && wget https://services.gradle.org/distributions/gradle-8.8-bin.zip \
+    && unzip gradle-8.8-bin.zip -d /opt/gradle \
+    && rm -rf gradle-8.8-bin.zip \
     && cd /opt/gradle \
-    && mv gradle-8.4 gradle \
+    && mv gradle-8.8 gradle \
     && ./gradle/bin/gradle init \
     && ./gradle/bin/gradle wrapper \
     && apt-get clean \

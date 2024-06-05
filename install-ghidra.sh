@@ -2,7 +2,11 @@
 #
 #
 
-export PATH=/opt/java/bin/:/opt/gradle/gradle-8.4/bin:$PATH
+GRADLE_VERSION=8.8
+GHIDRA_VERSION=11.0.3
+DATE=20240410
+
+export PATH=/opt/java/bin/:/opt/gradle/gradle-$GRADLE_VERSION/bin:$PATH
 export GHIDRA_HOME=/opt/ghidra/
 export GHIDRA_INSTALL_DIR=/opt/ghidra/
 export JAVA_HOME=/opt/java/
@@ -29,7 +33,7 @@ sudo apt install -y --no-install-recommends \
     openjdk-11-jre-headless
 
 # Install the Java JDK
-wget -O /tmp/openjdk.tar.gz 'https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.7%2B7/OpenJDK17U-jdk_x64_linux_hotspot_17.0.7_7.tar.gz' \
+wget -O /tmp/openjdk.tar.gz 'https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.9%2B9/OpenJDK17U-jdk_x64_linux_hotspot_17.0.9_9.tar.gz' \
     && sudo mkdir -p $JAVA_HOME \
     && sudo tar --extract --file /tmp/openjdk.tar.gz --directory $JAVA_HOME --strip-components 1 --no-same-owner \
     && sudo rm -f /tmp/openjdk.tar.gz $JAVA_HOME/src.zip \
@@ -39,17 +43,17 @@ wget -O /tmp/openjdk.tar.gz 'https://github.com/adoptium/temurin17-binaries/rele
     && rm -rf ~/.java
 
 # Install Ghidra
-wget https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_10.4_build/ghidra_10.4_PUBLIC_20230928.zip \
-    && sudo unzip ghidra_10.4_PUBLIC_20230928.zip -d /opt/ \
-    && sudo mv /opt/ghidra_10.4_PUBLIC /opt/ghidra \
-    && rm -rf ghidra_10.4_PUBLIC_20230928.zip
+wget https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_${GHIDRA_VERSION}_ghidra_${GHIDRA_VERSION}_PUBLIC_$DATE.zip \
+    && sudo unzip ghidra_${GHIDRA_VERSION}_PUBLIC_$DATE.zip -d /opt/ \
+    && sudo mv /opt/ghidra_${GHIDRA_VERSION}_PUBLIC /opt/ghidra \
+    && rm -rf ghidra_${GHIDRA_VERSION}_PUBLIC_$DATE.zip
 
 # Install Gradle
-wget https://services.gradle.org/distributions/gradle-8.4-bin.zip \
-    && sudo unzip gradle-8.4-bin.zip -d /opt/gradle \
-    && rm -rf gradle-8.4-bin.zip \
+wget https://services.gradle.org/distributions/gradle-$GRADLE_VERSION-bin.zip \
+    && sudo unzip gradle-$GRADLE_VERSION-bin.zip -d /opt/gradle \
+    && rm -rf gradle-$GRADLE_VERSION-bin.zip \
     && cd /opt/gradle \
-    && sudo mv gradle-8.4 gradle \
+    && sudo mv gradle-$GRADLE_VERSION gradle \
     && sudo ./gradle/bin/gradle init \
     && sudo ./gradle/bin/gradle wrapper
 
