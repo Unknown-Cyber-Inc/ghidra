@@ -2,7 +2,11 @@
 #
 #
 
-export PATH=/opt/java/bin/:/opt/gradle/gradle-8.8/bin:$PATH
+GRADLE_VERSION=8.8
+GHIDRA_VERSION=11.0.3
+DATE=20240410
+
+export PATH=/opt/java/bin/:/opt/gradle/gradle-$GRADLE_VERSION/bin:$PATH
 export GHIDRA_HOME=/opt/ghidra/
 export GHIDRA_INSTALL_DIR=/opt/ghidra/
 export JAVA_HOME=/opt/java/
@@ -39,17 +43,17 @@ wget -O /tmp/openjdk.tar.gz 'https://github.com/adoptium/temurin17-binaries/rele
     && rm -rf ~/.java
 
 # Install Ghidra
-wget https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_11.0.3_build/ghidra_11.0.3_PUBLIC_20230928.zip \
-    && sudo unzip ghidra_11.0.3_PUBLIC_20230928.zip -d /opt/ \
-    && sudo mv /opt/ghidra_11.0.3_PUBLIC /opt/ghidra \
-    && rm -rf ghidra_11.0.3_PUBLIC_20230928.zip
+wget https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_${GHIDRA_VERSION}_ghidra_${GHIDRA_VERSION}_PUBLIC_$DATE.zip \
+    && sudo unzip ghidra_${GHIDRA_VERSION}_PUBLIC_$DATE.zip -d /opt/ \
+    && sudo mv /opt/ghidra_${GHIDRA_VERSION}_PUBLIC /opt/ghidra \
+    && rm -rf ghidra_${GHIDRA_VERSION}_PUBLIC_$DATE.zip
 
 # Install Gradle
-wget https://services.gradle.org/distributions/gradle-8.8-bin.zip \
-    && sudo unzip gradle-8.8-bin.zip -d /opt/gradle \
-    && rm -rf gradle-8.8-bin.zip \
+wget https://services.gradle.org/distributions/gradle-$GRADLE_VERSION-bin.zip \
+    && sudo unzip gradle-$GRADLE_VERSION-bin.zip -d /opt/gradle \
+    && rm -rf gradle-$GRADLE_VERSION-bin.zip \
     && cd /opt/gradle \
-    && sudo mv gradle-8.8 gradle \
+    && sudo mv gradle-$GRADLE_VERSION gradle \
     && sudo ./gradle/bin/gradle init \
     && sudo ./gradle/bin/gradle wrapper
 

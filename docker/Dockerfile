@@ -1,6 +1,6 @@
 FROM ubuntu:22.04 AS base
 ARG version=11.0.3
-ARG date=20230928
+ARG date=20240410
 EXPOSE 13100/tcp 13101/tcp 13102/tcp
 ENV LANG=en_US.UTF-8 LANGUAGE=en_US:en LC_ALL=en_US.UTF-8
 ENV DEBIAN_FRONTEND=noninteractive
