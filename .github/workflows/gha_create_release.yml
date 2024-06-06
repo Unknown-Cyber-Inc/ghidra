@@ -29,8 +29,8 @@ jobs:
         - name: Create unknowncyberghidraplugin.tgz File
           working-directory: ./UnknownCyberPlugin
           run: |
-            chmod +x gradlew
-            ./gradlew clean build
+            chmod +x ../gradlew
+            ../gradlew clean build
             mv ./build/libs/UnknownCyberPlugin.jar lib/
             mkdir unknowncyber
             cp -r extension.properties lib LICENSE.txt Module.manifest ./unknowncyber/

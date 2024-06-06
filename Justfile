@@ -50,7 +50,7 @@ reload:
 recompile:
     #!/bin/bash
     cd UnknownCyberPlugin
-    ./gradlew clean build
+    ../gradlew clean build
     mv ./build/libs/UnknownCyberPlugin.jar lib/
     rm -rf build
 
