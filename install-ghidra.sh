@@ -57,6 +57,8 @@ wget https://services.gradle.org/distributions/gradle-$GRADLE_VERSION-bin.zip \
     && sudo ./gradle/bin/gradle init \
     && sudo ./gradle/bin/gradle wrapper
 
-echo alias ghidra=\'/opt/ghidra/support/launch.sh fg jdk Ghidra 768M \"\" ghidra.GhidraRun\' >> ~/.bashrc
-echo export JAVA_HOME=$JAVA_HOME >> ~/.bashrc
+echo alias ghidra=\'/opt/ghidra/support/launch.sh fg jdk Ghidra 768M \"\" ghidra.GhidraRun\' >> ~/.bash_aliases
+echo export JAVA_HOME=$JAVA_HOME >> ~/.bash_aliases
+mkdir -p ~/.ghidra/.ghidra_${GHIDRA_VERSION}_PUBLIC/
+echo $JAVA_HOME > ~/.ghidra/.ghidra_${GHIDRA_VERSION}_PUBLIC/java_home.save
 source ~/.bashrc
