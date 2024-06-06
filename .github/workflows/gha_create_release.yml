@@ -26,6 +26,10 @@ jobs:
             java-version: '17'
             distribution: 'temurin'
 
+        - uses: er28-0652/setup-ghidra@master
+          with:
+            version: "11.0.3"
+
         - name: Create unknowncyberghidraplugin.tgz File
           working-directory: ./UnknownCyberPlugin
           run: |
