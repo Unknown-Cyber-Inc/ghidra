@@ -3,3 +3,4 @@ dist/
 unknowncyber*plugin.tgz
 unknowncyber*plugin.zip
 unknowncyber/
+!gradle/wrapper/gradle-wrapper.jar
