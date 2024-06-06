@@ -48,36 +48,14 @@ reload:
 
 # Recompiles the plugin
 recompile:
-    docker exec -it -u root --workdir "/plugins/UnknownCyberPlugin" ghidra /opt/gradle/gradlew clean build
-    docker exec -it -u root --workdir "/plugins/UnknownCyberPlugin" ghidra mv ./build/libs/UnknownCyberPlugin.jar lib/
-    rm -rf build
-
-# Packages the dependencies for distribution
-redist: recompile
     #!/bin/bash
     cd UnknownCyberPlugin
-    mkdir -p dist/unknowncyber
-    cp -r extension.properties lib LICENSE.txt Module.manifest dist/unknowncyber/
-    zip UnknownCyberPlugin-src.zip src/*
-    mv UnknownCyberPlugin-src.zip dist/unknowncyber/lib/
-    cd dist
-    tar czvf unknowncyberghidraplugin.tgz unknowncyber
-    zip -r unknowncyberghidraplugin.zip unknowncyber
-    mv *.tgz *.zip ../..
-    rm -rf ../dist
-    cd ../..
-    sha256sum unknowncyberghidraplugin.* > checksum
-
-# Recompiles the plugin
-recompile-local:
-    #!/bin/bash
-    cd UnknownCyberPlugin
-    /opt/gradle/gradlew clean build
+    ../gradlew clean build
     mv ./build/libs/UnknownCyberPlugin.jar lib/
     rm -rf build
 
 # Packages the dependencies for distribution
-redist-local: recompile-local
+redist: recompile
     #!/bin/bash
     cd UnknownCyberPlugin
     mkdir -p dist/unknowncyber
