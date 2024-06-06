@@ -26,13 +26,11 @@ jobs:
             java-version: '17'
             distribution: 'temurin'
 
-        - name: Grant execute permission for gradlew
-          run: chmod +x gradlew
-
         - name: Create unknowncyberghidraplugin.tgz File
           working-directory: ./UnknownCyberPlugin
           run: |
-            ../gradlew clean build
+            chmod +x gradlew
+            ./gradlew clean build
             mv ./build/libs/UnknownCyberPlugin.jar lib/
             mkdir unknowncyber
             cp -r extension.properties lib LICENSE.txt Module.manifest ./unknowncyber/
