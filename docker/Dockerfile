@@ -11,8 +11,25 @@ ENV PGHIDRA_INSTALL_DIR /opt/ghidra/
 ENV JAVA_HOME /opt/java/
 ENV JAVA_VERSION=jdk-17.0.9+9
 ENV MAXMEM=768M
+ENV VB_HOME=/home/unknowncyber
+WORKDIR $VB_HOME
 
+RUN groupadd -g 1000 unknowncyber \
+    && groupadd -g 137 vboxsf \
+    && useradd --no-log-init -u 1000 -g 1000 -d /home/unknowncyber -m unknowncyber \
+    && usermod -aG vboxsf unknowncyber \
+    # Set the user's password
+    && echo "unknowncyber:unknowncyber" | chpasswd \
+    # Create shared directory
+    && mkdir /shared /home/unknowncyber/.azcopy \
+    && mkdir -p $VB_DATA/tmp $VB_DATA/logs $VB_DATA/vbdb $CONFIGS_DIR \
+    && mkdir -p $VB_HOME/tmp $VB_HOME/logs $VB_HOME/store/files $VB_HOME/tools \
+    && chown -R unknowncyber:unknowncyber /shared $VB_HOME
+COPY --chown=unknowncyber dev.crt dev.key /tmp/
+COPY --chown=unknowncyber dev.crt dev.key /etc/ssl/unknowncyber/
+COPY --chown=unknowncyber dev.crt /etc/ssl/unknowncyber/ca.crt
 COPY ca.crt .
+
 # Install the Java JDK
 RUN set -x \
     && apt update \
@@ -30,7 +47,6 @@ RUN set -x \
     && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives /tmp/* /var/tmp/* \
     && apt -y remove wget \
     && apt -y autoremove
-
 
 # Install Ghidra and Gradle
 RUN apt-get update \
@@ -68,4 +84,5 @@ RUN apt-get update \
 
 COPY unknowncyber-entrypoint.sh /unknowncyber-entrypoint.sh
 
+USER unknowncyber
 ENTRYPOINT ["/unknowncyber-entrypoint.sh"]
