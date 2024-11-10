@@ -1,14 +1,18 @@
 # Unknown Cyber Ghidra Plugin
+The Unknown Cyber Ghidra Plugin is designed to integrate Unknown Cyber technologies seamlessly with Ghidra.
 
-## How to run the docker container
+- Key Features
+  * Binary and disassembly uploading
+  * Project creation
+  * CRUD operations for procedures, procedure groups, and file notes/tags
+  * File and procedure similarity matching
 
- * Make sure to download the latest ghidra docker image
-   * `docker pull virusbattleacr.azurecr.io/unknowncyber/ghidra`
-
- * Start your ghidra container from within your development repository
-   * `just dev-up ghidra`
-
- * If this is your first time running it, compile the jar file from this directory
-   * `just reload`
-
- * When the plugin opens, create or open a project and you're good to go!!
+## Installation
+The following walkthrough uses the tarball delivery. Change instructions where necessary if using the zipfile.
+- Download `unknowncyberghidraplugin.tgz` from a ([release](https://github.com/Unknown-Cyber-Inc/ghidra/releases)).
+- Verify the download with the release's checksum.
+- Extract
+  * `tar xvzf unknowncyberghidraplugin.tgz`
+- Set the following environment variables:
+  * `MAGIC_API_HOST` - Use `https://api.magic.unknowncyber.com` unless using an offline Unknown Cyber system.
+  * `MAGIC_API_KEY` - Replace with your Unknown Cyber api key.
