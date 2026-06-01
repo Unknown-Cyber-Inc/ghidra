@@ -3,8 +3,8 @@
 
 set shell := ["bash", "-uc"]
 
-GHIDRA_VERSION := "11.0.3"
-GHIDRA_DATE := "20240410"
+GHIDRA_VERSION := "12.1"
+GHIDRA_DATE := "20260513"
 
 # Justfile Help message {{{
 
@@ -87,7 +87,7 @@ build V=GHIDRA_VERSION D=GHIDRA_DATE:
     V=${V:-GHIDRA_VERSION}
     D=${D:-GHIDRA_DATE}
     cd docker \
-        && docker-buildx build \
+        && docker buildx build \
             --build-arg version={{V}} \
             --build-arg date={{D}} \
             -t virusbattleacr.azurecr.io/unknowncyber/ghidra:{{V}} .
@@ -97,7 +97,7 @@ rebuild V=GHIDRA_VERSION D=GHIDRA_DATE:
     V=${V:-GHIDRA_VERSION}
     D=${D:-GHIDRA_DATE}
     cd docker \
-        && docker-buildx build --no-cache \
+        && docker buildx build --no-cache \
             --build-arg version={{V}} \
             --build-arg date={{D}} \
             -t virusbattleacr.azurecr.io/unknowncyber/ghidra:{{V}} .

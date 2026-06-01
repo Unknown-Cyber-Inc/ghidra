@@ -1,22 +1,22 @@
 FROM ubuntu:22.04 AS base
-ARG version=11.0.3
-ARG date=20240410
+ARG version=12.1
+ARG date=20260513
 EXPOSE 13100/tcp 13101/tcp 13102/tcp
 ENV LANG=en_US.UTF-8 LANGUAGE=en_US:en LC_ALL=en_US.UTF-8
 ENV DEBIAN_FRONTEND=noninteractive
-ENV PATH /opt/java/bin/:/opt/gradle/gradle-8.8/bin:$PATH
-ENV GHIDRA_HOME /opt/ghidra/
-ENV GHIDRA_INSTALL_DIR /opt/ghidra/
-ENV PGHIDRA_INSTALL_DIR /opt/ghidra/
-ENV JAVA_HOME /opt/java/
+ENV PATH=/opt/java/bin/:/opt/gradle/gradle-8.8/bin:$PATH
+ENV GHIDRA_HOME=/opt/ghidra/
+ENV GHIDRA_INSTALL_DIR=/opt/ghidra/
+ENV PGHIDRA_INSTALL_DIR=/opt/ghidra/
+ENV JAVA_HOME=/opt/java/
 ENV JAVA_VERSION=jdk-17.0.9+9
 ENV MAXMEM=768M
 ENV VB_HOME=/home/unknowncyber
 WORKDIR $VB_HOME
 
-RUN groupadd -g 1000 unknowncyber \
+RUN groupadd -g 24207 unknowncyber \
     && groupadd -g 137 vboxsf \
-    && useradd --no-log-init -u 1000 -g 1000 -d /home/unknowncyber -m unknowncyber \
+    && useradd --no-log-init -u 24207 -g 24207 -d /home/unknowncyber -m unknowncyber \
     && usermod -aG vboxsf unknowncyber \
     # Set the user's password
     && echo "unknowncyber:unknowncyber" | chpasswd \
