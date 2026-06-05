@@ -3,8 +3,8 @@
 
 set shell := ["bash", "-uc"]
 
-GHIDRA_VERSION := "12.1"
-GHIDRA_DATE := "20260513"
+GHIDRA_VERSION := "11.0.3"
+GHIDRA_DATE := "20240410"
 
 # Justfile Help message {{{
 

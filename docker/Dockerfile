@@ -1,6 +1,6 @@
 FROM ubuntu:22.04 AS base
-ARG version=12.1
-ARG date=20260513
+ARG version=11.0.3
+ARG date=20240410
 EXPOSE 13100/tcp 13101/tcp 13102/tcp
 ENV LANG=en_US.UTF-8 LANGUAGE=en_US:en LC_ALL=en_US.UTF-8
 ENV DEBIAN_FRONTEND=noninteractive
@@ -81,6 +81,34 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives /tmp/* /var/tmp/* \
     && apt -y remove wget unzip \
     && apt -y autoremove
+
+# ---------------------------------------------------------------------------
+# Bake the UnknownCyber Ghidra extension into the image.
+#
+# Installed into the install-dir Extensions tree, NOT ~/.ghidra — the compose
+# file bind-mounts $GHIDRA_DIR over /home/unknowncyber/.ghidra, which would
+# shadow anything placed there. /opt/ghidra/Ghidra/Extensions is outside that
+# mount, so the baked copy survives. (curl is installed in the step above and
+# not removed, so it's available here.)
+#
+# Pinned; bump GHIDRA_PLUGIN_VERSION to ship a new plugin.
+# For live plugin development, the hot.yml compose override
+# bind-mounts a local build over /opt/ghidra/Ghidra/Extensions/unknowncyber.
+#
+# NOTE: verify your Ghidra version actually LOADS an install-dir extension in
+# your launch mode. Headless analyzers pick these up automatically; the GUI may
+# require a one-time per-user activation (which writes into ~/.ghidra). If so,
+# have unknowncyber-entrypoint.sh copy this into
+# ~/.ghidra/.ghidra_<ver>_PUBLIC/Extensions/ on first start (that dir is
+# writable via the $GHIDRA_DIR mount).
+# ---------------------------------------------------------------------------
+ARG GHIDRA_PLUGIN_VERSION=1.0.1
+RUN curl -fsSL \
+      "https://github.com/Unknown-Cyber-Inc/ghidra/releases/download/${GHIDRA_PLUGIN_VERSION}/unknowncyberghidraplugin.tgz" \
+      | tar xz -C "$GHIDRA_INSTALL_DIR/Ghidra/Extensions/" \
+    && rm -rf "$GHIDRA_INSTALL_DIR/Ghidra/Extensions/unknowncyber/dependencies" \
+    && rm -f  "$GHIDRA_INSTALL_DIR/Ghidra/Extensions/unknowncyber/requirements.txt" \
+    && chown -R unknowncyber:unknowncyber "$GHIDRA_INSTALL_DIR/Ghidra/Extensions/unknowncyber"
 
 COPY unknowncyber-entrypoint.sh /unknowncyber-entrypoint.sh
 
