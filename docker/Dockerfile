@@ -20,11 +20,9 @@ RUN groupadd -g 24207 unknowncyber \
     && usermod -aG vboxsf unknowncyber \
     # Set the user's password
     && echo "unknowncyber:unknowncyber" | chpasswd \
-    # Create shared directory
-    && mkdir /shared /home/unknowncyber/.azcopy \
     && mkdir -p $VB_DATA/tmp $VB_DATA/logs $VB_DATA/vbdb $CONFIGS_DIR \
     && mkdir -p $VB_HOME/tmp $VB_HOME/logs $VB_HOME/store/files $VB_HOME/tools \
-    && chown -R unknowncyber:unknowncyber /shared $VB_HOME
+    && chown -R unknowncyber:unknowncyber $VB_HOME
 COPY --chown=unknowncyber dev.crt dev.key /tmp/
 COPY --chown=unknowncyber dev.crt dev.key /etc/ssl/unknowncyber/
 COPY --chown=unknowncyber dev.crt /etc/ssl/unknowncyber/ca.crt
