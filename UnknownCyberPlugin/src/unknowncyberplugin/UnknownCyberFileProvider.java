@@ -84,8 +84,8 @@ public class UnknownCyberFileProvider extends ComponentProviderAdapter {
 		setTitle("Unknown Cyber");
 		setVisible(true);
 		apiClient = new ApiClient();
-		apiClient.setApiKey(dotenv.get("MAGIC_API_KEY"));
-		apiClient.setBasePath(dotenv.get("MAGIC_API_HOST"));
+		apiClient.setApiKey(dotenv.get("ADMIN_API_KEY"));
+		apiClient.setBasePath(dotenv.get("API_HOST"));
 		filesApi = new FilesApi(apiClient);
 		procsApi = new ProceduresApi(apiClient);
 	}

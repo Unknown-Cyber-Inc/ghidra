@@ -86,8 +86,8 @@ import io.github.cdimascio.dotenv.Dotenv;
  * Serves to hold easy-use wrappers for Unknown Cyber API calls.
  */
 public class Api {
-	private static final String API_HOST_ENV = "MAGIC_API_HOST";
-	private static final String API_KEY_ENV = "MAGIC_API_KEY";
+	private static final String API_HOST_ENV = "API_HOST";
+	private static final String API_KEY_ENV = "ADMIN_API_KEY";
 
 	private static Dotenv dotenv = Dotenv.configure().directory(System.getProperty("user.home")).ignoreIfMalformed().ignoreIfMissing().load();
 

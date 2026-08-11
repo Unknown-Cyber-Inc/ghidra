@@ -14,5 +14,5 @@ The following walkthrough uses the tarball delivery. Change instructions where n
 - Extract
   * `tar xvzf unknowncyberghidraplugin.tgz`
 - Set the following environment variables:
-  * `MAGIC_API_HOST` - Use `https://api.magic.unknowncyber.com` unless using an offline Unknown Cyber system.
-  * `MAGIC_API_KEY` - Replace with your Unknown Cyber api key.
+  * `API_HOST` - Use `https://api.unknowncyber.com` unless using an offline Unknown Cyber system.
+  * `ADMIN_API_KEY` - Replace with your Unknown Cyber api key.
